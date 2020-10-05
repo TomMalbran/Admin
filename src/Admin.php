@@ -16,6 +16,7 @@ class Admin {
     const KeyData       = "keys";
 
     // The Directories
+    const AdminDir      = "admin";
     const SourceDir     = "src";
     const DataDir       = "data";
     
@@ -24,7 +25,6 @@ class Admin {
     const PartialsDir   = "partials";
     const MigrationsDir = "migrations";
 
-    const BaseDir       = "admin";
     const FilesDir      = "files";
     const TempDir       = "temp";
 
@@ -50,17 +50,16 @@ class Admin {
 
     /**
      * Returns the BasePath with the given dir
-     * @param string  $dir      Optional.
-     * @param string  $file     Optional.
-     * @param boolean $forAdmin Optional.
+     * @param string  $dir     Optional.
+     * @param boolean $forSite Optional.
      * @return string
      */
-    public static function getPath(string $dir = "", string $file = "", bool $forAdmin = false): string {
+    public static function getPath(string $dir = "", bool $forSite = false): string {
         $path = "";
-        if ($forAdmin) {
-            $path = File::getPath(self::$adminPath, $dir, $file);
+        if ($forSite) {
+            $path = File::getPath(self::$basePath, $dir);
         } else {
-            $path = File::getPath(self::$basePath, self::BaseDir, $dir, $file);
+            $path = File::getPath(self::$basePath, self::AdminDir, $dir);
         }
         return File::removeLastSlash($path);
     }

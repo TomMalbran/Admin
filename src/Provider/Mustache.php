@@ -17,27 +17,30 @@ class Mustache {
     
     private static $loaded = false;
     private static $engine = null;
-    private static $loader = null;
+
+    private static $adminEngine = null;
+    private static $siteEngine  = null;
     
     
     /**
      * Creates the Mustache Provider
+     * @param boolean $forSite Optional.
      * @return void
      */
-    public static function load(): void {
+    public static function load(bool $forSite = false): void {
         if (!self::$loaded) {
-            self::$loaded = true;
-
-            // Create a simple engine
             Mustache_Autoloader::register();
             self::$engine = new Mustache_Engine();
-            
-            // Create a loader engine
-            $path = Admin::getPath(Admin::PublicDir);
-            if (File::exists($path)) {
-                $config  = [ "extension" => ".html" ];
-                $loaders = [];
-                
+            self::$loaded = true;
+        }
+
+        $path = Admin::getPath(Admin::PublicDir, $forSite);
+        if (File::exists($path)) {
+            $config  = [ "extension" => ".html" ];
+            $loaders = [];
+
+            // Create the admin engine
+            if (!$forSite && self::$adminEngine == null) {
                 // Main templates should be in public/templates
                 if (File::exists($path, Admin::TemplatesDir)) {
                     $loaderPath = File::getPath($path, Admin::TemplatesDir);
@@ -50,7 +53,24 @@ class Mustache {
                     $loaders["partials_loader"] = new Mustache_Loader_FilesystemLoader($loaderPath, $config);
                 }
 
-                self::$loader = new Mustache_Engine($loaders);
+                self::$adminEngine = new Mustache_Engine($loaders);
+            }
+
+            // Create the site engine
+            if ($forSite && self::$siteEngine == null) {
+                // Main templates should be in public/templates
+                if (File::exists($path, Admin::TemplatesDir)) {
+                    $loaderPath = File::getPath($path, Admin::TemplatesDir);
+                    $loaders["loader"] = new Mustache_Loader_FilesystemLoader($loaderPath, $config);
+                }
+
+                // Partials should be in public/partials
+                if (File::exists($path, Admin::PartialsDir)) {
+                    $loaderPath = File::getPath($path, Admin::PartialsDir);
+                    $loaders["partials_loader"] = new Mustache_Loader_FilesystemLoader($loaderPath, $config);
+                }
+
+                self::$siteEngine = new Mustache_Engine($loaders);
             }
         }
     }
@@ -59,18 +79,35 @@ class Mustache {
     
     /**
      * Renders the template using any of the engines depending on the first parameter
-     * @param string $templateOrPath
-     * @param array  $data
+     * @param string  $templateOrPath
+     * @param array   $data
+     * @param boolean $forSite        Optional.
      * @return string
      */
-    public static function render(string $templateOrPath, array $data): string {
-        self::load();
-        if (Strings::match($templateOrPath, '/^[a-z\/]*$/')) {
-            if (self::$loader != null) {
-                return self::$loader->render($templateOrPath, $data);
-            }
-            return "";
+    public static function render(string $templateOrPath, array $data, bool $forSite = false): string {
+        self::load($forSite);
+
+        if (!Strings::match($templateOrPath, '/^[a-z\/]*$/')) {
+            return self::$engine->render($templateOrPath, $data);
         }
-        return self::$engine->render($templateOrPath, $data);
+        if (!$forSite && self::$adminEngine != null) {
+            return self::$adminEngine->render($templateOrPath, $data);
+        }
+        if ($forSite && self::$siteEngine != null) {
+            return self::$siteEngine->render($templateOrPath, $data);
+        }
+        return "";
+    }
+
+    /**
+     * Renders and prints the template using any of the engines depending on the first parameter
+     * @param string  $templateOrPath
+     * @param array   $data
+     * @param boolean $forSite        Optional.
+     * @return void
+     */
+    public static function print(string $templateOrPath, array $data, bool $forSite = false) {
+        self::load($forSite);
+        echo self::render($templateOrPath, $data, $forSite);
     }
 }

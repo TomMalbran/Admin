@@ -1,6 +1,7 @@
 <?php
 namespace Admin;
 
+use Admin\File\File;
 use Admin\Schema\Factory;
 use Admin\Schema\Database;
 use Admin\Utils\JSON;
@@ -21,6 +22,7 @@ class Admin {
     const PublicDir     = "public";
     const MigrationsDir = "migrations";
 
+    const BaseDir       = "admin";
     const FilesDir      = "files";
     const TempDir       = "temp";
 
@@ -30,19 +32,16 @@ class Admin {
     // Variables
     private static $adminPath;
     private static $basePath;
-    private static $baseDir;
 
 
     /**
      * Sets the Basic data
      * @param string $basePath
-     * @param string $baseDir
      * @return void
      */
-    public static function create(string $basePath, string $baseDir): void {
+    public static function create(string $basePath): void {
         self::$adminPath = dirname(__FILE__, 2);
         self::$basePath  = $basePath;
-        self::$baseDir   = $baseDir;
     }
 
 
@@ -59,7 +58,7 @@ class Admin {
         if ($forAdmin) {
             $path = File::getPath(self::$adminPath, $dir, $file);
         } else {
-            $path = File::getPath(self::$basePath, self::$baseDir, $dir, $file);
+            $path = File::getPath(self::$basePath, self::BaseDir, $dir, $file);
         }
         return File::removeLastSlash($path);
     }

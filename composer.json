@@ -11,7 +11,8 @@
         "php": "^7.1",
         "ext-mysqli": "*",
         "ext-curl": "*",
-        "vlucas/phpdotenv": "^4.0"
+        "vlucas/phpdotenv": "^4.0",
+        "unsplash/unsplash": "^2.4"
     },
     "suggest" : {
         "firebase/php-jwt": "Used in Auth",

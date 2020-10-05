@@ -1,6 +1,8 @@
 <?php
 namespace Admin\Provider;
 
+use Admin\Config\Config;
+
 use Crew\Unsplash\HttpClient;
 use Crew\Unsplash\Photo;
 use Crew\Unsplash\Exception;

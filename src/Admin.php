@@ -12,14 +12,16 @@ use Admin\Utils\JSON;
 class Admin {
 
     // The Data
-    const SchemaData = "schemas";
-    const KeyData    = "keys";
+    const SchemaData    = "schemas";
+    const KeyData       = "keys";
 
     // The Directories
     const SourceDir     = "src";
     const DataDir       = "data";
     
     const PublicDir     = "public";
+    const TemplatesDir  = "templates";
+    const PartialsDir   = "partials";
     const MigrationsDir = "migrations";
 
     const BaseDir       = "admin";

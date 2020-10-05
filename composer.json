@@ -12,13 +12,13 @@
         "ext-mysqli": "*",
         "ext-curl": "*",
         "vlucas/phpdotenv": "^4.0",
+        "mustache/mustache": "^2.13",
         "unsplash/unsplash": "^2.4"
     },
     "suggest" : {
         "firebase/php-jwt": "Used in Auth",
         "phpmailer/phpmailer": "Used for Mailing",
         "league/oauth2-google": "Used for Mailing with Gmail",
-        "mustache/mustache": "Used for Rendering templates",
         "phpoffice/phpspreadsheet": "Used to Import/Export data"
     },
     "autoload": {

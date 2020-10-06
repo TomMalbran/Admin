@@ -14,19 +14,18 @@ class Admin {
     // The Data
     const SchemaData    = "schemas";
     const KeyData       = "keys";
+    const PathData      = "paths";
 
     // The Directories
     const AdminDir      = "admin";
     const SourceDir     = "src";
     const DataDir       = "data";
+    const FilesDir      = "files";
     
     const PublicDir     = "public";
     const TemplatesDir  = "templates";
     const PartialsDir   = "partials";
     const MigrationsDir = "migrations";
-
-    const FilesDir      = "files";
-    const TempDir       = "temp";
 
     // Config
     const Namespace     = "App\\Controller\\";
@@ -49,7 +48,7 @@ class Admin {
 
 
     /**
-     * Returns the BasePath with the given dir
+     * Returns the Base Path with the given dir
      * @param string  $dir     Optional.
      * @param boolean $forSite Optional.
      * @return string
@@ -65,12 +64,22 @@ class Admin {
     }
 
     /**
-     * Returns the FilesPath with the given file
+     * Returns the Files Path with the given file
      * @param string $file Optional.
      * @return string
      */
     public static function getFilesPath(string $file = ""): string {
-        $path = File::getPath(self::$basePath, self::FilesDir, $file);
+        $path = File::getPath(self::$basePath, self::AdminDir, self::FilesDir, $file);
+        return File::removeLastSlash($path);
+    }
+
+    /**
+     * Returns the Files Relative Path with the given file
+     * @param string $file Optional.
+     * @return string
+     */
+    public static function getFilesRelPath(string $file = ""): string {
+        $path = File::getPath(self::AdminDir, self::FilesDir, $file);
         return File::removeLastSlash($path);
     }
 
@@ -97,11 +106,11 @@ class Admin {
      * Loads a JSON File
      * @param string  $dir
      * @param string  $file
-     * @param boolean $forAdmin Optional.
+     * @param boolean $forSite Optional.
      * @return array
      */
-    public static function loadJSON(string $dir, string $file, bool $forAdmin = false): array {
-        $path = self::getPath($dir, "$file.json", $forAdmin);
+    public static function loadJSON(string $dir, string $file, bool $forSite = false): array {
+        $path = self::getPath("$dir/$file.json", $forSite);
         return JSON::readFile($path, true);
     }
 

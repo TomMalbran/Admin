@@ -77,6 +77,20 @@ class File {
         }
         return false;
     }
+
+    /**
+     * Copies a file from one path to another
+     * @param string $fromPath
+     * @param string $toPath
+     * @return boolean
+     */
+    public static function copy(string $fromPath, string $toPath): bool {
+        if (!empty($fromPath) && !empty($toPath)) {
+            copy($fromPath, $toPath);
+            return true;
+        }
+        return false;
+    }
     
     /**
      * Deletes the given file/directory
@@ -236,10 +250,11 @@ class File {
     
     /**
      * Creates a directory at the given path if it doesn't exists
-     * @param string $path
+     * @param string ...$pathParts
      * @return boolean
      */
-    public static function createDir(string $path): string {
+    public static function createDir(string ...$pathParts): string {
+        $path = self::getPath(...$pathParts);
         if (!self::exists($path)) {
             mkdir($path, 0777, true);
             return true;
@@ -248,11 +263,33 @@ class File {
     }
 
     /**
-     * Deletes a directory and it's content
-     * @param string $path
+     * Ensures that all the directories are created
+     * @param string $basePath
+     * @param string ...$pathParts
      * @return boolean
      */
-    public static function deleteDir(string $path): bool {
+    public static function ensureDir(string $basePath, string ...$pathParts): bool {
+        $path        = self::getPath(...$pathParts);
+        $pathElems   = Strings::split($path, "/");
+        $partialPath = [];
+        $created     = false;
+
+        for ($i = 0; $i < count($pathElems); $i++) {
+            $partialPath[] = $pathElems[$i];
+            if (self::createDir($basePath, ...$partialPath)) {
+                $created = true;
+            }
+        }
+        return $created;
+    }
+
+    /**
+     * Deletes a directory and it's content
+     * @param string ...$pathParts
+     * @return boolean
+     */
+    public static function deleteDir(string ...$pathParts): bool {
+        $path = self::getPath(...$pathParts);
         if (is_dir($path)) {
             $files = scandir($path);
             foreach ($files as $file) {
@@ -269,11 +306,12 @@ class File {
     
     /**
      * Deletes all the content from a directory
-     * @param string $path
+     * @param string ...$pathParts
      * @return void
      */
-    public static function emptyDir(string $path): void {
-        if (file_exists($path)) {
+    public static function emptyDir(string ...$pathParts): void {
+        $path = self::getPath(...$pathParts);
+        if (self::exists($path)) {
             $files = scandir($path);
             foreach ($files as $file) {
                 if ($file != "." && $file != "..") {

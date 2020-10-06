@@ -4,16 +4,25 @@ namespace Admin\File;
 use Admin\Admin;
 use Admin\Config\Config;
 use Admin\File\File;
+use Admin\Utils\Arrays;
+use Admin\Utils\Strings;
 
 /**
  * The Files Paths
  */
 class Path {
+
+    const Source = "source";
+    const Large  = "large";
+    const Medium = "medium";
+    const Small  = "small";
+    const Thumb  = "thumb";
+    const Temp   = "temp";
     
     private static $loaded   = false;
     private static $data     = [];
     private static $basePath = null;
-    private static $baseDir  = null;
+    private static $relPath  = null;
     
     
     /**
@@ -25,62 +34,66 @@ class Path {
             self::$loaded   = true;
             self::$data     = Admin::loadData(Admin::PathData);
             self::$basePath = Admin::getFilesPath();
-            self::$baseDir  = Admin::FilesDir;
+            self::$relPath  = Admin::getFilesRelPath();
         }
     }
 
     /**
-     * Returns and loads the Paths
-     * @param string $pathKey
+     * Returns a list with the Base Media Directories
+     * @return string[]
+     */
+    public static function getBaseDirs() {
+        return [
+            self::Source,
+            self::Large,
+            self::Medium,
+            self::Small,
+            self::Thumb,
+        ];
+    }
+
+    /**
+     * Returns and loads the Directories
      * @return string
      */
-    private static function get(string $pathKey): string {
+    public static function getDirectories(): array {
         self::load();
-        if (!empty(self::$data["paths"][$pathKey])) {
-            return self::$data["paths"][$pathKey];
+        if (!empty(self::$data["directories"])) {
+            return self::$data["directories"];
         }
-        return "";
+        return [];
     }
 
     
 
     /**
      * Returns the path used to store the files
-     * @param string $pathKey
      * @param string ...$pathParts
      * @return string
      */
-    public static function getPath(string $pathKey, string ...$pathParts): string {
-        $path = self::get($pathKey);
-        if (!empty($path)) {
-            return File::getPath(self::$basePath, $path, ...$pathParts);
-        }
-        return "";
+    public static function getPath(string ...$pathParts): string {
+        self::load();
+        return File::getPath(self::$basePath, ...$pathParts);
+    }
+
+    /**
+     * Returns the Relative Path from Source
+     * @param string $path
+     * @return string
+     */
+    public static function getRelPath(string $path): string {
+        $basePath = self::getPath(self::Source);
+        return Strings::replace($path, $basePath, "");
     }
 
     /**
      * Returns the path to be used in urls
-     * @param string $pathKey
      * @param string ...$pathParts
      * @return string
      */
-    public static function getUrl(string $pathKey, string ...$pathParts): string {
-        $path = self::get($pathKey);
-        if (!empty($path)) {
-            return Config::getUrl(self::$baseDir, $path, ...$pathParts);
-        }
-        return "";
-    }
-
-    /**
-     * Returns true if given file exists
-     * @param string $pathKey
-     * @param string ...$pathParts
-     * @return boolean
-     */
-    public static function exists(string $pathKey, string ...$pathParts): bool {
-        $path = self::getPath($pathKey, ...$pathParts);
-        return File::exists($path);
+    public static function getUrl(string ...$pathParts): string {
+        self::load();
+        return Config::getUrl(self::$relPath, ...$pathParts);
     }
     
 
@@ -92,7 +105,7 @@ class Path {
      * @return string
      */
     public static function getTempPath(int $credentialID, bool $create = true): string {
-        $path   = self::getPath(Admin::TempDir, $credentialID);
+        $path   = self::getPath(self::Temp, $credentialID);
         $exists = File::exists($path);
         
         if (!$exists && $create) {
@@ -108,7 +121,7 @@ class Path {
      * @return string
      */
     public static function getTempUrl(int $credentialID): string {
-        return self::getPath(Admin::TempDir, $credentialID) . "/";
+        return self::getPath(self::Temp, $credentialID) . "/";
     }
 
 
@@ -118,25 +131,24 @@ class Path {
      * @return void
      */
     public static function ensurePaths() {
-        self::load();
-        $paths = [];
+        $baseDirs    = self::getBaseDirs();
+        $directories = self::getDirectories();
+        $basePath    = self::getPath();
+        $paths       = [];
 
-        if (empty(self::$data["paths"])) {
-            return;
-        }
-        foreach (array_keys(self::$data["paths"]) as $pathKey) {
-            $path = self::getPath($pathKey);
-            if (File::createDir($path)) {
-                $paths[] = $pathKey;
-            }
-            if ($pathKey == "source" || $pathKey == "thumbs") {
-                foreach (self::$data["directories"] as $pathDir) {
-                    $path = self::getPath($pathKey, $pathDir);
-                    if (File::createDir($path)) {
-                        $paths[] = "$pathKey/$pathDir";
+        foreach ($baseDirs as $baseDir) {
+            foreach ($directories as $directory) {
+                if (File::ensureDir($basePath, $baseDir, $directory)) {
+                    if (!Arrays::contains($paths, $directory)) {
+                        $paths[] = $directory;
                     }
                 }
             }
+        }
+
+        $tempPath = self::getPath(self::Temp);
+        if (!File::exists($tempPath)) {
+            File::createDir($tempPath);
         }
 
         if (!empty($paths)) {

@@ -59,15 +59,16 @@ class Image {
     }
 
     /**
-     * Returns the Size of the Image as [ width, height, type ]
+     * Returns the Size of the Image as [ width, height ]
      * @param string $file
      * @return array
      */
     public static function getSize(string $file): array {
         if (file_exists($file)) {
-            return getimagesize($file);
+            $size = getimagesize($file);
+            return [ "width" => $size[0], "height" => $size[1] ];
         }
-        return [ 0, 0, 0 ];
+        return [ "width" => 0, "height" => 0 ];
     }
 
     /**

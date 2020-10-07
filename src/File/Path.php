@@ -83,7 +83,8 @@ class Path {
      */
     public static function getRelPath(string $path): string {
         $basePath = self::getPath(self::Source);
-        return Strings::replace($path, $basePath, "");
+        $relPath  = Strings::replace($path, $basePath, "");
+        return File::removeFirstSlash($relPath);
     }
 
     /**

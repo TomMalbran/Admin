@@ -377,7 +377,7 @@ class Schema {
         $selection->addJoins();
         $selection->request($query);
         $request   = $selection->resolve();
-        return Arrays::createSelectFromArray($request, $this->structure->idName, $name ?: $this->structure->name, $selectedID, $extra);
+        return Arrays::createSelect($request, $this->structure->idName, $name ?: $this->structure->name, $selectedID, $extra);
     }
     
     

@@ -27,16 +27,16 @@ class Factory {
      */
     public static function load(): void {
         if (!self::$loaded) {
-            $config  = Config::get("db");
-            $schemas = Admin::loadData(Admin::SchemaData);
-            $frame   = Admin::loadJSON("data", Admin::SchemaData, true);
+            $config       = Config::get("db");
+            $adminSchemas = Admin::loadData(Admin::SchemaData);
+            $baseSchemas  = Admin::loadJSON("data", Admin::SchemaData, true);
 
             self::$loaded = true;
             self::$db     = new Database($config);
             
-            foreach ($schemas as $key => $data) {
-                if (!empty($frame[$key])) {
-                    self::$data[$key] = Arrays::extend($frame[$key], $data);
+            foreach ($adminSchemas as $key => $data) {
+                if (!empty($baseSchemas[$key])) {
+                    self::$data[$key] = Arrays::extend($baseSchemas[$key], $data);
                 } else {
                     self::$data[$key] = $data;
                 }
@@ -67,6 +67,7 @@ class Factory {
      * @return Structure
      */
     public static function getStructure(string $key): Structure {
+        self::load();
         if (empty(self::$structures[$key])) {
             self::$structures[$key] = new Structure($key, self::$data[$key]);
         }

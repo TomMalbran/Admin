@@ -2,6 +2,7 @@
 namespace Admin;
 
 use Admin\File\File;
+use Admin\File\Path;
 use Admin\Schema\Factory;
 use Admin\Schema\Database;
 use Admin\Utils\JSON;
@@ -146,5 +147,6 @@ class Admin {
      */
     public static function migrate(Database $db, bool $canDelete = false, bool $recreate = false, bool $sandbox = false): void {
         Factory::migrate($db, $canDelete);
+        Path::ensurePaths();
     }
 }

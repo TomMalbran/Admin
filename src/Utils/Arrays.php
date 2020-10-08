@@ -196,11 +196,11 @@ class Arrays {
      * @param array             $array
      * @param string            $key
      * @param string|string[]   $value
-     * @param integer|integer[] $selectedID
+     * @param integer|integer[] $selectedID Optional.
      * @param string            $extra      Optional.
      * @return array
      */
-    public static function createSelect(array $array, string $key, $value, $selectedID, string $extra = null): array {
+    public static function createSelect(array $array, string $key, $value, $selectedID = null, string $extra = null): array {
         $result = [];
         foreach ($array as $row) {
             $fields = [
@@ -218,15 +218,25 @@ class Arrays {
     
     /**
      * Creates a select using the given array
-     * @param array $array
+     * @param array             $array
+     * @param integer|integer[] $selectedID Optional.
+     * @param boolean           $withNone   Optional.
      * @return array
      */
-    public static function createSelectFromMap(array $array): array {
+    public static function createSelectFromMap(array $array, $selectedID = null, bool $withNone = false): array {
         $result = [];
+        if ($withNone) {
+            $result[] = [
+                "key"        => 0,
+                "value"      => "",
+                "isSelected" => self::contains($selectedID, 0),
+            ];
+        }
         foreach ($array as $key => $value) {
             $result[] = [
-                "key"   => $key,
-                "value" => $value,
+                "key"        => $key,
+                "value"      => $value,
+                "isSelected" => self::contains($selectedID, $key),
             ];
         }
         return $result;

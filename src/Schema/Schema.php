@@ -1,7 +1,7 @@
 <?php
 namespace Admin\Schema;
 
-use Admin\Request;
+use Admin\IO\Request;
 use Admin\Schema\Database;
 use Admin\Schema\Selection;
 use Admin\Schema\Modification;

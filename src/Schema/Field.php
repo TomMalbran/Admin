@@ -1,7 +1,7 @@
 <?php
 namespace Admin\Schema;
 
-use Admin\Request;
+use Admin\IO\Request;
 use Admin\File\Path;
 use Admin\Utils\JSON;
 use Admin\Utils\Arrays;

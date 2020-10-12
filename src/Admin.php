@@ -1,6 +1,7 @@
 <?php
 namespace Admin;
 
+use Admin\Log\ErrorLog;
 use Admin\File\File;
 use Admin\File\Path;
 use Admin\Schema\Factory;
@@ -39,12 +40,17 @@ class Admin {
 
     /**
      * Sets the Basic data
-     * @param string $basePath
+     * @param string  $basePath
+     * @param boolean $logErrors Optional.
      * @return void
      */
-    public static function create(string $basePath): void {
+    public static function create(string $basePath, bool $logErrors = false): void {
         self::$adminPath = dirname(__FILE__, 2);
         self::$basePath  = $basePath;
+
+        if ($logErrors) {
+            ErrorLog::init();
+        }
     }
 
 

@@ -23,7 +23,9 @@ class Structure {
     public $joins         = [];
     public $counts        = [];
 
-    public $hasPositions  = false;
+    public $hasStatus     = false;
+    public $hasFemStatus  = false;
+    public $hasPosition   = false;
     public $hasTimestamps = false;
     public $hasUsers      = false;
     public $canCreate     = false;
@@ -37,7 +39,9 @@ class Structure {
      */
     public function __construct(string $schemaKey, array $data) {
         $this->table         = $data["table"];
-        $this->hasPositions  = !empty($data["hasPositions"])  && $data["hasPositions"];
+        $this->hasStatus     = !empty($data["hasStatus"])     && $data["hasStatus"];
+        $this->hasFemStatus  = !empty($data["hasFemStatus"])  && $data["hasFemStatus"];
+        $this->hasPosition   = !empty($data["hasPosition"])   && $data["hasPosition"];
         $this->hasTimestamps = !empty($data["hasTimestamps"]) && $data["hasTimestamps"];
         $this->hasUsers      = !empty($data["hasUsers"])      && $data["hasUsers"];
         $this->canCreate     = $data["canCreate"];
@@ -45,7 +49,17 @@ class Structure {
         $this->canDelete     = $data["canDelete"];
 
         // Add additional Fields
-        if ($this->hasPositions) {
+        if ($this->hasStatus) {
+            $data["fields"]["status"] = [
+                "type" => Field::Status,
+            ];
+        }
+        if ($this->hasFemStatus) {
+            $data["fields"]["status"] = [
+                "type" => Field::FemStatus,
+            ];
+        }
+        if ($this->hasPosition) {
             $data["fields"]["position"] = [
                 "type" => Field::Number,
             ];
@@ -161,6 +175,6 @@ class Structure {
         if (!empty($field)) {
             return $field;
         }
-        return $this->hasPositions ? "position" : $this->name;
+        return $this->hasPosition ? "position" : $this->name;
     }
 }

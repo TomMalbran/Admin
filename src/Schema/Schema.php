@@ -301,7 +301,7 @@ class Schema {
      * @return integer
      */
     public function getNextPosition(Query $query = null, bool $withDeleted = true): int {
-        if (!$this->structure->hasPositions) {
+        if (!$this->structure->hasPosition) {
             return 0;
         }
         $selection = new Selection($this->db, $this->structure);

@@ -2,6 +2,7 @@
 namespace Admin\Schema;
 
 use Admin\IO\Request;
+use Admin\IO\Status;
 use Admin\File\Path;
 use Admin\Utils\JSON;
 use Admin\Utils\Arrays;
@@ -15,20 +16,23 @@ use Admin\Utils\Utils;
 class Field {
     
     // The Types
-    const ID      = "id";
-    const Boolean = "boolean";
-    const Binary  = "binary";
-    const Number  = "number";
-    const Float   = "float";
-    const Price   = "price";
-    const Date    = "date";
-    const Hour    = "hour";
-    const String  = "string";
-    const JSON    = "json";
-    const CSV     = "csv";
-    const Text    = "text";
-    const Encrypt = "encrypt";
-    const File    = "file";
+    const ID        = "id";
+    const Boolean   = "boolean";
+    const Binary    = "binary";
+    const Number    = "number";
+    const Float     = "float";
+    const Price     = "price";
+    const Date      = "date";
+    const Hour      = "hour";
+    const String    = "string";
+    const JSON      = "json";
+    const CSV       = "csv";
+    const Text      = "text";
+    const Encrypt   = "encrypt";
+    const File      = "file";
+    const Image     = "image";
+    const Status    = "status";
+    const FemStatus = "fstatus";
 
     // The Data
     public $key        = "";
@@ -141,6 +145,7 @@ class Field {
             break;
         case self::String:
         case self::File:
+        case self::Image:
             $length = $this->length ?: 255;
             $result = "varchar($length) NOT NULL";
             break;
@@ -152,6 +157,10 @@ class Field {
         case self::Encrypt:
             $length = $this->length ?: 255;
             $result = "varbinary($length) NOT NULL";
+            break;
+        case self::Status:
+        case self::FemStatus:
+            $result = "tinyint(1) unsigned NOT NULL";
             break;
         }
 
@@ -212,6 +221,10 @@ class Field {
                 $result = Query::encrypt($value, $masterKey);
             }
             break;
+        case self::Status:
+        case self::FemStatus:
+            $result = $request->getInt($this->name);
+            break;
         default:
             $result = $request->get($this->name);
         }
@@ -265,14 +278,30 @@ class Field {
             break;
         case self::Text:
             $result[$key]           = $text;
+            $result["{$key}Html"]   = Strings::toHtml($text);
             break;
         case self::Encrypt:
             $result[$key]           = !empty($data["{$key}Decrypt"]) ? $data["{$key}Decrypt"] : "";
             break;
         case self::File:
             $result[$key]           = $text;
-            $result["{$key}Url"]    = !empty($text) ? Path::getUrl("source", $text) : "";
-            $result["{$key}Thumb"]  = !empty($text) ? Path::getUrl("thumbs", $text) : "";
+            $result["{$key}Url"]    = !empty($text) ? Path::getUrl(Path::Source, $text) : "";
+            break;
+        case self::Image:
+            $result[$key]           = $text;
+            $result["{$key}Url"]    = !empty($text) ? Path::getUrl(Path::Source, $text) : "";
+            $result["{$key}Large"]  = !empty($text) ? Path::getUrl(Path::Large,  $text) : "";
+            $result["{$key}Medium"] = !empty($text) ? Path::getUrl(Path::Medium, $text) : "";
+            $result["{$key}Small"]  = !empty($text) ? Path::getUrl(Path::Small,  $text) : "";
+            $result["{$key}Thumb"]  = !empty($text) ? Path::getUrl(Path::Thumb,  $text) : "";
+            break;
+        case self::Status:
+            $result[$key]           = $number;
+            $result["{$key}Name"]   = Status::getName($number);
+            break;
+        case self::FemStatus:
+            $result[$key]           = $number;
+            $result["{$key}Name"]   = Status::getFemName($number);
             break;
         default:
             $result[$key]           = $text;

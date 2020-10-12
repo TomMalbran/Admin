@@ -28,8 +28,8 @@ class Factory {
     public static function load(): void {
         if (!self::$loaded) {
             $config       = Config::get("db");
-            $adminSchemas = Admin::loadData(Admin::SchemaData);
-            $baseSchemas  = Admin::loadJSON("data", Admin::SchemaData, true);
+            $adminSchemas = Admin::loadData(Admin::SchemaData, "admin");
+            $baseSchemas  = Admin::loadData(Admin::SchemaData, "internal");
 
             self::$loaded = true;
             self::$db     = new Database($config);
@@ -38,6 +38,11 @@ class Factory {
                 if (!empty($baseSchemas[$key])) {
                     self::$data[$key] = Arrays::extend($baseSchemas[$key], $data);
                 } else {
+                    self::$data[$key] = $data;
+                }
+            }
+            foreach ($baseSchemas as $key => $data) {
+                if (empty($adminSchemas[$key])) {
                     self::$data[$key] = $data;
                 }
             }

@@ -34,7 +34,7 @@ class Mustache {
             self::$loaded = true;
         }
 
-        $path = Admin::getPath(Admin::PublicDir, $forSite);
+        $path = Admin::getPath(Admin::PublicDir, $forSite ? "site" : "admin");
         if (File::exists($path)) {
             $config  = [ "extension" => ".html" ];
             $loaders = [];

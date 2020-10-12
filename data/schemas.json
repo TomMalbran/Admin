@@ -1,0 +1,57 @@
+{
+    "logIDs" : {
+        "table"  : "log_ids",
+        "fields" : {
+            "CREDENTIAL_ID" : { "type" : "number", "name" : "credentialID", "isPrimary" : true },
+            "SESSION_ID"    : { "type" : "number", "name" : "sessionID"                        }
+        },
+        "hasTimestamps" : false,
+        "canCreate"     : false,
+        "canEdit"       : false,
+        "canDelete"     : false
+    },
+    "logSessions" : {
+        "table"  : "log_sessions",
+        "fields" : {
+            "SESSION_ID"    : { "type" : "id",     "name" : "sessionID"    },
+            "CREDENTIAL_ID" : { "type" : "number", "name" : "credentialID" },
+            "ip"            : { "type" : "string"                          },
+            "userAgent"     : { "type" : "string"                          },
+            "time"          : { "type" : "number"                          }
+        },
+        "joins" : {
+            "CREDENTIAL_ID" : {
+                "table"     : "credentials",
+                "prefix"    : "credential",
+                "fieldKeys" : [ "name", "email" ]
+            }
+        },
+        "hasTimestamps" : false,
+        "canCreate"     : false,
+        "canEdit"       : false,
+        "canDelete"     : false
+    },
+    "logActions" : {
+        "table"  : "log_actions",
+        "fields" : {
+            "ACTION_ID"     : { "type" : "id",     "name" : "actionID"     },
+            "SESSION_ID"    : { "type" : "number", "name" : "sessionID"    },
+            "CREDENTIAL_ID" : { "type" : "number", "name" : "credentialID" },
+            "section"       : { "type" : "string"                          },
+            "action"        : { "type" : "string"                          },
+            "dataID"        : { "type" : "string"                          },
+            "time"          : { "type" : "number"                          }
+        },
+        "joins" : {
+            "CREDENTIAL_ID" : {
+                "table"     : "credentials",
+                "prefix"    : "credential",
+                "fieldKeys" : [ "name", "email" ]
+            }
+        },
+        "hasTimestamps" : false,
+        "canCreate"     : false,
+        "canEdit"       : false,
+        "canDelete"     : false
+    }
+}

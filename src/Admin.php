@@ -16,6 +16,7 @@ class Admin {
     const SchemaData    = "schemas";
     const KeyData       = "keys";
     const PathData      = "paths";
+    const ActionData    = "actions";
 
     // The Directories
     const AdminDir      = "admin";
@@ -50,16 +51,22 @@ class Admin {
 
     /**
      * Returns the Base Path with the given dir
-     * @param string  $dir     Optional.
-     * @param boolean $forSite Optional.
+     * @param string $dir  Optional.
+     * @param string $type Optional.
      * @return string
      */
-    public static function getPath(string $dir = "", bool $forSite = false): string {
+    public static function getPath(string $dir = "", string $type = "admin"): string {
         $path = "";
-        if ($forSite) {
-            $path = File::getPath(self::$basePath, $dir);
-        } else {
+        switch ($type) {
+        case "admin":
             $path = File::getPath(self::$basePath, self::AdminDir, $dir);
+            break;
+        case "site":
+            $path = File::getPath(self::$basePath, $dir);
+            break;
+        case "internal":
+            $path = File::getPath(self::$adminPath, $dir);
+            break;
         }
         return File::removeLastSlash($path);
     }
@@ -91,7 +98,7 @@ class Admin {
      * @return string
      */
     public static function loadFile(string $dir, string $file) {
-        $path   = self::getPath($dir, $file, false);
+        $path   = self::getPath($dir, $file, "admin");
         $result = "";
         if (File::exists($path)) {
             $result = file_get_contents($path);
@@ -111,27 +118,30 @@ class Admin {
      * @return array
      */
     public static function loadJSON(string $dir, string $file, bool $forSite = false): array {
-        $path = self::getPath("$dir/$file.json", $forSite);
+        $path = self::getPath("$dir/$file.json", $forSite ? "site" : "admin");
         return JSON::readFile($path, true);
     }
 
     /**
      * Loads a Data File
      * @param string $file
+     * @param string $type Optional.
      * @return array
      */
-    public static function loadData(string $file): array {
-        return self::loadJSON(self::DataDir, $file);
+    public static function loadData(string $file, string $type = "admin"): array {
+        $path = self::getPath(self::DataDir . "/$file.json", $type);
+        return JSON::readFile($path, true);
     }
 
     /**
      * Saves a Data File
      * @param string $file
      * @param mixed  $contents
+     * @param string $type     Optional.
      * @return void
      */
-    public function saveData(string $file, $contents): void {
-        $path = self::getPath(self::DataDir, "$file.json");
+    public function saveData(string $file, $contents, string $type = "admin"): void {
+        $path = self::getPath(self::DataDir . "/$file.json", $type);
         JSON::writeFile($path, $contents);
     }
 

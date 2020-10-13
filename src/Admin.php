@@ -104,13 +104,13 @@ class Admin {
      * @return string
      */
     public static function loadFile(string $dir, string $file) {
-        $path   = self::getPath($dir, $file, "admin");
+        $path   = self::getPath("$dir/$file", "admin");
         $result = "";
         if (File::exists($path)) {
             $result = file_get_contents($path);
         }
         if (empty($result)) {
-            $path   = self::getPath($dir, $file, true);
+            $path   = self::getPath("$dir/$file", "internal");
             $result = file_get_contents($path);
         }
         return $result;

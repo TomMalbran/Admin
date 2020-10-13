@@ -145,8 +145,21 @@ class Mailer {
         }
         return $success;
     }
+    
 
 
+    
+    /**
+     * Sends a Contact email
+     * @param string $message
+     * @param string $subject Optional.
+     * @return boolean
+     */
+    public static function sendContact(string $message, string $subject = "") {
+        $sendTo  = Config::get("smtpSendTo");
+        $subject = $subject ?: "Contacto en {{name}}";
+        return self::sendTo($sendTo, $subject, $message);
+    }
 
     /**
      * Sends a Reset password email

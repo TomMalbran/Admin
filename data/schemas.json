@@ -1,4 +1,16 @@
 {
+    "resets" : {
+        "table"  : "credentials_reset",
+        "fields" : {
+            "CREDENTIAL_ID" : { "type" : "number", "name" : "credentialID", "isPrimary" : true },
+            "resetCode"     : { "type" : "string"                                              },
+            "time"          : { "type" : "number"                                              }
+        },
+        "hasTimestamps" : false,
+        "canCreate"     : false,
+        "canEdit"       : false,
+        "canDelete"     : false
+    },
     "logIDs" : {
         "table"  : "log_ids",
         "fields" : {

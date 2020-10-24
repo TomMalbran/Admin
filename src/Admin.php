@@ -1,6 +1,7 @@
 <?php
 namespace Admin;
 
+use Admin\Config\Settings;
 use Admin\Log\ErrorLog;
 use Admin\File\File;
 use Admin\File\Path;
@@ -18,6 +19,7 @@ class Admin {
     const KeyData       = "keys";
     const PathData      = "paths";
     const TokenData     = "tokens";
+    const SettingsData  = "settings";
     const ActionData    = "actions";
 
     // The Directories
@@ -164,6 +166,7 @@ class Admin {
      */
     public static function migrate(Database $db, bool $canDelete = false, bool $recreate = false, bool $sandbox = false): void {
         Factory::migrate($db, $canDelete);
+        Settings::migrate($db);
         Path::ensurePaths();
     }
 }

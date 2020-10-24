@@ -17,6 +17,7 @@ class Admin {
     const SchemaData    = "schemas";
     const KeyData       = "keys";
     const PathData      = "paths";
+    const TokenData     = "tokens";
     const ActionData    = "actions";
 
     // The Directories

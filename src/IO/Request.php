@@ -2,9 +2,11 @@
 namespace Admin\IO;
 
 use Admin\IO\Status;
+use Admin\File\Path;
 use Admin\File\File;
 use Admin\File\FileType;
 use Admin\File\Image;
+use Admin\Utils\Arrays;
 use Admin\Utils\DateTime;
 use Admin\Utils\Numbers;
 use Admin\Utils\CSV;
@@ -708,6 +710,18 @@ class Request implements ArrayAccess {
             return Image::isValidType($_FILES[$key]["tmp_name"]);
         }
         return FileType::isImage($this->get($key));
+    }
+
+    /**
+     * Returns true if the file at the given key exists in source
+     * @param string $key
+     * @return boolean
+     */
+    public function fileExists(string $key): bool {
+        if ($this->has("image")) {
+            return Path::exists(Path::Source, $this->get($key));
+        }
+        return false;
     }
     
 

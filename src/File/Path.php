@@ -96,6 +96,16 @@ class Path {
         self::load();
         return Config::getUrl(self::$relPath, ...$pathParts);
     }
+
+    /**
+     * Returns treu if rhe path exists
+     * @param string ...$pathParts
+     * @return boolean
+     */
+    public static function exists(string ...$pathParts): bool {
+        self::load();
+        return File::exists(self::$basePath, ...$pathParts);
+    }
     
 
 

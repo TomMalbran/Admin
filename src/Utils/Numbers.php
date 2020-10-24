@@ -19,6 +19,79 @@ class Numbers {
     }
 
     /**
+     * Clamps the given number between the min and max
+     * @param integer $number
+     * @param integer $min
+     * @param integer $max
+     * @return integer
+     */
+    public function clamp(int $number, int $min, int $max) {
+        return max($min, min($max, $number));
+    }
+
+    /**
+     * Maps the given number that is in the from range to the to range
+     * @param integer $number
+     * @param integer $fromLow
+     * @param integer $fromHigh
+     * @param integer $toLow
+     * @param integer $toHigh
+     * @return integer
+     */
+    public static function map(int $number, int $fromLow, int $fromHigh, int $toLow, int $toHigh): int {
+        $fromRange = $fromHigh - $fromLow;
+        $toRange   = $toHigh - $toLow;
+        if ($fromRange == 0) {
+            return $toLow;
+        }
+        $scaleFactor = $toRange / $fromRange;
+
+        // Re-zero the value within the from range
+        $tmpValue = $number - $fromLow;
+        // Rescale the value to the to range
+        $tmpValue *= $scaleFactor;
+        // Re-zero back to the to range
+        return $tmpValue + $toLow;
+    }
+
+    /**
+     * Returns a percent from the given values
+     * @param integer $number
+     * @param integer $total
+     * @param integer $decimals Optional.
+     * @return integer
+     */
+    public static function percent(int $number, int $total, int $decimals = 0): int {
+        return $total == 0 ? 0 : self::round($number * 100 / $total, $decimals);
+    }
+
+    /**
+     * Returns a division from the given values
+     * @param integer $numerator
+     * @param integer $divisor
+     * @param integer $decimals  Optional.
+     * @return integer
+     */
+    public static function divide(int $numerator, int $divisor, int $decimals = 0): int {
+        return $divisor == 0 ? 0 : self::round($numerator / $divisor, $decimals);
+    }
+
+    /**
+     * Adds zeros to the start of the number
+     * @param mixed   $value
+     * @param integer $amount
+     * @return string
+     */
+    public static function zerosPad($value, int $amount) {
+        if (!empty($value)) {
+            return str_pad((string)$value, $amount, "0", STR_PAD_LEFT);
+        }
+        return $value;
+    }
+
+    
+
+    /**
      * Returns true if the given value is a number and greater and/or equal to cero
      * @param mixed   $number
      * @param integer $min    Optional.
@@ -81,66 +154,6 @@ class Numbers {
             return number_format($float, $decimals, ",", ".");
         }
         return "";
-    }
-
-
-
-    /**
-     * Clamps the given number between the min and max
-     * @param integer $number
-     * @param integer $min
-     * @param integer $max
-     * @return integer
-     */
-    public function clamp(int $number, int $min, int $max) {
-        return max($min, min($max, $number));
-    }
-
-    /**
-     * Maps the given number that is in the from range to the to range
-     * @param integer $number
-     * @param integer $fromLow
-     * @param integer $fromHigh
-     * @param integer $toLow
-     * @param integer $toHigh
-     * @return integer
-     */
-    public static function map(int $number, int $fromLow, int $fromHigh, int $toLow, int $toHigh): int {
-        $fromRange = $fromHigh - $fromLow;
-        $toRange   = $toHigh - $toLow;
-        if ($fromRange == 0) {
-            return $toLow;
-        }
-        $scaleFactor = $toRange / $fromRange;
-
-        // Re-zero the value within the from range
-        $tmpValue = $number - $fromLow;
-        // Rescale the value to the to range
-        $tmpValue *= $scaleFactor;
-        // Re-zero back to the to range
-        return $tmpValue + $toLow;
-    }
-
-    /**
-     * Returns a percent from the given values
-     * @param integer $number
-     * @param integer $total
-     * @param integer $decimals Optional.
-     * @return integer
-     */
-    public static function percent(int $number, int $total, int $decimals = 0): int {
-        return $total == 0 ? 0 : self::round($number * 100 / $total, $decimals);
-    }
-
-    /**
-     * Returns a division from the given values
-     * @param integer $numerator
-     * @param integer $divisor
-     * @param integer $decimals  Optional.
-     * @return integer
-     */
-    public static function divide(int $numerator, int $divisor, int $decimals = 0): int {
-        return $divisor == 0 ? 0 : self::round($numerator / $divisor, $decimals);
     }
 
 
@@ -223,15 +236,30 @@ class Numbers {
     }
 
     /**
-     * Adds zeros to the start of the number
-     * @param mixed   $value
-     * @param integer $amount
+     * Returns the price with an html format
+     * @param integer $cents
+     * @param string  $currency  Optional.
+     * @param boolean $skipZeros Optional.
+     * @param string  $zeroStr   Optional.
      * @return string
      */
-    public static function zerosPad($value, int $amount) {
-        if (!empty($value)) {
-            return str_pad((string)$value, $amount, "0", STR_PAD_LEFT);
+    public static function toPriceHTML(int $cents, string $currency = "", bool $skipZeros = false, string $zeroStr = ""): string {
+        if ($skipZeros && $cents === 0) {
+            return $zeroStr;
         }
-        return $value;
+
+        $decimals    = 2;
+        $price       = self::fromCents($cents);
+        $isNegative  = $price < 0;
+        $positive    = abs($price);
+        $noCents     = number_format(floor($positive), 0, "", "");
+        $noCentsStr  = number_format(floor($positive), 0, ",", ".");
+        $padding     = pow(10, $decimals);
+        $negStr      = $isNegative ? "-" : "";
+        $currStr     = !empty($currency) ? "<span>$currency</span>" : "";
+        $cents       = round($positive * $padding - $noCents * $padding);
+        $centsStr    = str_pad($cents, $decimals, "0", STR_PAD_LEFT);
+        
+        return "$currStr {$negStr}{$noCentsStr}<sup>$centsStr</sup>";
     }
 }

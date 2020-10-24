@@ -31,6 +31,17 @@ class Url {
     }
     
     /**
+     * Removes a param
+     * @param string $key
+     * @return void
+     */
+    public function remove(string $key) {
+        if (isset($this->params[$key])) {
+            unset($this->params[$key]);
+        }
+    }
+
+    /**
      * Merges the given Url with this one
      * @param Url $url
      * @return void

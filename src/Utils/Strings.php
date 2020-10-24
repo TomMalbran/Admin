@@ -127,6 +127,20 @@ class Strings {
 
 
     /**
+     * Format a string by replacing placeholder symbols with passed in arguments.
+     * @param string $string
+     * @param string ...$args
+     * @return string
+     */
+    public static function format(string $string, string ...$args): string {
+        $result = $string;
+        for ($i = 0; $i < count($args); $i++) {
+            $result = str_replace("{" . $i . "}", $args[$i], $result);
+        }
+        return $result;
+    }
+
+    /**
      * Replaces in the String the search with the replace
      * @param string          $string
      * @param string|string[] $search
@@ -306,6 +320,24 @@ class Strings {
         return $result;
     }
 
+    /**
+     * Replaces the slashes in an Url with double-dashes to create a String for a Url
+     * @param string $value
+     * @return string
+     */
+    public static function fromUrl(string $value): string {
+        return str_replace("/", "--", $value);
+    }
+    
+    /**
+     * Replaces the double-dashes in a String with slashes to create a Url
+     * @param string $value
+     * @return string
+     */
+    public static function toUrl(string $value): string {
+        return str_replace("--", "/", $value);
+    }
+
 
 
     /**
@@ -315,6 +347,16 @@ class Strings {
      */
     public static function toHtml(string $string): string {
         return str_replace("\n", "<br>", $string);
+    }
+
+    /**
+     * Return an escaped string that can be broken at certain separators
+     * @param string $string
+     * @return string
+     */
+    public static function makeBreakable(string $string): string {
+        // Inject zero-width space character (U+200B) near (_ or - or @) to allow line breaking there
+        return preg_replace('/(_|@|-)/', "$1" . "&#8203;", $string);
     }
 
     /**
@@ -339,5 +381,42 @@ class Strings {
      */
     public static function isShort(string $string, int $length = 30): string {
         return self::makeShort($string, $length) !== $string;
+    }
+
+    /**
+     * Slugifies a String
+     * @param string $string
+     * @return string
+     */
+    public static function slugify(string $string): string {
+        return self::sanitize($string, true, true);
+    }
+
+    /**
+     * Sanitizes a String
+     * @param string  $string
+     * @param boolean $lowercase Optional.
+     * @param boolean $anal      Optional.
+     * @return string
+     */
+    public static function sanitize(string $string, bool $lowercase = true, bool $anal = false): string {
+        $strip = [
+            "~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "=", "+", "[", "{", "]",
+            "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;",
+            "â€”", "â€“", ",", "<", ".", ">", "/", "?",
+        ];
+        $clean = trim(str_replace($strip, "", strip_tags($string)));
+        $clean = preg_replace('/\s+/', "-", $clean);
+        
+        if ($anal) {
+            $tilde = [ "á", "é", "í", "ó", "ú", "ü", "ñ", "Á", "É", "Í", "Ó", "Ú", "Ü", "Ñ" ];
+            $with  = [ "a", "e", "i", "o", "u", "u", "n", "A", "E", "I", "O", "U", "U", "N" ];
+            $clean = str_replace($tilde, $with, $clean);
+            $clean = preg_replace("/[^a-zA-Z0-9\-]/", "", $clean);
+        }
+        if ($lowercase) {
+            return function_exists("mb_strtolower") ? mb_strtolower($clean, "UTF-8") : strtolower($clean);
+        }
+        return $clean;
     }
 }

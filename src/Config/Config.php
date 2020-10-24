@@ -106,14 +106,80 @@ class Config {
     }
 
     /**
+     * Returns true if a Property exists
+     * @param string $property
+     * @return boolean
+     */
+    public static function has(string $property): bool {
+        $value = self::get($property);
+        return isset($value);
+    }
+
+
+
+    /**
      * Returns the Url adding the url parts at the end
-     * @param string ...$pathParts
+     * @param string ...$urlParts
      * @return string
      */
     public static function getUrl(string ...$urlParts): string {
         $url  = self::get("url");
-        $path = File::getpath(...$urlParts);
+        $path = File::getPath(...$urlParts);
         return $url . $path;
+    }
+
+    /**
+     * Return the admin Url adding the url parts at the end
+     * @param string ...$urlParts
+     * @return string
+     */
+    public static function getAdminUrl(string ...$urlParts): string {
+        $url  = self::get("url");
+        $path = File::getPath(Admin::AdminDir, ...$urlParts);
+        return File::addLastSlash($url . $path);
+    }
+
+    /**
+     * Return the public Url adding the url parts at the end
+     * @param string ...$urlParts
+     * @return string
+     */
+    public static function getPublicUrl(string ...$urlParts): string {
+        $url  = self::get("url");
+        $path = File::getPath(Admin::AdminDir, Admin::PublicDir, ...$urlParts);
+        return File::addLastSlash($url . $path);
+    }
+
+    /**
+     * Return the files Url adding the url parts at the end
+     * @param string ...$urlParts
+     * @return string
+     */
+    public static function getFilesUrl(string ...$urlParts): string {
+        $url  = self::get("url");
+        $path = File::getPath(Admin::AdminDir, Admin::FilesDir, ...$urlParts);
+        return File::addLastSlash($url . $path);
+    }
+
+    /**
+     * Return the admin Url adding the url parts at the end
+     * @return string
+     */
+    public static function getBaseUrl(): string {
+        $url = self::getAdminUrl();
+        return parse_url($url, PHP_URL_PATH);
+    }
+
+    /**
+     * Returns the Route
+     * @param string $url
+     * @return string
+     */
+    public static function getRoute(string $url): string {
+        $baseUrl = self::getBaseUrl();
+        $result  = Strings::replace($url, $baseUrl, "/");
+        $result  = Strings::replace($result, "//", "/");
+        return $result;
     }
 
     /**
@@ -135,15 +201,5 @@ class Config {
             "build"   => $parts[1],
             "full"    => $version,
         ];
-    }
-
-    /**
-     * Returns true if a Property exists
-     * @param string $property
-     * @return boolean
-     */
-    public static function has(string $property): bool {
-        $value = self::get($property);
-        return isset($value);
     }
 }

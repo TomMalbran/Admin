@@ -11,6 +11,20 @@
         "canEdit"       : false,
         "canDelete"     : false
     },
+    "spam" : {
+        "table"  : "credentials_spam",
+        "fields" : {
+            "ip"   : { "type" : "string", "length" : 16, "isPrimary" : true },
+            "time" : { "type" : "number"                                    }
+        },
+        "hasTimestamps" : false,
+        "canCreate"     : false,
+        "canEdit"       : false,
+        "canDelete"     : false
+    },
+
+
+
     "logIDs" : {
         "table"  : "log_ids",
         "fields" : {

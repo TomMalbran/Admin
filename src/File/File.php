@@ -224,7 +224,7 @@ class File {
         $files = scandir($path);
         foreach ($files as $file) {
             if ($file != "." && $file != "..") {
-                $result[] = self::getpath($path, $file);
+                $result[] = self::getPath($path, $file);
             }
         }
         return $result;

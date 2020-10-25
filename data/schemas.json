@@ -24,7 +24,7 @@
         "table"  : "credentials_reset",
         "fields" : {
             "CREDENTIAL_ID" : { "type" : "number", "name" : "credentialID", "isPrimary" : true },
-            "resetCode"     : { "type" : "string"                                              },
+            "code"          : { "type" : "string"                                              },
             "time"          : { "type" : "number"                                              }
         },
         "hasTimestamps" : false,

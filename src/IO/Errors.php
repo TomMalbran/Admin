@@ -13,13 +13,13 @@ class Errors {
     
     /**
      * Creates a new Errors instance
-     * @param array $errors
+     * @param string|string[] $errors
      */
-    public function __construct(array $errors = null) {
+    public function __construct($errors = null) {
         if ($errors !== null) {
             $errors = Arrays::toArray($errors);
-            foreach ($errors as $error => $message) {
-                $this->add($error, $message);
+            foreach ($errors as $error) {
+                $this->add($error);
             }
         }
     }

@@ -21,33 +21,36 @@ class Url {
     
     
     /**
-     * Adds a new param
+     * Sets a new param
      * @param string         $key
      * @param string|integer $value
-     * @return void
+     * @return Url
      */
-    public function add(string $key, $value) {
+    public function set(string $key, $value): Url {
         $this->params[$key] = (string)$value;
+        return $this;
     }
     
     /**
      * Removes a param
      * @param string $key
-     * @return void
+     * @return Url
      */
-    public function remove(string $key) {
+    public function remove(string $key): Url {
         if (isset($this->params[$key])) {
             unset($this->params[$key]);
         }
+        return $this;
     }
 
     /**
      * Merges the given Url with this one
      * @param Url $url
-     * @return void
+     * @return Url
      */
-    public function merge(Url $url) {
+    public function merge(Url $url): Url {
         $this->params = array_merge($this->params, $url->toArray());
+        return $this;
     }
     
     

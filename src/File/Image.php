@@ -52,7 +52,7 @@ class Image {
      * @return integer
      */
     public static function getType(string $file): int {
-        if (file_exists($file)) {
+        if (!empty($file) && file_exists($file) && !is_dir($file)) {
             return exif_imagetype($file);
         }
         return 0;
@@ -64,7 +64,7 @@ class Image {
      * @return array
      */
     public static function getSize(string $file): array {
-        if (file_exists($file)) {
+        if (!empty($file) && file_exists($file) && !is_dir($file)) {
             $size = getimagesize($file);
             return [ "width" => $size[0], "height" => $size[1] ];
         }

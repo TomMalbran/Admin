@@ -4,7 +4,6 @@ namespace Admin\File;
 use Admin\File\Path;
 use Admin\File\File;
 use Admin\File\FileType;
-use Admin\Utils\Strings;
 
 /**
  * The Media Utils
@@ -70,6 +69,9 @@ class Media {
             $size = self::getImageSize($baseDir);
             $dest = Path::getPath($baseDir, $path);
             if (!empty($size) && ($forceResize || !File::exists($dest))) {
+                $basePath = Path::getPath($baseDir);
+                File::ensureFileDir($basePath, $dest);
+
                 if (FileType::isICO($path)) {
                     if (!File::copy($source, $dest)) {
                         return false;

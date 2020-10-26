@@ -94,17 +94,29 @@ class File {
     
     /**
      * Deletes the given file/directory
-     * @param string $path
-     * @param string $name Optional.
+     * @param string ...$pathParts
      * @return boolean
      */
-    public static function delete(string $path, string $name = ""): bool {
-        $path = self::getPath($path, $name);
+    public static function delete(string ...$pathParts): bool {
+        $path = self::getPath(...$pathParts);
         if (!empty($path) && file_exists($path)) {
             unlink($path);
             return true;
         }
         return false;
+    }
+
+    /**
+     * Deletes the given file/directory
+     * @param string ...$pathParts
+     * @return string
+     */
+    public static function read(string ...$pathParts): string {
+        $path = self::getPath(...$pathParts);
+        if (!empty($path) && file_exists($path)) {
+            return file_get_contents($path);
+        }
+        return "";
     }
 
 
@@ -154,6 +166,15 @@ class File {
     
     
     /**
+     * Returns the directory component of the path
+     * @param string $path
+     * @return string
+     */
+    public static function getDirName(string $path): string {
+        return pathinfo($path, PATHINFO_DIRNAME);
+    }
+
+    /**
      * Returns the file name component of the path
      * @param string $path
      * @return string
@@ -168,8 +189,7 @@ class File {
      * @return string
      */
     public static function getName(string $name): string {
-        $extension = pathinfo($name, PATHINFO_EXTENSION);
-        return Strings::replace($name, ".$extension", "");
+        return pathinfo($name, PATHINFO_FILENAME);
     }
 
     /**
@@ -237,13 +257,19 @@ class File {
      */
     public static function getFilesInDir(string $path): array {
         $result = [];
-        if (!empty($path)) {
+        if (empty($path)) {
+            return $result;
+        }
+        if (is_dir($path)) {
             $files = scandir($path);
             foreach ($files as $file) {
-                if ($file != "." && $file != ".." && !is_dir("$path/$file")) {
-                    $result[] = $file;
+                if ($file != "." && $file != "..") {
+                    $response = self::getFilesInDir("$path/$file");
+                    $result   = array_merge($result, $response);
                 }
             }
+        } else {
+            $result[] = $path;
         }
         return $result;
     }
@@ -260,6 +286,21 @@ class File {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Ensures that all the directories are created
+     * @param string $basePath
+     * @param string $filePath
+     * @return boolean
+     */
+    public static function ensureFileDir(string $basePath, string $filePath): bool {
+        $path = self::getDirName($filePath);
+        if (self::exists($path)) {
+            return false;
+        }
+        $fileDir = Strings::replace($path, $basePath, "");
+        return self::ensureDir($basePath, $fileDir);
     }
 
     /**

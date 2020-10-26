@@ -369,62 +369,38 @@ class DateTime {
      */
     public static function toDayString(int $seconds): string {
         $secsInDay = 24 * 3600;
-        $days       = floor($seconds / $secsInDay);
+        $days      = floor($seconds / $secsInDay);
         return "{$days}d";
     }
 
-
-
     /**
-     * Returns the difference between 2 dates in Months
-     * @param integer $time1
-     * @param integer $time2
-     * @return integer
-     */
-    public static function getMonthsDiff(int $time1, int $time2): int {
-        return 12 * (date("Y", $time1) - date("Y", $time2)) + date("n", $time1) - date("n", $time2);
-    }
-
-    /**
-     * Returns the difference between 2 dates in Weeks
-     * @param integer $time1
-     * @param integer $time2
-     * @return integer
-     */
-    public static function getWeeksDiff(int $time1, int $time2): int {
-        return floor(($time1 - $time2) / (7 * 24 * 3600));
-    }
-    
-    /**
-     * Returns the difference between 2 dates in Days
-     * @param integer $time1
-     * @param integer $time2
-     * @return integer
-     */
-    public static function getDaysDiff(int $time1, int $time2): int {
-        return floor(($time1 - $time2) / (24 * 3600));
-    }
-
-    /**
-     * Returns the difference between 2 dates in Minutes
-     * @param integer $time1
-     * @param integer $time2
-     * @return integer
-     */
-    public static function getMinsDiff(int $time1, int $time2): int {
-        return floor(($time1 - $time2) / 60);
-    }
-
-
-
-    /**
-     * Returns the Month and Year at the given month
+     * Returns the Time as a Day string
      * @param integer $time
      * @return string
      */
-    public static function getMonthYear(int $time): string {
-        return self::getMonth(date("n", $time)) . " " . date("Y", $time);
+    public static function getDayString(int $time): string {
+        $result = date("d/m/Y", $time);
+        if ($time >= strtotime("today")) {
+            $result = "Hoy";
+        } elseif ($time >= strtotime("yesterday")) {
+            $result = "Ayer";
+        } elseif (date("Y", $time) == date("Y")) {
+            $result = date("d/m", $time);
+        }
+        return $result;
     }
+
+    /**
+     * Returns the Time as a Day string
+     * @param integer $fromTime
+     * @return string
+     */
+    public static function getWeekString(int $fromTime): string {
+        $toTime = $fromTime + 6 * 24 * 3600;
+        return "Del " . date("d/m/Y", $fromTime) . " al " . date("d/m/Y", $toTime);
+    }
+
+
 
     /**
      * Returns the Month at the given month
@@ -447,5 +423,101 @@ class DateTime {
         $result = self::getMonth($month);
         $result = Strings::substring($result, 0, 3);
         return Strings::toUpperCase($result);
+    }
+
+    /**
+     * Returns the Month and Year at the given month
+     * @param integer $time
+     * @return string
+     */
+    public static function getMonthYear(int $time): string {
+        return self::getMonth(date("n", $time)) . " " . date("Y", $time);
+    }
+
+
+
+    /**
+     * Returns the difference between 2 dates in Months
+     * @param integer $time1
+     * @param integer $time2
+     * @param integer $min   Optional.
+     * @return integer
+     */
+    public static function getMonthsDiff(int $time1, int $time2, int $min = null): int {
+        $diff = 12 * (date("Y", $time1) - date("Y", $time2)) + date("n", $time1) - date("n", $time2);
+        return $min !== null ? max($diff, $min) : $diff;
+    }
+
+    /**
+     * Returns the difference between 2 dates in Weeks
+     * @param integer $time1
+     * @param integer $time2
+     * @param integer $min   Optional.
+     * @return integer
+     */
+    public static function getWeeksDiff(int $time1, int $time2, int $min = null): int {
+        $diff = floor(($time1 - $time2) / (7 * 24 * 3600));
+        return $min !== null ? max($diff, $min) : $diff;
+    }
+    
+    /**
+     * Returns the difference between 2 dates in Days
+     * @param integer $time1
+     * @param integer $time2
+     * @param integer $min   Optional.
+     * @return integer
+     */
+    public static function getDaysDiff(int $time1, int $time2, int $min = null): int {
+        $diff = floor(($time1 - $time2) / (24 * 3600));
+        return $min !== null ? max($diff, $min) : $diff;
+    }
+
+    /**
+     * Returns the difference between 2 dates in Hours
+     * @param integer $time1
+     * @param integer $time2
+     * @param integer $min   Optional.
+     * @return integer
+     */
+    public static function getHoursDiff(int $time1, int $time2, int $min = null): int {
+        $diff = floor(($time1 - $time2) / 3600);
+        return $min !== null ? max($diff, $min) : $diff;
+    }
+
+    /**
+     * Returns the difference between 2 dates in Minutes
+     * @param integer $time1
+     * @param integer $time2
+     * @param integer $min   Optional.
+     * @return integer
+     */
+    public static function getMinsDiff(int $time1, int $time2, int $min = null): int {
+        $diff = floor(($time1 - $time2) / 60);
+        return $min !== null ? max($diff, $min) : $diff;
+    }
+
+
+
+    /**
+     * Creates an Hour Select
+     * @param string  $selected Optional.
+     * @param boolean $withHalf Optional.
+     * @return array
+     */
+    public static function getHourSelect(string $selected = "", bool $withHalf = false): array {
+        $minutes = $withHalf ? [ "00", "30" ] : [ "00" ];
+        $result  = [];
+        
+        for ($h = 7; $h < 24; $h++) {
+            foreach ($minutes as $m) {
+                $string   = str_pad($h, 2, "0", STR_PAD_LEFT) . ":$m";
+                $result[] = [
+                    "key"        => "$h:$m",
+                    "value"      => $string,
+                    "isSelected" => $string == $selected,
+                ];
+            }
+        }
+        return $result;
     }
 }

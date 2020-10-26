@@ -413,6 +413,8 @@ class Strings {
             $with  = [ "a", "e", "i", "o", "u", "u", "n", "A", "E", "I", "O", "U", "U", "N" ];
             $clean = str_replace($tilde, $with, $clean);
             $clean = preg_replace("/[^a-zA-Z0-9\-]/", "", $clean);
+            $clean = preg_replace("/---/", "-", $clean);
+            $clean = preg_replace("/--/", "-", $clean);
         }
         if ($lowercase) {
             return function_exists("mb_strtolower") ? mb_strtolower($clean, "UTF-8") : strtolower($clean);

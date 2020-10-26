@@ -5,9 +5,7 @@ use Admin\Admin;
 use Admin\IO\Request;
 use Admin\IO\Response;
 use Admin\Route\Container;
-use Admin\Auth\Auth;
 use Admin\Auth\Access;
-use Admin\Config\Config;
 use Admin\Utils\Arrays;
 
 /**
@@ -48,14 +46,16 @@ class Router {
     
     /**
      * Parses the url
-     * @param string $url
-     * @return array
+     * @param string  $route
+     * @param integer $accessLevel
+     * @return string
      */
-    public static function get(string $url) {
+    public static function get(string $route, int $accessLevel) {
         self::load();
-        $route       = Config::getRoute($url);
-        $accessLevel = Auth::getAccessLevel();
-        $access      = Access::getValue($accessLevel);
+        if (empty($route)) {
+            return null;
+        }
+        $access = Access::getValue($accessLevel);
         
         if ($route[0] != "/") {
             $route = "/$route";

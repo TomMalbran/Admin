@@ -343,6 +343,9 @@ class Auth {
      * @return boolean
      */
     public static function grant(int $requested): bool {
+        if ($requested != Access::General && !self::isLoggedIn()) {
+            return false;
+        }
         if (self::isAPI()) {
             return $requested == Access::API;
         }

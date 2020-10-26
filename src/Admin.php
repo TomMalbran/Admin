@@ -1,6 +1,14 @@
 <?php
 namespace Admin;
 
+use Admin\IO\Request;
+use Admin\IO\Response;
+use Admin\Route\Router;
+use Admin\Route\Output;
+use Admin\Auth\Auth;
+use Admin\Auth\Access;
+use Admin\Auth\Credential;
+use Admin\Config\Config;
 use Admin\Config\Settings;
 use Admin\Log\ErrorLog;
 use Admin\File\File;
@@ -158,16 +166,98 @@ class Admin {
 
 
     /**
-     * Runs the Migrations for all the Admin
-     * @param Database $db
-     * @param boolean  $canDelete Optional.
-     * @param boolean  $recreate  Optional.
-     * @param boolean  $sandbox   Optional.
+     * Executes the Admin
      * @return void
      */
-    public static function migrate(Database $db, bool $canDelete = false, bool $recreate = false, bool $sandbox = false): void {
+    public static function execute() {
+        $params   = $_REQUEST;
+        $route    = Config::getRoute($_SERVER["REQUEST_URI"]);
+        $token    = !empty($params["token"]) ? $params["token"] : "";
+        $jwt      = !empty($params["jwt"])   ? $params["jwt"]   : "";
+        $isAjax   = !empty($params["ajax"]);
+        $isReload = !empty($params["reload"]);
+        $isFrame  = !empty($params["iframe"]);
+        
+        unset($params["token"]);
+        unset($params["jwt"]);
+
+        // For API
+        if (!empty($token)) {
+            Auth::validateAPI($token);
+            try {
+                $response = self::request($route, $params);
+                if (!empty($response->data)) {
+                    print(json_encode($response->data));
+                }
+            } catch (Exception $e) {
+                http_response_code(400);
+                die($e->getMessage());
+            }
+        
+        // For Credential
+        } else {
+            if (!empty($jwt)) {
+                Auth::validateCredential($jwt);
+            }
+            $response = self::request($route, $params);
+            Output::print($response, $isAjax, $isReload, $isFrame);
+        }
+    }
+
+    /**
+     * Returns the requested content
+     * @param string $url
+     * @param array  $params Optional.
+     * @return Response
+     */
+    public static function request(string $url, array $params = []): Response {
+        $accessLevel = Auth::getAccessLevel();
+        $route       = Router::get($url, $accessLevel);
+        $request     = new Request($params);
+        
+        if ($route != null && Auth::grant($route->access)) {
+            return Router::call($route, $request);
+        }
+        if (!Auth::isLoggedIn()) {
+            if ($request->has("ajax")) {
+                return Response::reload()->withParam("redirectUrl", Config::getUrl($url));
+            }
+            return Response::view("core/index");
+        }
+        return Response::view("core/error");
+    }
+
+    /**
+     * Returns just the data for the requested content
+     * @param string $url
+     * @param array  $request Optional.
+     * @return array
+     */
+    public static function getData(string $url, array $request = []) {
+        $response = self::request($url, $request);
+        if (!empty($response) && !empty($response->data)) {
+            return $response->data;
+        }
+        return [];
+    }
+
+
+
+    /**
+     * Runs the Migrations for the Admin
+     * @return void
+     */
+    public static function migrate(): void {
+        $request   = new Request();
+        $db        = new Database(Config::get("db"));
+        $canDelete = $request->has("delete");
+
         Factory::migrate($db, $canDelete);
         Settings::migrate($db);
         Path::ensurePaths();
+
+        if ($request->has("owner")) {
+            Credential::seedOwner($db, "Tomas", "Malbran", "tomas@raqdedicados.com", "Cel627570");
+        }
     }
 }

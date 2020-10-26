@@ -42,7 +42,6 @@ class Auth {
 
         // Retrieve the Token data
         $data       = JWT::getData($token);
-        var_dump($data);
         $credential = Credential::getOne($data->credentialID, true);
         if ($credential->isEmpty() || $credential->isDeleted) {
             return false;
@@ -347,7 +346,7 @@ class Auth {
         if (self::isAPI()) {
             return $requested == Access::API;
         }
-        return $requested == Access::General || self::accessLevel >= $requested;
+        return $requested == Access::General || self::$accessLevel >= $requested;
     }
 
     /**

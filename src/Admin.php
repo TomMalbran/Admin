@@ -31,7 +31,7 @@ class Admin {
     const PublicDir     = "public";
     const TemplatesDir  = "templates";
     const PartialsDir   = "partials";
-    const MigrationsDir = "migrations";
+    const MigrationsDir = "data/migrations";
 
     // Config
     const Namespace     = "App\\Controller\\";

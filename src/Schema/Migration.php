@@ -258,8 +258,8 @@ class Migration {
     private static function extraMigrations(Database $db) {
         $query     = Query::create("section", "=", "general")->add("variable", "=", "migration");
         $migration = $db->getValue("settings", "value", $query);
+        $path      = Admin::getPath(Admin::MigrationsDir);
 
-        $path  = Admin::getPath(Admin::MigrationsDir);
         if (!File::exists($path)) {
             print("<br>No <i>migrations</i> required<br>");
             return;
@@ -268,7 +268,9 @@ class Migration {
         $files = File::getFilesInDir($path);
         $names = [];
         foreach ($files as $file) {
-            $names[] = (int)File::getName($file);
+            if (File::hasExtension($file, "php")) {
+                $names[] = (int)File::getName($file);
+            }
         }
 
         sort($names);

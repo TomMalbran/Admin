@@ -15,6 +15,7 @@ use Admin\Utils\JSON;
 class Admin {
 
     // The Data
+    const RouteData     = "routes";
     const SchemaData    = "schemas";
     const KeyData       = "keys";
     const PathData      = "paths";

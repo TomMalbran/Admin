@@ -19,8 +19,9 @@ class Access {
      * All the valid levels
      */
     public static $Values = [
-        "Editor" => self::Editor,
-        "Admin"  => self::Admin,
+        self::General => "General",
+        self::Editor  => "Editor",
+        self::Admin   => "Admin",
     ];
     public static $Names = [
         self::Editor => "Editor",
@@ -35,7 +36,7 @@ class Access {
      * @return boolean
      */
     public static function isValid($value): bool {
-        return is_numeric($value) && in_array($value, array_values(self::$Values));
+        return is_numeric($value) && in_array($value, array_keys(self::$Names));
     }
     
     /**
@@ -51,24 +52,38 @@ class Access {
     
     /**
      * Returns the Access Value
-     * @param string $value
-     * @return integer
+     * @param string $accessValue
+     * @return string
      */
-    public static function getValue(string $value): integer {
-        if (!empty(self::$Values[$name])) {
-            return self::$Values[$name];
+    public static function getID(string $accessValue): int {
+        foreach (self::$Values as $id => $value) {
+            if ($accessValue == $value) {
+                return $id;
+            }
         }
         return self::General;
     }
 
     /**
-     * Returns the Access Name
-     * @param integer $value
+     * Returns the Access Value
+     * @param integer $accessLevel
      * @return string
      */
-    public static function getName(int $value): string {
-        if (!empty(self::$Names[$value])) {
-            return self::$Names[$value];
+    public static function getValue(int $accessLevel): string {
+        if (!empty(self::$Values[$accessLevel])) {
+            return self::$Values[$accessLevel];
+        }
+        return self::$Values[self::General];
+    }
+
+    /**
+     * Returns the Access Name
+     * @param integer $accessLevel
+     * @return string
+     */
+    public static function getName(int $accessLevel): string {
+        if (!empty(self::$Names[$accessLevel])) {
+            return self::$Names[$accessLevel];
         }
         return "";
     }

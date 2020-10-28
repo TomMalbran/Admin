@@ -32,6 +32,23 @@ class Media {
 
 
     /**
+     * Creates a Directory
+     * @param string $path
+     * @param string $name
+     * @return boolean
+     */
+    public static function create(string $path, string $name): bool {
+        $baseDirs = Path::getBaseDirs();
+        foreach ($baseDirs as $baseDir) {
+            $dirPath = Path::getPath($baseDir, $path, $name);
+            if (!File::createDir($dirPath)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Uploads a File
      * @param string $directory
      * @param string $fileName
@@ -53,6 +70,77 @@ class Media {
             return $relPath;
         }
         return null;
+    }
+
+    /**
+     * Renames a Media Element
+     * @param string $path
+     * @param string $oldName
+     * @param string $newName
+     * @return boolean
+     */
+    public static function rename(string $path, string $oldName, string $newName): bool {
+        $baseDirs = Path::getBaseDirs();
+        foreach ($baseDirs as $baseDir) {
+            $oldPath = Path::getPath($baseDir, $path, $oldName);
+            $newPath = Path::getPath($baseDir, $path, $newName);
+            if (!File::move($oldPath, $newPath)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Deletes a Media Element
+     * @param string $path
+     * @param string $name
+     * @return boolean
+     */
+    public static function delete(string $path, string $name): bool {
+        $baseDirs = Path::getBaseDirs();
+        foreach ($baseDirs as $baseDir) {
+            $delPath = Path::getPath($baseDir, $path, $name);
+            if (!File::deleteDir($delPath)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
+    /**
+     * Returns all the Images to resize
+     * @return array
+     */
+    public static function getAllToResize(): array {
+        $baseDirs = Path::getBaseDirs();
+        $basePath = Path::getPath(Path::Source);
+        $files    = File::getFilesInDir($basePath, true);
+        $result   = [];
+        
+        foreach ($files as $file) {
+            if (!FileType::isImage($file)) {
+                continue;
+            }
+            $name = str_replace($basePath, "", $file);
+            $path = str_replace($basePath, "", $file);
+            foreach ($baseDirs as $baseDir) {
+                if (FileType::isImage($name)) {
+                    $dest = Path::getPath($baseDir, $name);
+                    $size = self::getImageSize($baseDir);
+                    if (!empty($size) && !File::exists($dest)) {
+                        $result[] = [
+                            "path" => $path,
+                            "name" => $name,
+                        ];
+                        break;
+                    }
+                }
+            }
+        }
+        return $result;
     }
 
     /**

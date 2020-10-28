@@ -391,7 +391,7 @@ class Credential {
      */
     public static function edit(int $credentialID, Request $request, int $status = null, int $level = null, bool $reqPassChange = null): bool {
         $fields = self::getFields($request, $status, $level, $reqPassChange);
-        return self::getSchema()->edit($credentialID, $request, $fields);
+        return self::getSchema()->edit($credentialID, $fields);
     }
 
     /**
@@ -422,7 +422,12 @@ class Credential {
      * @return array
      */
     private static function getFields(Request $request, int $status = null, int $level = null, bool $reqPassChange = null): array {
-        $result = [];
+        $result = [
+            "firstName" => $request->firstName,
+            "lastName"  => $request->lastName,
+            "phone"     => $request->phone,
+            "email"     => $request->email,
+        ];
         if ($request->has("password")) {
             $hash = self::createHash($request->password);
             $result["password"] = $hash["password"];

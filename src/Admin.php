@@ -35,8 +35,8 @@ class Admin {
     const AdminDir      = "admin";
     const SourceDir     = "src";
     const DataDir       = "data";
-    const FilesDir      = "files";
     
+    const FilesDir      = "files";
     const PublicDir     = "public";
     const TemplatesDir  = "templates";
     const PartialsDir   = "partials";
@@ -95,7 +95,7 @@ class Admin {
      * @return string
      */
     public static function getFilesPath(string $file = ""): string {
-        $path = File::getPath(self::$basePath, self::AdminDir, self::FilesDir, $file);
+        $path = File::getPath(self::$basePath, self::FilesDir, $file);
         return File::removeLastSlash($path);
     }
 
@@ -105,7 +105,7 @@ class Admin {
      * @return string
      */
     public static function getFilesRelPath(string $file = ""): string {
-        $path = File::getPath(self::AdminDir, self::FilesDir, $file);
+        $path = File::getPath(self::FilesDir, $file);
         return File::removeLastSlash($path);
     }
 

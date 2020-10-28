@@ -125,6 +125,7 @@ class Config {
     public static function getUrl(string ...$urlParts): string {
         $url  = self::get("url");
         $path = File::getPath(...$urlParts);
+        $path = File::removeFirstSlash($path);
         return $url . $path;
     }
 
@@ -134,9 +135,8 @@ class Config {
      * @return string
      */
     public static function getAdminUrl(string ...$urlParts): string {
-        $url  = self::get("url");
-        $path = File::getPath(Admin::AdminDir, ...$urlParts);
-        return File::addLastSlash($url . $path);
+        $url = self::getUrl(Admin::AdminDir, ...$urlParts);
+        return File::addLastSlash($url);
     }
 
     /**
@@ -145,9 +145,8 @@ class Config {
      * @return string
      */
     public static function getPublicUrl(string ...$urlParts): string {
-        $url  = self::get("url");
-        $path = File::getPath(Admin::AdminDir, Admin::PublicDir, ...$urlParts);
-        return File::addLastSlash($url . $path);
+        $url = self::getUrl(Admin::AdminDir, Admin::PublicDir, ...$urlParts);
+        return File::addLastSlash($url);
     }
 
     /**
@@ -156,9 +155,8 @@ class Config {
      * @return string
      */
     public static function getFilesUrl(string ...$urlParts): string {
-        $url  = self::get("url");
-        $path = File::getPath(Admin::AdminDir, Admin::FilesDir, ...$urlParts);
-        return File::addLastSlash($url . $path);
+        $url = self::getUrl(Admin::FilesDir, ...$urlParts);
+        return File::addLastSlash($url);
     }
 
     /**
@@ -176,9 +174,13 @@ class Config {
      * @return string
      */
     public static function getRoute(string $url): string {
-        $baseUrl = self::getBaseUrl();
-        $result  = Strings::replace($url, $baseUrl, "/");
-        $result  = Strings::replace($result, "//", "/");
+        if (Strings::startsWith($url, "http")) {
+            $baseUrl = self::getAdminUrl();
+        } else {
+            $baseUrl = self::getBaseUrl();
+        }
+        $result = Strings::replace($url, $baseUrl, "/");
+        $result = Strings::replace($result, "//", "/");
         return $result;
     }
 

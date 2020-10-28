@@ -7,6 +7,7 @@ use Admin\IO\Response;
 use Admin\Route\Container;
 use Admin\Auth\Access;
 use Admin\Utils\Arrays;
+use Admin\Utils\Strings;
 
 /**
  * The Router Service
@@ -31,14 +32,28 @@ class Router {
      */
     public static function load(): void {
         if (!self::$loaded) {
-            $data = Admin::loadData(Admin::RouteData);
+            $adminData    = Admin::loadData(Admin::RouteData, "admin");
+            $internalData = Admin::loadData(Admin::RouteData, "internal");
             
             self::$loaded    = true;
             self::$namespace = Admin::Namespace;
-            self::$defaults  = $data["defaults"];
-            self::$modules   = $data["modules"];
-            self::$routes    = $data["routes"];
-            self::$redirects = $data["redirects"];
+            self::$defaults  = $internalData["defaults"];
+            self::$modules   = $internalData["modules"];
+            self::$routes    = $internalData["routes"];
+            self::$redirects = $internalData["redirects"];
+
+            if (!empty($adminData["defaults"])) {
+                self::$defaults = Arrays::extend(self::$defaults, $adminData["defaults"]);
+            }
+            if (!empty($adminData["modules"])) {
+                self::$modules = Arrays::extend(self::$modules, $adminData["modules"]);
+            }
+            if (!empty($adminData["routes"])) {
+                self::$routes = Arrays::extend(self::$routes, $adminData["routes"]);
+            }
+            if (!empty($adminData["redirects"])) {
+                self::$redirects = Arrays::extend(self::$redirects, $adminData["redirects"]);
+            }
         }
     }
 
@@ -152,7 +167,7 @@ class Router {
             $route = str_replace("/{0}", "", $route);
             $name  = substr($route, 0, strripos($route, "/"));
             if (isset(self::$modules[$name])) {
-                return self::$namespace . self::$modules[$name];
+                return self::$modules[$name];
             }
         }
         return null;
@@ -181,7 +196,10 @@ class Router {
      */
     public static function call($route, Request $request): Response {
         $route->params[] = $request;
-        $instance = Container::bind($route->module);
+        if (Strings::startsWith($route->module, "\\")) {
+            return call_user_func_array("{$route->module}::{$route->method}", $route->params);
+        }
+        $instance = Container::bind(self::$namespace . $route->module);
         return call_user_func_array([ $instance, $route->method ], $route->params);
     }
 }

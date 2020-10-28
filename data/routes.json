@@ -1,0 +1,43 @@
+{
+    "defaults" : {
+        "General" : "session",
+        "Editor"  : "session",
+        "Admin"   : "session"
+    },
+    "modules" : {
+        "/session" : "\\Admin\\Route\\Session",
+        "/media"   : "\\Admin\\Route\\Media",
+        "/users"   : "\\Admin\\Route\\User"
+    },
+    "routes" : {
+        "/session/getAll"   : "General",
+        "/session/logout"   : "General",
+        "/session/signup"   : "General",
+        "/session/login"    : "General",
+        "/session/remember" : "General",
+        "/session/code"     : "General",
+        "/session/reset"    : "General",
+        "/session/view"     : "Editor",
+        "/session/edit"     : "Editor",
+
+        "/media/getAll"     : "Editor",
+        "/media/getOne/{0}" : "Editor",
+        "/media/create"     : "Editor",
+        "/media/upload"     : "Editor",
+        "/media/rename"     : "Editor",
+        "/media/delete"     : "Editor",
+        "/media/resize"     : "Editor",
+        "/media/resizeOne"  : "Editor",
+
+        "/users/getAll"     : "Admin",
+        "/users/getOne/{0}" : "Admin",
+        "/users/create"     : "Admin",
+        "/users/edit/{0}"   : "Admin",
+        "/users/process"    : "Admin",
+        "/users/delete/{0}" : "Admin"
+    },
+    "redirects" : {
+        "Editor" : [],
+        "Admin"  : []
+    }
+}

@@ -577,26 +577,26 @@ class Credential {
         string $email,
         string $password
     ): void {
-        if ($db->hasTable("credentials")) {
-            $query = Query::create("email", "=", $email);
-            if (!$db->exists("credentials", $query)) {
-                $hash = self::createHash($password);
-                $db->insert("credentials", [
-                    "firstName"    => $firstName,
-                    "lastName"     => $lastName,
-                    "email"        => $email,
-                    "password"     => $hash["password"],
-                    "salt"         => $hash["salt"],
-                    "level"        => Access::Admin,
-                    "status"       => Status::Active,
-                    "lastLogin"    => time(),
-                    "currentLogin" => time(),
-                    "createdTime"  => time(),
-                ]);
-                print("<br><i>Owner</i> created<br>");
-            } else {
-                print("<br><i>Owner</i> already created<br>");
-            }
+        $query = Query::create("email", "=", $email);
+        if (!$db->exists("credentials", $query)) {
+            $hash = self::createHash($password);
+            $db->insert("credentials", [
+                "firstName"     => $firstName,
+                "lastName"      => $lastName,
+                "email"         => $email,
+                "phone"         => "",
+                "password"      => $hash["password"],
+                "salt"          => $hash["salt"],
+                "level"         => Access::Admin,
+                "status"        => Status::Active,
+                "reqPassChange" => 0,
+                "lastLogin"     => time(),
+                "currentLogin"  => time(),
+                "createdTime"   => time(),
+            ]);
+            print("<br><i>Owner</i> created<br>");
+        } else {
+            print("<br><i>Owner</i> already created<br>");
         }
     }
 }

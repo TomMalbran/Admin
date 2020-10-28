@@ -49,10 +49,10 @@
     "settings" : {
         "table"  : "settings",
         "fields" : {
-            "section"  : { "type" : "string", "isPrimary" : true },
-            "variable" : { "type" : "string", "isPrimary" : true },
-            "value"    : { "type" : "text"                       },
-            "type"     : { "type" : "number", "length"    : 1    }
+            "section"  : { "type" : "string", "isPrimary" : true               },
+            "variable" : { "type" : "string", "isPrimary" : true               },
+            "value"    : { "type" : "text"                                     },
+            "type"     : { "type" : "number", "length"    : 1,   "default" : 0 }
         },
         "hasTimestamps" : true,
         "canCreate"     : false,

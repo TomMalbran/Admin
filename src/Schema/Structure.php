@@ -51,47 +51,55 @@ class Structure {
         // Add additional Fields
         if ($this->hasStatus) {
             $data["fields"]["status"] = [
-                "type" => Field::Status,
+                "type"    => Field::Status,
+                "default" => 0,
             ];
         }
         if ($this->hasFemStatus) {
             $data["fields"]["status"] = [
-                "type" => Field::FemStatus,
+                "type"    => Field::FemStatus,
+                "default" => 0,
             ];
         }
         if ($this->hasPosition) {
             $data["fields"]["position"] = [
-                "type" => Field::Number,
+                "type"    => Field::Number,
+                "default" => 0,
             ];
         }
         if ($this->canCreate && $this->hasTimestamps) {
             $data["fields"]["createdTime"] = [
                 "type"     => Field::Date,
                 "cantEdit" => true,
+                "default"  => 0,
             ];
         }
         if ($this->canCreate && $this->hasUsers) {
             $data["fields"]["createdUser"] = [
                 "type"     => Field::Number,
                 "cantEdit" => true,
+                "default"  => "",
             ];
         }
         if ($this->canEdit && $this->hasTimestamps) {
             $data["fields"]["modifiedTime"] = [
                 "type"     => Field::Date,
                 "cantEdit" => true,
+                "default"  => 0,
             ];
         }
         if ($this->canEdit && $this->hasUsers) {
             $data["fields"]["modifiedUser"] = [
                 "type"     => Field::Number,
                 "cantEdit" => true,
+                "default"  => "",
             ];
         }
         if ($this->canDelete) {
             $data["fields"]["isDeleted"] = [
                 "type"     => Field::Boolean,
                 "cantEdit" => true,
+                "default"  => 0,
             ];
         }
 

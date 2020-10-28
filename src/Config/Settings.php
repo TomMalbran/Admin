@@ -96,7 +96,7 @@ class Settings {
             $result[$row["section"]][$row["variable"]] = $value;
         }
 
-        if (!empty($section)) {
+        if (!empty($section) && !empty($result[$section])) {
             return $result[$section];
         }
         return $result;

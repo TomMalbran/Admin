@@ -23,7 +23,7 @@ class Media {
      * @return View
      */
     private static function getView(string $url = "media"): View {
-        return new View("core/media", $url, "media");
+        return new View("media", $url, "media");
     }
 
     /**

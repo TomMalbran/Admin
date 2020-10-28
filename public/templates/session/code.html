@@ -1,0 +1,17 @@
+{{>header/auth}}
+<header>
+    <h1>{{siteName}}</h1>
+    <h2>Ingresar código</h2>
+</header>
+<form method="post" action="{{url}}session/code" class="auth-form">
+    <p>Revise su casilla de emails para encontrar el mail con el código para copiar y pegarlo a continucación (note que puede haber llegado como spam).</p>
+    {{#resetCodeError}}<p class="auth-error">El código es incorrecto.</p>{{/resetCodeError}}
+    <p class="auth-input">
+        <label>Código</label>
+        <input type="text" name="resetCode" value="{{resetCode}}" />
+    </p>
+    <p><button class="btn btn-primary">Validar código</button></p>
+    <p class="align-center"><a href="{{url}}" class="link link-main">Ingresar con tu cuenta</a></p>
+    <input type="hidden" name="post" value="1" />
+</form>
+{{>footer/auth}}

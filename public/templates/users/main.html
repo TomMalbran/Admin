@@ -1,0 +1,41 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icon icon-user"></span> Usuarios</h2>
+    <a href="{{url}}users/create" class="btn btn-primary">Crear</a>
+</header>
+
+{{#deleteSuccess}}<p class="result-bar result-success">El usuario fue eliminado correctamente.</p>{{/deleteSuccess}}
+
+
+<section class="content-table">
+    {{#hasList}}
+    <div class="table-overflow">
+        <table class="table-container table-list">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nivel</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#list}}
+                <tr>
+                    <td><a href="{{url}}users/{{credentialID}}" class="link link-main">#{{credentialID}}</a></td>
+                    <td>{{levelName}}</td>
+                    <td class="table-list-break">{{firstName}} {{lastName}}</td>
+                    <td class="table-list-secondary table-list-break">{{email}}</td>
+                    <td class="table-list-secondary table-list-break">{{phone}}</td>
+                    <td>{{{statusName}}}</td>
+                </tr>
+                {{/list}}
+            </tbody>
+        </table>
+    </div>
+    {{/hasList}}
+    {{^hasList}}<p class="result-none">No hay usuarios disponibles.</p>{{/hasList}}
+</section>
+{{>footer/main}}

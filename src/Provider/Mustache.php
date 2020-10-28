@@ -7,6 +7,7 @@ use Admin\Utils\Strings;
 
 use Mustache_Autoloader;
 use Mustache_Engine;
+use Mustache_Loader_CascadingLoader;
 use Mustache_Loader_FilesystemLoader;
 use Mustache_Exception_UnknownTemplateException;
 
@@ -34,7 +35,8 @@ class Mustache {
             self::$loaded = true;
         }
 
-        $path = Admin::getPath(Admin::PublicDir, $forSite ? "site" : "admin");
+        $path     = Admin::getPath(Admin::PublicDir, $forSite ? "site" : "admin");
+        $internal = Admin::getPath(Admin::PublicDir, "internal");
         if (File::exists($path)) {
             $config  = [ "extension" => ".html" ];
             $loaders = [];
@@ -43,14 +45,22 @@ class Mustache {
             if (!$forSite && self::$adminEngine == null) {
                 // Main templates should be in public/templates
                 if (File::exists($path, Admin::TemplatesDir)) {
-                    $loaderPath = File::getPath($path, Admin::TemplatesDir);
-                    $loaders["loader"] = new Mustache_Loader_FilesystemLoader($loaderPath, $config);
+                    $loaderPath   = File::getPath($path, Admin::TemplatesDir);
+                    $internalPath = File::getPath($internal, Admin::TemplatesDir);
+                    $loaders["loader"] = new Mustache_Loader_CascadingLoader([
+                        new Mustache_Loader_FilesystemLoader($loaderPath, $config),
+                        new Mustache_Loader_FilesystemLoader($internalPath, $config),
+                    ]);
                 }
 
                 // Partials should be in public/partials
                 if (File::exists($path, Admin::PartialsDir)) {
-                    $loaderPath = File::getPath($path, Admin::PartialsDir);
-                    $loaders["partials_loader"] = new Mustache_Loader_FilesystemLoader($loaderPath, $config);
+                    $loaderPath   = File::getPath($path, Admin::PartialsDir);
+                    $internalPath = File::getPath($internal, Admin::PartialsDir);
+                    $loaders["partials_loader"] = new Mustache_Loader_CascadingLoader([
+                        new Mustache_Loader_FilesystemLoader($loaderPath, $config),
+                        new Mustache_Loader_FilesystemLoader($internalPath, $config),
+                    ]);
                 }
 
                 self::$adminEngine = new Mustache_Engine($loaders);

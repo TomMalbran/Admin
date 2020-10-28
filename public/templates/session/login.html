@@ -1,0 +1,23 @@
+{{>header/auth}}
+<header>
+    <h1>{{siteName}}</h1>
+    <h2>Ingresar</h2>
+</header>
+<form method="post" action="{{url}}session/login" class="auth-form">
+    {{#credentialsError}}<p class="auth-error">El usuario o la contraseña es incorrecta.</p>{{/credentialsError}}
+    {{#emailError}}<div class="auth-error">Debe completar un email válido.</div>{{/emailError}}
+    {{#passwordError}}<div class="auth-error">Debe completar una contraseña.</div>{{/passwordError}}
+    {{#resetSuccess}}<p class="auth-success">Su contraseña fue cambiada correctamente.</p>{{/resetSuccess}}
+    <p class="auth-input">
+        <label>Email</label>
+        <input type="text" name="email" value="{{email}}" />
+    </p>
+    <p class="auth-input">
+        <label>Contraseña</label>
+        <input type="password" name="password" />
+    </p>
+    <p><button class="btn btn-primary">Ingresar</button></p>
+    <p class="align-center"><a href="{{url}}session/remember" class="link link-main">¿Recordar contraseña?</a></p>
+    <input type="hidden" name="redirectUrl" value={{redirectUrl}} />
+</form>
+{{>footer/auth}}

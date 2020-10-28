@@ -1,0 +1,78 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icon icon-edit"></span> {{#isEdit}}Editar{{/isEdit}}{{^isEdit}}Crear{{/isEdit}} Usuario</h2>
+</header>
+
+{{#existsError}}<p class="result-bar result-error">El usuario indicado no existe.</p>{{/existsError}}
+
+
+<form method="post" action="{{url}}users/process" class="autofocus">
+    <section class="content-body">
+        <ol class="ordered-list ordered-two-cols">
+            <li>
+                <dt><label for="user-level" class="required-input">Estado</label></dt>
+                <dd>
+                    <select id="user-level" name="level" {{#levelError}}class="error-input"{{/levelError}}>
+                        {{#levels}}<option value="{{key}}" {{#isSelected}}selected{{/isSelected}}>{{value}}</option>{{/levels}}
+                    </select>
+                    {{#levelError}}<div class="result-error">El estado indicado no existe.</div>{{/levelError}}
+                </dd>
+            </li>
+            <li>
+                <dt><label for="user-firstName" class="required-input">Nombre</label></dt>
+                <dd>
+                    <input id="user-firstName" type="text" name="firstName" value="{{firstName}}" {{#firstNameError}}class="error-input"{{/firstNameError}} />
+                    {{#firstNameError}}<div class="result-error">Debe completar el nombre del usuario.</div>{{/firstNameError}}
+                </dd>
+            </li>
+            <li>
+                <dt><label for="user-lastName" class="required-input">Apellido</label></dt>
+                <dd>
+                    <input id="user-lastName" type="text" name="lastName" value="{{lastName}}" {{#lastNameError}}class="error-input"{{/lastNameError}} />
+                    {{#lastNameError}}<div class="result-error">Debe completar el apellido del usuario.</div>{{/lastNameError}}
+                </dd>
+            </li>
+            <li>
+                <dt><label for="user-email" class="required-input">Email</label></dt>
+                <dd>
+                    <input id="user-email" type="text" name="email" value="{{email}}" autocomplete="new-password" {{#emailError}}class="error-input"{{/emailError}} />
+                    {{#emailError}}<div class="result-error">El email es incorrecto o esta usado por otro usuario.</div>{{/emailError}}
+                </dd>
+            </li>
+            <li>
+                <dt><label for="user-phone">Teléfono</label></dt>
+                <dd><input id="user-phone" type="text" name="phone" value="{{phone}}" /></dd>
+            </li>
+            <li>
+                <dt>
+                    <label for="user-pass" {{^isEdit}}class="required-input"{{/isEdit}}>
+                        {{#isEdit}}Nueva contraseña{{/isEdit}}
+                        {{^isEdit}}Contraseña{{/isEdit}}
+                    </label>
+                </dt>
+                <dd>
+                    <input id="user-pass" type="password" name="password" autocomplete="new-password" {{#passwordError}}class="error-input"{{/passwordError}} />
+                    {{#passwordEmptyError}}<div class="result-error">Debe incluir la contraseña para crear.</div>{{/passwordEmptyError}}
+                    {{#passwordInvalidError}}<div class="result-error">La contraseña debe ser entre 6 y 20 caracteres e incluir al menos un número y una letra.</div>{{/passwordInvalidError}}
+                </dd>
+            </li>
+            <li>
+                <dt><label for="user-status" class="required-input">Estado</label></dt>
+                <dd>
+                    <select id="user-status" name="status" {{#statusError}}class="error-input"{{/statusError}}>
+                        {{#statuses}}<option value="{{key}}" {{#isSelected}}selected{{/isSelected}}>{{value}}</option>{{/statuses}}
+                    </select>
+                    {{#statusError}}<div class="result-error">El estado indicado no existe.</div>{{/statusError}}
+                </dd>
+            </li>
+        </ol>
+    </section>
+
+
+    <footer class="content-footer">
+        <button class="btn btn-primary">Aceptar</button>
+        <a href="{{url}}users{{#isEdit}}/{{credentialID}}{{/isEdit}}{{query}}" class="btn btn-cancel">Cancelar</a>
+    </footer>
+    <input type="hidden" name="credentialID" value="{{credentialID}}" />
+</form>
+{{>footer/main}}

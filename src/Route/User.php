@@ -20,7 +20,7 @@ class User {
      * @return View
      */
     private static function getView(): View {
-        return new View("core/users", "users", "users");
+        return new View("users", "users", "users");
     }
     
     

@@ -1,0 +1,77 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icon icon-log"></span> Registro de Acciones</h2>
+</header>
+
+
+<section class="content-filter">
+    <form method="post" action="{{url}}logs/actions" class="grid">
+        <label class="grid-field">
+            <p>Usuario</p>
+            <input type="text" name="search" value="{{search}}" class="full-width" />
+        </label>
+        <label class="grid-field">
+            <p>Desde</p>
+            <input type="text" name="from" value="{{fromTimeDate}}" class="full-width datepicker" />
+        </label>
+        <label class="grid-field">
+            <p>Hasta</p>
+            <input type="text" name="to" value="{{toTimeDate}}" class="full-width datepicker" />
+        </label>
+        <div class="grid-button">
+            <button class="btn btn-primary">Filtrar</button>
+        </div>
+    </form>
+    {{#datesError}}<p class="result-error">Las fechas no tienen el formato correcto (dd-mm-yyyy).</p>{{/datesError}}
+    {{#periodError}}<p class="result-error">La fecha final debe ser posterior a la fecha inicial.</p>{{/periodError}}
+</section>
+
+
+<section class="content-table">
+    {{#hasList}}
+    <div class="table-overflow">
+        <table class="table-container table-list">
+            <thead>
+                <tr>
+                    <th>Sección</th>
+                    <th>Acción</th>
+                    <th>ID</th>
+                    <th>Tiempo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#list}}
+                <tr>
+                    <td colspan="4">
+                        <b>Sesión:</b> &nbsp;
+                        <i>{{#credentialName}}{{credentialName}}{{/credentialName}}{{#clientName}}{{clientName}}{{/clientName}}</i> &nbsp;
+                        {{date}} &nbsp; 
+                        <span class="tooltip tooltip-br" data-tip="{{userAgent}}">{{ip}}</span>
+                    </td>
+                </tr>
+                {{#actions}}
+                <tr>
+                    <td>{{section}}</td>
+                    <td>{{action}}</td>
+                    <td class="table-list-break">{{dataID}} </td>
+                    <td class="table-list-secondary">{{date}}</td>
+                </tr>
+                {{/actions}}
+                <tr>
+                    <td colspan="4">&nbsp;</td>
+                </tr>
+                {{/list}}
+            </tbody>
+        </table>
+    </div>
+    {{#hasMore}}
+    <div class="content-nav">
+        {{#hasPrev}}<a href="{{url}}logs/actions{{prevQuery}}" class="btn btn-primary"><span class="icon icon-left"></span> Anteriores</a>{{/hasPrev}}
+        {{#hasNext}}<a href="{{url}}logs/actions{{nextQuery}}" class="btn btn-primary">Siguientes <span class="icon icon-right"></span></a>{{/hasNext}}
+    </div>
+    {{/hasMore}}
+    {{/hasList}}
+    {{^hasList}}<p class="result-none">No hay actualizaciones disponibles.</p>{{/hasList}}
+</section>
+
+{{>footer/main}}

@@ -25,7 +25,7 @@ class Session {
      * @return View
      */
     private static function getView(): View {
-        return new View("core/session", "session/view");
+        return new View("session", "session/view");
     }
 
     /**

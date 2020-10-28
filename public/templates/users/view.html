@@ -1,0 +1,52 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icon icon-view"></span> Usuario "{{firstName}} {{lastName}}"</h2>
+</header>
+
+{{#createSuccess}}<p class="result-bar result-success">El usuario fue creado correctamente.</p>{{/createSuccess}}
+{{#editSuccess}}<p class="result-bar result-success">El usuario fue editado correctamente.</p>{{/editSuccess}}
+{{#deleteError}}<p class="result-bar result-error">No fue posible eliminar el usuario indicado.</p>{{/deleteError}}
+
+
+<section class="content-body">
+    <ol class="ordered-list ordered-two-cols">
+        <li>
+            <dt><label>Nivel</label></dt>
+            <dd>{{levelName}}</dd>
+        </li>
+        <li>
+            <dt><label>Nombre</label></dt>
+            <dd>{{firstName}} {{lastName}}</dd>
+        </li>
+        <li>
+            <dt><label>Email</label></dt>
+            <dd>{{email}}</dd>
+        </li>
+        {{#phone}}
+        <li>
+            <dt><label>Teléfono</label></dt>
+            <dd>{{phone}}</dd>
+        </li>
+        {{/phone}}
+        <li>
+            <dt><label>Estado</label></dt>
+            <dd>{{{statusName}}}</dd>
+        </li>
+        <li>
+            <dt><label>Creado el</label></dt>
+            <dd>{{createdTimeFull}}</dd>
+        </li>
+        <li>
+            <dt><label>Último ingreso</label></dt>
+            <dd>{{currentLoginFull}}</dd>
+        </li>
+    </ol>
+</section>
+
+
+<footer class="content-footer">
+    <a href="{{url}}users/edit/{{credentialID}}{{query}}" class="btn btn-primary">Editar</a>
+    <a href="{{url}}users/delete/{{credentialID}}{{query}}" class="btn btn-primary" data-confirm="">Eliminar</a>
+    <a href="{{url}}users{{query}}" class="btn btn-cancel">Volver</a>
+</footer>
+{{>footer/main}}

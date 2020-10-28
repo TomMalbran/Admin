@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width, user-scalable=no" />
+        <meta name="theme-color" content="#2e333e">
+        <title>{{siteName}}</title>
+        <meta name="description" content="{{siteDescription}}">
+        <meta name="keywords" content="{{keywords}}">
+        <link rel="stylesheet" type="text/css" href="{{publicUrl}}styles/main.css" />
+    </head>
+    <body>
+        <noscript>
+            You need to enable JavaScript to run this app.
+        </noscript>
+        
+        <div id="root"></div>
+
+        <div class="snackbar">
+            Hay una nueva versión disponible.
+            <a href="#" class="link link-red">Haz click para actualizar</a>
+        </div>
+        
+        <iframe name="appframe" class="appframe" style="display: none;"></iframe>
+        <script type="text/javascript">
+            var ADMIN_URL  = "{{url}}";
+            var BASE_URL   = "{{baseUrl}}";
+            var PUBLIC_URL = "{{publicUrl}}";
+            var JWT_TOKEN  = "{{jwtToken}}";
+        </script>
+
+        <script type="text/javascript" src="{{publicUrl}}thirdparty/tinymce/tinymce.min.js"></script>
+        <script type="text/javascript" src="{{publicUrl}}thirdparty/jquery.min.js"></script>
+
+        <script type="text/javascript" src="{{publicUrl}}scripts/Ajax.js"></script>
+        <script type="text/javascript" src="{{publicUrl}}scripts/Dialog.js"></script>
+        <script type="text/javascript" src="{{publicUrl}}scripts/Media.js"></script>
+        <script type="text/javascript" src="{{publicUrl}}scripts/Main.js"></script>
+
+    </body>
+</html>

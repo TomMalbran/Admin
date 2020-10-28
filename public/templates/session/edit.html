@@ -1,0 +1,50 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icon icon-edit"></span> Editar Cuenta</h2>
+</header>
+
+{{#editSuccess}}<p class="result-bar result-success">Tus datos fueron editados correctamente.</p>{{/editSuccess}}
+
+<form method="post" action="{{url}}session/edit">
+    <section class="content-body">
+        <ol class="ordered-list ordered-two-cols">
+            <li>
+                <dt><label for="user-firstName" class="required-input">Nombre</label></dt>
+                <dd>
+                    <input id="user-firstName" type="text" name="firstName" value="{{firstName}}" {{#firstNameError}}class="error-input"{{/firstNameError}} />
+                    {{#firstNameError}}<div class="result-error">Debe completar su nombre.</div>{{/firstNameError}}
+                </dd>
+            </li>
+            <li>
+                <dt><label for="user-lastName" class="required-input">Apellido</label></dt>
+                <dd>
+                    <input id="user-lastName" type="text" name="lastName" value="{{lastName}}" {{#lastNameError}}class="error-input"{{/lastNameError}} />
+                    {{#lastNameError}}<div class="result-error">Debe completar su apellido.</div>{{/lastNameError}}
+                </dd>
+            </li>
+            <li>
+                <dt><label for="user-email" class="required-input">Email</label></dt>
+                <dd>
+                    <input id="user-email" type="text" name="email" value="{{email}}" autocomplete="new-password" {{#emailError}}class="error-input"{{/emailError}} />
+                    {{#emailError}}<div class="result-error">El email es incorrecto o esta usado por otro usuario.</div>{{/emailError}}
+                </dd>
+            </li>
+            <li>
+                <dt><label for="user-phone">Teléfono</label></dt>
+                <dd><input id="user-phone" type="text" name="phone" value="{{phone}}" /></dd>
+            </li>
+            <li>
+                <dt><label for="user-pass">Nueva contraseña</label></dt>
+                <dd>
+                    <input id="user-pass" type="password" name="password" autocomplete="new-password" {{#passwordError}}class="error-input"{{/passwordError}} />
+                    {{#passwordError}}<div class="result-error">La contraseña debe ser entre 6 y 20 caracteres e incluir al menos un número y una letra.</div>{{/passwordError}}
+                </dd>
+            </li>
+        </ol>
+    </section>
+
+    <footer class="content-footer">
+        <button class="btn btn-primary">Aceptar</button>
+    </footer>
+</form>
+{{>footer/main}}

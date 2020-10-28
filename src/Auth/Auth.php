@@ -6,7 +6,6 @@ use Admin\Auth\Access;
 use Admin\Auth\Credential;
 use Admin\Auth\Token;
 use Admin\Auth\Reset;
-use Admin\Auth\Spam;
 use Admin\Config\Config;
 use Admin\Config\Settings;
 use Admin\File\Path;
@@ -41,7 +40,10 @@ class Auth {
         }
 
         // Retrieve the Token data
-        $data       = JWT::getData($token);
+        $data = JWT::getData($token);
+        if (empty($data->credentialID)) {
+            return false;
+        }
         $credential = Credential::getOne($data->credentialID, true);
         if ($credential->isEmpty() || $credential->isDeleted) {
             return false;
@@ -67,7 +69,7 @@ class Auth {
     public static function validateAPI(string $token): bool {
         if (Token::isValid($token)) {
             self::$apiID       = Token::getOne($token)->id;
-            self::$accessLevel = Access::API();
+            self::$accessLevel = Access::API;
             return true;
         }
         return false;
@@ -79,19 +81,11 @@ class Auth {
      */
     public static function validateInternal(): bool {
         self::$apiID       = "internal";
-        self::$accessLevel = Access::API();
+        self::$accessLevel = Access::API;
         return true;
     }
 
 
-
-    /**
-     * Checks the Spam Protection for the Login
-     * @return boolean
-     */
-    public static function spamProtection(): bool {
-        return Spam::protection();
-    }
 
     /**
      * Logins the given Credential
@@ -116,7 +110,7 @@ class Auth {
     public static function logout(): void {
         ActionLog::endSession();
 
-        self::$accessLevel  = Access::General();
+        self::$accessLevel  = Access::General;
         self::$credential   = null;
         self::$credentialID = 0;
         self::$adminID      = 0;
@@ -358,6 +352,6 @@ class Auth {
      * @return boolean
      */
     public static function requiresLogin(int $requested): bool {
-        return !Access::isGeneral($requested) && !self::isLoggedIn();
+        return $requested != Access::General && !self::isLoggedIn();
     }
 }

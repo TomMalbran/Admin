@@ -220,7 +220,7 @@ class Admin {
         }
         if (!Auth::isLoggedIn()) {
             if ($request->has("ajax")) {
-                return Response::reload()->withParam("redirectUrl", Config::getUrl($url));
+                return Response::reload()->withParam("redirectUrl", $url);
             }
             return Response::view("core/index");
         }

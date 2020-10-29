@@ -16,6 +16,7 @@ use Admin\File\Path;
 use Admin\Schema\Factory;
 use Admin\Schema\Database;
 use Admin\Utils\JSON;
+use Admin\Utils\Strings;
 
 /**
  * The Admin Service
@@ -48,18 +49,20 @@ class Admin {
 
     // Variables
     private static $adminPath;
-    private static $basePath;
+    private static $internalPath;
+    private static $internalRoute;
 
 
     /**
      * Sets the Basic data
-     * @param string  $basePath
+     * @param string  $adminPath
      * @param boolean $logErrors Optional.
      * @return void
      */
-    public static function create(string $basePath, bool $logErrors = false): void {
-        self::$adminPath = dirname(__FILE__, 2);
-        self::$basePath  = $basePath;
+    public static function create(string $adminPath, bool $logErrors = false): void {
+        self::$adminPath     = $adminPath;
+        self::$internalPath  = dirname(__FILE__, 2);
+        self::$internalRoute = Strings::replace(self::$internalPath, $adminPath, "");
 
         if ($logErrors) {
             ErrorLog::init();
@@ -78,13 +81,13 @@ class Admin {
         $path = "";
         switch ($type) {
         case "admin":
-            $path = File::getPath(self::$basePath, self::AdminDir, $dir);
+            $path = File::getPath(self::$adminPath, self::AdminDir, $dir);
             break;
         case "site":
-            $path = File::getPath(self::$basePath, $dir);
+            $path = File::getPath(self::$adminPath, $dir);
             break;
         case "internal":
-            $path = File::getPath(self::$adminPath, $dir);
+            $path = File::getPath(self::$internalPath, $dir);
             break;
         }
         return File::removeLastSlash($path);
@@ -96,7 +99,7 @@ class Admin {
      * @return string
      */
     public static function getFilesPath(string $file = ""): string {
-        $path = File::getPath(self::$basePath, self::FilesDir, $file);
+        $path = File::getPath(self::$adminPath, self::FilesDir, $file);
         return File::removeLastSlash($path);
     }
 
@@ -109,6 +112,16 @@ class Admin {
         $path = File::getPath(self::FilesDir, $file);
         return File::removeLastSlash($path);
     }
+
+    /**
+     * Returns the Internal Route
+     * @return string
+     */
+    public static function getInternalRoute() {
+        return self::$internalRoute;
+    }
+
+
 
     /**
      * Loads a File from the App or defaults to the Admin

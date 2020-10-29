@@ -160,6 +160,17 @@ class Config {
     }
 
     /**
+     * Return the internal public Url adding the url parts at the end
+     * @param string ...$urlParts
+     * @return string
+     */
+    public static function getInternalUrl(string ...$urlParts) {
+        $route = Admin::getInternalRoute();
+        $url   = self::getUrl($route, Admin::PublicDir, ...$urlParts);
+        return File::addLastSlash($url);
+    }
+
+    /**
      * Return the admin Url adding the url parts at the end
      * @return string
      */

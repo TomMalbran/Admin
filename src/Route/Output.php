@@ -88,6 +88,7 @@ class Output {
             "baseUrl"         => Config::getBaseUrl(),
             "publicUrl"       => Config::getPublicUrl(),
             "filesUrl"        => Config::getFilesUrl(),
+            "internalUrl"     => Config::getInternalUrl(),
             "userName"        => !empty($credential) ? $credential->name     : "",
             "userAvatar"      => !empty($credential) ? $credential->gravatar : "",
             "jwtToken"        => Auth::getToken(),

@@ -58,8 +58,8 @@ class Path {
      */
     public static function getDirectories(): array {
         self::load();
-        if (!empty(self::$data["directories"])) {
-            return self::$data["directories"];
+        if (!empty(self::$data)) {
+            return self::$data;
         }
         return [];
     }

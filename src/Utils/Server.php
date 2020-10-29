@@ -93,4 +93,28 @@ class Server {
     public static function getUserAgent(): string {
         return $_SERVER["HTTP_USER_AGENT"];
     }
+
+
+
+    /**
+     * Redirects if the Url is invalid
+     * @return void
+     */
+    public static function ensureUrl() {
+        if (substr($_SERVER["HTTP_HOST"], 0, 9) !== "localhost") {
+            if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) !== "www.") {
+                header("Location: https://www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}");
+                exit;
+            }
+            if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) === "www.") {
+                header("Location: https://{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}");
+                exit;
+            }
+        }
+        if (substr($_SERVER["HTTP_HOST"], 0, 4) !== "www." && substr($_SERVER["HTTP_HOST"], 0, 9) !== "localhost") {
+            $protocol = $_SERVER["HTTPS"] == "on" ? "https://" : "http://";
+            header("Location: {$protocol}www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}");
+            exit;
+        }
+    }
 }

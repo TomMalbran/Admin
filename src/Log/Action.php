@@ -18,8 +18,11 @@ class Action {
      */
     public static function load(): void {
         if (!self::$loaded) {
+            $adminData    = Admin::loadData(Admin::ActionData, "admin");
+            $internalData = Admin::loadData(Admin::ActionData, "internal");
+
             self::$loaded = true;
-            self::$data   = Admin::loadData(Admin::ActionData);
+            self::$data   = Arrays::extend($internalData, $adminData);
         }
     }
 

@@ -1,0 +1,27 @@
+{
+    "Session" : {
+        "name"    : "Sesión",
+        "actions" : {
+            "Login"        : "Ingreso",
+            "Logout"       : "Egreso",
+            "RequestReset" : "Reseteo de contraseña",
+            "ResetPass"    : "Contraseña modificada",
+            "Recover"      : "Obtener clave",
+            "Edit"         : "Cuenta editada"
+        }
+    },
+    "Preferences" : {
+        "name"    : "Preferencias",
+        "actions" : {
+            "Save" : "Guardadas"
+        }
+    },
+    "User" : {
+        "name"    : "User",
+        "actions" : {
+            "Create" : "Creado",
+            "Edit"   : "Editado",
+            "Delete" : "Eliminado"
+        }
+    }
+}

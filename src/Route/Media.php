@@ -56,11 +56,11 @@ class Media {
         $message = !empty($error) ? $error : $success;
         $result  = empty($error);
         $query   = self::getQuery($request);
-        $url     = null;
+        $url     = "media";
         
         if ($request->has("path")) {
             $route = Strings::fromUrl($request->path);
-            $url = "media/$route";
+            $url   = "media/$route";
         }
         return self::getView($url)->redirect($request, $message, $result)->withUrl($query);
     }

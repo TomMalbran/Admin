@@ -17,10 +17,10 @@ use Mustache_Exception_UnknownTemplateException;
 class Mustache {
     
     private static $loaded = false;
-    private static $engine = null;
 
-    private static $adminEngine = null;
-    private static $siteEngine  = null;
+    private static $simpleEngine = null;
+    private static $adminEngine  = null;
+    private static $siteEngine   = null;
     
     
     /**
@@ -31,42 +31,47 @@ class Mustache {
     public static function load(bool $forSite = false): void {
         if (!self::$loaded) {
             Mustache_Autoloader::register();
-            self::$engine = new Mustache_Engine();
-            self::$loaded = true;
+            self::$loaded       = true;
+            self::$simpleEngine = new Mustache_Engine();
         }
 
         $path     = Admin::getPath(Admin::PublicDir, $forSite ? "site" : "admin");
         $internal = Admin::getPath(Admin::PublicDir, "internal");
+
         if (File::exists($path)) {
             $config  = [ "extension" => ".html" ];
             $loaders = [];
 
-            // Create the admin engine
+            // Create the Admin Eengine
             if (!$forSite && self::$adminEngine == null) {
                 // Main templates should be in public/templates
+                $internalPath = File::getPath($internal, Admin::TemplatesDir);
                 if (File::exists($path, Admin::TemplatesDir)) {
-                    $loaderPath   = File::getPath($path, Admin::TemplatesDir);
-                    $internalPath = File::getPath($internal, Admin::TemplatesDir);
+                    $loaderPath = File::getPath($path, Admin::TemplatesDir);
                     $loaders["loader"] = new Mustache_Loader_CascadingLoader([
                         new Mustache_Loader_FilesystemLoader($loaderPath, $config),
                         new Mustache_Loader_FilesystemLoader($internalPath, $config),
                     ]);
+                } else {
+                    $loaders["loader"] = new Mustache_Loader_FilesystemLoader($internalPath, $config);
                 }
 
                 // Partials should be in public/partials
+                $internalPath = File::getPath($internal, Admin::PartialsDir);
                 if (File::exists($path, Admin::PartialsDir)) {
-                    $loaderPath   = File::getPath($path, Admin::PartialsDir);
-                    $internalPath = File::getPath($internal, Admin::PartialsDir);
+                    $loaderPath = File::getPath($path, Admin::PartialsDir);
                     $loaders["partials_loader"] = new Mustache_Loader_CascadingLoader([
                         new Mustache_Loader_FilesystemLoader($loaderPath, $config),
                         new Mustache_Loader_FilesystemLoader($internalPath, $config),
                     ]);
+                } else {
+                    $loaders["partials_loader"] = new Mustache_Loader_FilesystemLoader($internalPath, $config);
                 }
 
                 self::$adminEngine = new Mustache_Engine($loaders);
             }
 
-            // Create the site engine
+            // Create the Site Engine
             if ($forSite && self::$siteEngine == null) {
                 // Main templates should be in public/templates
                 if (File::exists($path, Admin::TemplatesDir)) {
@@ -88,7 +93,7 @@ class Mustache {
     
     
     /**
-     * Renders the template using any of the engines depending on the first parameter
+     * Renders the template using any of the Engines depending on the first parameter
      * @param string  $templateOrPath
      * @param array   $data
      * @param boolean $forSite        Optional.
@@ -98,7 +103,7 @@ class Mustache {
         self::load($forSite);
 
         if (!Strings::match($templateOrPath, '/^[a-z\/]*$/')) {
-            return self::$engine->render($templateOrPath, $data);
+            return self::$simpleEngine->render($templateOrPath, $data);
         }
         if (!$forSite && self::$adminEngine != null) {
             return self::$adminEngine->render($templateOrPath, $data);
@@ -110,7 +115,7 @@ class Mustache {
     }
 
     /**
-     * Renders and prints the template using any of the engines depending on the first parameter
+     * Renders and prints the template using any of the Engines depending on the first parameter
      * @param string  $templateOrPath
      * @param array   $data
      * @param boolean $forSite        Optional.

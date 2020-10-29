@@ -1,6 +1,7 @@
 <?php
 namespace Admin\Route;
 
+use Admin\Admin;
 use Admin\IO\Response;
 use Admin\Auth\Auth;
 use Admin\Config\Config;
@@ -78,6 +79,8 @@ class Output {
         $forBody    = $isReload || (!$isAjax && !$isFrame);
         $credential = Auth::getCredential();
         $data       = [
+            "showHeader"      => $forBody,
+            "showFooter"      => $forBody,
             "version"         => Config::getVersion()->full,
             "siteName"        => Config::get("name"),
             "url"             => Config::getAdminUrl(),
@@ -85,14 +88,13 @@ class Output {
             "baseUrl"         => Config::getBaseUrl(),
             "publicUrl"       => Config::getPublicUrl(),
             "filesUrl"        => Config::getFilesUrl(),
-            "showHeader"      => $forBody,
-            "showFooter"      => $forBody,
             "userName"        => !empty($credential) ? $credential->name     : "",
             "userAvatar"      => !empty($credential) ? $credential->gravatar : "",
             "jwtToken"        => Auth::getToken(),
             "isLoggedIn"      => Auth::isLoggedIn(),
             "hasEditorAccess" => Auth::isEditor(),
             "hasAdminAccess"  => Auth::isAdmin(),
+            "menuItems"       => $forBody ? self::getMenuItems() : [],
             "isMenuSel"       => function ($val) use ($response) {
                 return $val == $response->mainMenu ? "menu-item-selected" : "";
             },
@@ -112,5 +114,23 @@ class Output {
         } else {
             Mustache::print("core/index", $data);
         }
+    }
+
+    /**
+     * Returns the Menu Items
+     * @return array
+     */
+    private static function getMenuItems(): array {
+        $items  = Admin::loadData(Admin::MenuData);
+        $result = [];
+        foreach ($items as $item) {
+            $result[] = [
+                "menuKey"  => $item["key"],
+                "menuUrl"  => $item["url"],
+                "menuIcon" => $item["icon"],
+                "menuName" => $item["name"],
+            ];
+        }
+        return $result;
     }
 }

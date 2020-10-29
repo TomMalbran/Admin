@@ -1,0 +1,37 @@
+{{#hasPages}}
+<div class="pagination">
+    <ul class="no-list pagination-list">
+        <li class="pagination-arrow">
+            <a href="{{url}}{{navUrl}}{{firstQuery}}" {{^hasPrev}}class="pagination-disabled"{{/hasPrev}}>
+                <span class="icon icon-first"></span>
+            </a>
+        </li>
+        <li class="pagination-arrow">
+            <a href="{{url}}{{navUrl}}{{prevQuery}}" {{^hasPrev}}class="pagination-disabled"{{/hasPrev}}>
+                <span class="icon icon-left"></span>
+            </a>
+        </li>
+        {{#pages}}
+        <li>
+            <a href="{{url}}{{navUrl}}{{pageQuery}}" {{#isCurrent}}class="pagination-selected"{{/isCurrent}}>
+                {{number}}
+            </a>
+        </li>
+        {{/pages}}
+        <li class="pagination-arrow">
+            <a href="{{url}}{{navUrl}}{{nextQuery}}" {{^hasNext}}class="pagination-disabled"{{/hasNext}}>
+                <span class="icon icon-right"></span>
+            </a>
+        </li>
+        <li class="pagination-arrow">
+            <a href="{{url}}{{navUrl}}{{lastQuery}}" {{^hasNext}}class="pagination-disabled"{{/hasNext}}>
+                <span class="icon icon-last"></span>
+            </a>
+        </li>
+    </ul>
+</div>
+{{/hasPages}}
+
+{{#hasMany}}
+<div class="pagination-empty"></div>
+{{/hasMany}}

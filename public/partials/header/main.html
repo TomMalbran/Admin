@@ -1,0 +1,71 @@
+{{#showHeader}}
+{{>common/loader}}
+
+<header class="topbar">
+    <div class="topbar-title">
+        <a href="#" class="icon icon-menu topbar-menu"></a>
+        <h1>{{siteName}}</h1>
+    </div>
+    <div class="topbar-user">
+        <a href="{{url}}session/view" class="link link-white topbar-username">{{{userName}}}</a>
+        <a href="#" class="logout mainbar-baricon icon icon-logout"></a>
+    </div>
+</header>
+
+<div class="sidebar">
+    <nav class="mainbar">
+        <div className="mainbar-topnav">
+            <ol class="mainbar-subnav no-list">
+                <li>
+                    <a href="{{appUrl}}" class="mainbar-baricon icon icon-home" target="_blank" data-noajax="1"></a>
+                </li>
+            </ol>
+        </div>
+        <ol class="mainbar-subnav no-list">
+            <li>
+                <a href="#" class="logout mainbar-baricon icon icon-logout"></a>
+            </li>
+            <li>
+                <a href="{{url}}session/view" class="mainbar-avatar">
+                    <img alt="{{userName}}" src="{{userAvatar}}" />
+                </a>
+            </li>
+        </ol>
+    </nav>
+    <nav class="subbar">
+        <h1>{{siteName}}</h1>
+        <ol class="sidebar-menu no-list">
+            {{#menuItems}}
+            <li>
+                <a href="{{url}}{{menuUrl}}" class="{{#isMenuSel}}{{menuKey}}{{/isMenuSel}}" data-menu="{{menuKey}}">
+                    <span class="icon icon-{{menuIcon}}"></span>
+                    <span class="main-text">{{menuName}}</span>
+                </a>
+            </li>
+            {{/menuItems}}
+
+            <li>
+                <a href="{{url}}media" class="{{#isMenuSel}}media{{/isMenuSel}}" data-menu="media">
+                    <span class="icon icon-media"></span>
+                    <span class="main-text">Media</span>
+                </a>
+            </li>
+            {{#hasAdminAccess}}
+            <li>
+                <a href="{{url}}users" class="{{#isMenuSel}}users{{/isMenuSel}}" data-menu="users">
+                    <span class="icon icon-user"></span>
+                    <span class="main-text">Usuarios</span>
+                </a>
+            </li>
+            {{/hasAdminAccess}}
+        </ol>
+    </nav>
+</div>
+
+<div class="content-container">
+    <div class="content-wrapper">
+{{/showHeader}}
+
+{{#isFrame}}
+<div class="content-frame">
+{{/isFrame}}

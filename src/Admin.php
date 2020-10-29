@@ -30,6 +30,7 @@ class Admin {
     const TokenData     = "tokens";
     const SettingsData  = "settings";
     const ActionData    = "actions";
+    const MenuData      = "menu";
 
     // The Directories
     const AdminDir      = "admin";

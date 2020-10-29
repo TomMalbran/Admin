@@ -450,6 +450,11 @@ class Ajax {
                 }
             }
         });
+        $(".media-sortable").sortable({
+            handle : ".media-image",
+            start  : (e, ui) => ui.placeholder.height(ui.item.height()),
+            stop   : () => $(".media-sortable").trigger("submit"),
+        });
         $(".datepicker").datepicker();
         $(".autogrow").autogrow();
 

@@ -1,0 +1,112 @@
+/**
+ * Links
+ */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.link {
+    position: relative;
+}
+    .link:hover,
+    .link:focus {
+        outline: none;
+    }
+    .link:before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        bottom: 0;
+        left: 0;
+        visibility: hidden;
+        transform: scaleX(0);
+        transition: all 0.2s ease-in-out;
+    }
+    .link:hover:before,
+    .link:focus:before {
+        visibility: visible;
+        transform: scaleX(1);
+    }
+
+
+.link-img {
+    display: block;
+}
+    .link-img img {
+        display: block;
+        width: 80px;
+    }
+
+.link-icon {
+    text-align: center;
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+    font-size: 14px;
+    border: 2px solid;
+    border-radius: 50%;
+    color: var(--darker-gray);
+    transition: color 0.5s;
+}
+.link-icon:hover {
+    color: var(--font-color);
+}
+
+
+/**
+ * Colored links
+ */
+.link-main {
+    font-weight: 600;
+}
+    .link:before {
+        background-color: var(--primary-color);
+    }
+
+
+.link-black {
+    color: var(--font-color);
+}
+    .link-black:before {
+        background-color: var(--font-color);
+    }
+
+
+.link-white {
+    color: white;
+    font-weight: 200;
+}
+    .link-white:before {
+        background-color: white;
+    }
+
+.link-gray {
+    color: rgb(136, 136, 136);
+    font-weight: 200;
+}
+    .link-gray:before {
+        background-color: rgb(136, 136, 136);
+    }
+
+
+.link-red {
+    color: var(--error-color);
+    font-weight: 600;
+}
+    .link-red:before {
+        background-color: var(--error-color);
+    }
+    .link-error:hover {
+        color: var(--error-color);
+    }
+
+
+.link-green {
+    color: var(--success-color);
+    font-weight: 600;
+}
+    .link-green:before {
+        background-color: var(--success-color);
+    }

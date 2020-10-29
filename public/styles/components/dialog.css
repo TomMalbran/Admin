@@ -1,0 +1,134 @@
+/**
+ * The Animations
+ */
+@keyframes backdrop-open {
+    from { opacity: 0; }
+    50%  { opacity: 1; }
+}
+@keyframes dialog-open {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1);   }
+}
+
+@keyframes backdrop-close {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+@keyframes dialog-close {
+    from { opacity: 1; transform: scale(1);   }
+    to   { opacity: 0; transform: scale(0.8); }
+}
+
+.app {
+    transition: transform 0.4s;
+}
+
+
+
+/**
+ * The Dialog
+ */
+.dialog-backdrop {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-dialog);
+    background-color: var(--drop-color);
+    animation: backdrop-open 0.4s linear;
+}
+    .dialog-close.dialog-backdrop {
+        animation: backdrop-close 0.2s linear;
+        opacity: 0;
+    }
+
+.dialog {
+    position: static;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 48px);
+    padding: 0;
+    background-color: white;
+    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.1);
+    animation: dialog-open 0.4s ease-out;
+    border: none;
+    border-radius: var(--border-radius);
+    z-index: var(--z-dialog-cnt);
+}
+    .dialog-close .dialog {
+        animation: dialog-close 0.4s ease-out;
+    }
+    .dialog-confirm,
+    .dialog-prompt {
+        width: 400px;
+    }
+    .dialog-alert {
+        width: 650px;
+    }
+    
+.dialog > header {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 16px 0 16px;
+    color: white;
+}
+.dialog > header h2 {
+    margin: 0;
+}
+.dialog-close {
+    color: rgba(255, 255, 255, 0.8);
+    margin-right: 8px;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+.dialog-close:hover {
+    color: white;
+}
+
+.dialog > main {
+    flex: 1;
+    padding: 16px;
+    overflow: auto;
+}
+
+.dialog > footer {
+    flex-shrink: 0;
+    padding: 12px 16px;
+    text-align: right;
+    background-color: var(--lighter-gray);
+    border-bottom-right-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+
+
+/**
+ * Media Queries
+ */
+@media screen and (max-width: 580px) {
+    .show-dialog {
+        transform: scale(0.8);
+    }
+    
+    .dialog-container {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-height: 100vh;
+    }
+    .dialog-header {
+        padding: 16px;
+    }
+    .dialog-footer {
+        padding: 16px;
+    }
+}

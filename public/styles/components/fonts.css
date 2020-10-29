@@ -1,0 +1,57 @@
+/**
+ * The Fonts Faces
+ */
+@font-face {
+    font-family: "Lato";
+    src: url("../../fonts/lato/Lato-Regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Lato";
+    src: url("../../fonts/lato/Lato-Light.ttf");
+    font-weight: 200;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Lato";
+    src: url("../../fonts/lato/Lato-Bold.ttf");
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Lato";
+    src: url("../../fonts/lato/Lato-Italic.ttf");
+    font-weight: normal;
+    font-style: italic;
+}
+
+
+@font-face {
+    font-family: "Cooper";
+    src: url("../../fonts/cooper/Cooper-Light.ttf");
+    font-weight: 200;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Cooper";
+    src: url("../../fonts/cooper/Cooper-Medium.ttf");
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+
+/**
+ * The Font
+ */
+body,
+.btn,
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    font-family: var(--main-font);
+}

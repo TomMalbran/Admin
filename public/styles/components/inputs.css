@@ -1,0 +1,459 @@
+@keyframes tick {
+    from { transform: scale(0); }
+    to   { transform: scale(1); }
+}
+
+form {
+    margin: 0;
+}
+
+
+
+/**
+ * Buttons
+ */
+.btn {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 8px 16px;
+    margin: 0;
+    border-radius: var(--border-radius);
+    font-size: 0.95em;
+    cursor: pointer;
+    color: var(--font-color);
+    transition: box-shadow 0.2s;
+    white-space: nowrap;
+}
+    .btn:hover,
+    .btn:focus,
+    .btn:active {
+        box-shadow: inset 0 0 0 1.5em white;
+        outline: none;
+    }
+
+.btn-primary {
+    color: white;
+    background: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active {
+        color: var(--font-color);
+    }
+
+.btn-cancel {
+    background: var(--dark-gray);
+    border: 1px solid var(--dark-gray);
+}
+
+.btn-error {
+    color: white;
+    background: var(--error-color);
+    border: 1px solid var(--error-color);
+}
+    .btn-error:hover,
+    .btn-error:focus,
+    .btn-error:active {
+        color: var(--font-color);
+    }
+
+
+.btn:not(.full-width) + .btn:not(.full-width),
+.search-box + .btn {
+    margin-left: 10px;
+}
+
+
+
+/**
+ * Input Elements
+ */
+.smallest-input { width:  50px !important; }
+.smaller-input  { width:  75px !important; }
+.small-input    { width: 100px !important; }
+.medium-input   { width: 150px !important; }
+.large-input    { width: 250px !important; }
+
+.error-input.error-input {
+    border-color: var(--error-color);
+}
+.required-input:after {
+    content: "*";
+    color: var(--error-color);
+    margin-left: 5px;
+}
+
+
+
+/**
+ * Inputs, Selects & Textareas
+ */
+ @keyframes show-border {
+    to { background-size: 100% 100%; }
+}
+@keyframes hide-border {
+    from { background-size: 100% 100%; }
+}
+
+@keyframes show-select {
+    to { background-size: auto, 100% 100%; }
+}
+@keyframes hide-select {
+    from { background-size: auto, 100% 100%; }
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    font-size: 1em;
+    color: var(--font-color);
+    border: none;
+    background-color: white;
+    padding: 4px 8px;
+    border-bottom: solid 1px hsla(224, 14%, 41%, 1);
+    border-radius: 0;
+    background: linear-gradient(to top, var(--primary-color) 1px, transparent 1px);
+    background-size: 0 100%;
+    background-repeat: no-repeat;
+    animation: hide-border 0.1s cubic-bezier(.84, .09, .47, 1) both;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    box-shadow: none;
+    outline: none;
+    border-color: var(--primary-color);
+    animation: show-border 0.3s cubic-bezier(.84, .09, .47, 1) both;
+}
+select:focus {
+    animation: show-select 0.3s cubic-bezier(.84, .09, .47, 1) both;
+}
+
+input[type="text"]:disabled,
+input[type="email"]:disabled,
+input[type="tel"]:disabled,
+input[type="date"]:disabled,
+input[type="number"]:disabled,
+input[type="password"]:disabled,
+select:disabled,
+textarea:disabled {
+    background-color: rgb(245, 245, 245);
+    background: linear-gradient(to bottom, transparent 96%, rgb(245, 245, 245) 4%);
+    color: rgb(175, 175, 175);
+    border-color: rgb(205, 205, 205);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="password"],
+input[type="number"],
+select {
+    width: 100%;
+    margin: 0;
+}
+textarea {
+    height: 120px;
+    width: 100%;
+}
+
+select {
+    text-indent: 0.01px;
+    margin: 0;
+    padding: 4px 24px 4px 8px;
+    border-radius: 0;
+    background-color: transparent;
+    background-image: url(../../images/select.png), linear-gradient(to top, var(--primary-color) 1px, transparent 1px);
+    background-position: right center, 0 0;
+    background-size: auto, 0 100%;
+    background-repeat: no-repeat;
+    animation: hide-select 0.1s cubic-bezier(.84, .09, .47, 1) both;
+}
+select::-ms-expand {
+    display: none;
+}
+
+
+
+/**
+ * File Input
+ */
+.file-container.file-container {
+    display: flex;
+}
+.file-input.file-input {
+    /* width: auto; */
+    flex-grow: 2;
+}
+.file-box {
+    position: relative;
+    overflow: hidden;
+    display: inline;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+    .file-box input[type="file"] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+
+
+/**
+ * Checkbox & Radio
+ */
+input[type="checkbox"],
+input[type="radio"] {
+    width: 12px;
+    height: 12px;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    opacity: 0;
+}
+label input[type="checkbox"] + span,
+label input[type="radio"] + span {
+    position: relative;
+    display: inline-block;
+    margin: 2px 5px -2px -12px;
+    height: 10px;
+    width: 10px;
+    border: 1px solid rgb(211, 211, 211);
+    border-radius: 0;
+    font-size: 1px;
+    vertical-align: baseline;
+    cursor: pointer;
+    transition: all ease-in-out 0.2s;
+}
+    label input[type="radio"] + span {
+        border-radius: 100%;
+    }
+    
+    label input[type="checkbox"]:not(:disabled) + span:hover,
+    label input[type="radio"]:not(:disabled) + span:hover,
+    label input[type="checkbox"]:focus + span,
+    label input[type="radio"]:focus + span {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 5px var(--primary-color);
+        outline: none;
+    }
+    label input[type="checkbox"]:checked + span,
+    label input[type="radio"]:checked + span {
+        border-color: transparent !important;
+    }
+
+    label input[type="checkbox"]:checked + span:after {
+        content: "✓";
+        position: absolute;
+        top: -10px;
+        left: 2px;
+        font-size: 18px;
+        animation: tick 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
+    }
+    label input[type="radio"]:checked + span {
+        background-color: var(--font-color);
+        border-color: var(--font-color);
+    }
+
+    label input[type="checkbox"]:disabled + span,
+    label input[type="radio"]:disabled + span {
+        background-color: rgb(245, 245, 245);
+        color: rgb(175, 175, 175);
+    }
+
+
+
+/**
+ * Search Element
+ */
+.search-box {
+    position: relative;
+}
+.search-input.search-input {
+    width: 250px;
+    padding: 7px 30px;
+}
+.search-box:before,
+.search-close:before {
+    font-family: "icomoon";
+    position: absolute;
+    top: 8px;
+    font-size: 18px;
+    color: rgb(92, 92, 92);
+}
+    .search-box:before {
+        left: 7px;
+    }
+    .search-close:before {
+        right: 7px;
+    }
+
+.search-close {
+    display: none;
+    font-weight: normal;
+}
+.search-close:hover:before {
+    color: var(--font-color);
+}
+
+
+
+/**
+ * Tip
+ */
+.input-tip.input-tip {
+    color: #757575;
+    font-size: 0.85em;
+    padding: 4px 16px 0 8px;
+}
+
+
+
+/**
+ * UI Datepicker
+ */
+.ui-datepicker {
+    display: none;
+    background: white;
+    border: 1px solid var(--font-color);
+    padding: 5px;
+}
+
+.ui-datepicker-prev,
+.ui-datepicker-next {
+    position: absolute;
+    cursor: pointer;
+}
+    .ui-datepicker-prev { left:  10px; }
+    .ui-datepicker-next { right: 10px; }
+
+.ui-datepicker-title {
+    text-align: center;
+    font-weight: bold;
+}
+
+.ui-datepicker-calendar {
+    margin: 0;
+    border-spacing: 0;
+}
+.ui-datepicker-calendar th {
+    padding: 5px 5px 0 5px;
+    border: none;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.ui-datepicker-calendar td {
+    width: 15px;
+    padding: 3px;
+    border: 1px solid white;
+    background-color: rgb(245, 245, 245);
+    text-align: right;
+}
+    .ui-datepicker-calendar td:hover {
+        background-color: white;
+    }
+
+    td.ui-datepicker-week-end {
+        background-color: rgb(235, 235, 235);
+    }
+    td.ui-datepicker-other-month {
+        background-color: rgb(225, 225, 225);
+    }
+    td.ui-datepicker-today {
+        background-color: rgb(117, 117, 117);
+    }
+    td.ui-datepicker-current-day {
+        border-color: rgb(96, 96, 96);
+    }
+    
+    .ui-datepicker-calendar a {
+        color: rgb(106, 106, 106);
+        font-size: 12px;
+    }
+    td.ui-datepicker-today a {
+        color: rgb(240, 240, 240)
+    }
+    td.ui-datepicker-today:hover a {
+        color: rgb(106, 106, 106);
+    }
+
+
+
+/**
+ * Results
+ */
+.result-bar {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 100;
+    color: white !important;
+    margin: 0;
+    padding: 10px 18px;
+    border-radius: var(--border-radius);
+    font-size: 12px;
+    cursor: pointer;
+}
+.result-bar.result-success {
+    background-color: var(--success-color);
+}
+.result-bar.result-error {
+    background-color: var(--error-color);
+}
+.result-bar:after {
+    content: "x";
+    margin-left: 16px;
+}
+
+
+.result-big {
+    font-size: 16px;
+    margin: 5px 0 20px 0;
+}
+.result-none {
+    font-size: 16px;
+    margin: 0;
+    padding: 16px;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--border-color);
+    background-color: white;
+}
+    .result-green.result-green,
+    .result-success.result-success {
+        color: var(--success-color);
+    }
+    .result-yellow.result-yellow,
+    .result-warning.result-warning {
+        color: var(--warning-color);
+    }
+    .result-red.result-red,
+    .result-error.result-error {
+        color: var(--error-color);
+    }

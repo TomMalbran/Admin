@@ -1,0 +1,147 @@
+/**
+ * Ordered Lists
+ */
+.ordered-list {
+    margin: 16px 0;
+    padding: 0 16px;
+    list-style: none;
+}
+    .ordered-list li {
+        margin-bottom: 16px;
+    }
+    
+    .ordered-list dt,
+    .ordered-list dl {
+        color: var(--title-color);
+    }
+    .ordered-list dd {
+        margin: 0;
+    }
+    .ordered-list dt label {
+        font-weight: bold;
+    }
+    .ordered-list dd p {
+        margin-top: 0;
+    }
+
+    .ordered-list .ordered-list {
+        list-style-type: lower-latin;
+        margin: 10px 0 0 0;
+    }
+    .ordered-space {
+        margin-top: 20px;
+    }
+    .ordered-big-space {
+        margin-top: 40px;
+    }
+    .ordered-bspace.ordered-bspace {
+        margin-bottom: 30px;
+    }
+
+
+.ordered-list-sorted li {
+    margin-bottom: 20px;
+}
+.ordered-list-sorted dt {
+    display: flex;
+    align-items: center;
+}
+.ordered-list-sorted dt > .icono-drag {
+    margin-right: 16px;
+    cursor: grab;
+}
+.ordered-list-sorted dt > .icono-close {
+    margin-left: 16px;
+}
+.ordered-list-sorted dd {
+    margin-left: 25px !important;
+}
+.ordered-list-sorted label {
+    display: inline-block;
+    width: 100px;
+    margin-top: 8px;
+    vertical-align: top;
+}
+
+
+
+/**
+ * Ordered Lists with 2 columns
+ */
+.ordered-two-cols li {
+    display: flex;
+    align-items: flex-start;
+}
+.ordered-list :not(.ordered-one-col) dt {
+    position: relative;
+}
+.ordered-two-cols :not(.ordered-one-col) dt {
+    width: 200px;
+    flex-shrink: 0;
+}
+.ordered-stretch :not(.ordered-one-col) dt {
+    width: 160px;
+}
+.ordered-wide :not(.ordered-one-col) dt {
+    width: 400px;
+}
+    .ordered-two-cols :not(.ordered-one-col) dt:before {
+        position: absolute;
+        content: "";
+        top: 10px;
+        width: 93%;
+        border-top: 1px dashed var(--dark-gray);
+    }
+    .ordered-two-cols :not(.ordered-one-col) dt label {
+        position: relative;
+        padding-right: 16px;
+        background: white;
+        z-index: 1;
+    }
+
+.ordered-two-cols :not(.ordered-one-col) dd {
+    flex-grow: 1;
+}
+.ordered-list .ordered-two-cols :not(.ordered-one-col) dt {
+    width: 42.5%;
+}
+.ordered-list .ordered-two-cols :not(.ordered-one-col) dd {
+    width: 52.5%;
+}
+
+
+
+/**
+ * Image List
+ */
+.image-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+    grid-gap: 16px;
+}
+.image-list li {
+    border-radius: var(--border-radius);
+    border: 2px solid var(--border-color);
+}
+.image-list li img {
+    display: block;
+    width: 100%;
+}
+
+
+
+/**
+ * Media Queries
+ */
+@media screen and (max-width: 600px) {
+    .ordered-list {
+        margin: 0;
+        padding: 0;
+    }
+    .ordered-two-cols li {
+        display: block;
+    }
+    .ordered-two-cols :not(.ordered-one-col) dt {
+        width: 100%;
+    }
+}

@@ -1,0 +1,76 @@
+/**
+ * Tabs Bar
+ */
+.content-tabs {
+    position: sticky;
+    top: var(--header-height);
+    background-color: var(--bg-color);
+    margin-bottom: 16px;
+    overflow: auto;
+    z-index: var(--z-header);
+}
+
+.tabs-bar {
+    display: flex;
+    white-space: nowrap;
+    box-shadow: inset 0 -2px var(--border-color);
+}
+.content-horizontal .tabs-bar {
+    flex-direction: column;
+    box-shadow: inset -2px 0 var(--border-color);
+    margin-right: 16px;
+}
+    .tabs-bar li {
+        display: block;
+        padding: 0 0 16px 0;
+        margin-right: 16px;
+        color: rgb(153, 153, 153);
+        font-size: 15px;
+        font-weight: 400;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s;
+    }
+    .content-horizontal .tabs-bar li {
+        box-sizing: border-box;
+        min-height: 36px;
+        margin-right: 0;
+        padding: 8px 16px 8px 0;
+        border-right: 2px solid transparent;
+        border-bottom: none;
+    }
+    .tabs-bar li:not(.tab-selected):hover {
+        border-color: var(--title-color);
+        color: rgb(103, 103, 103);
+    }
+    .tabs-bar .tab-selected {
+        color: var(--primary-color);
+}
+
+
+.tabs-selector {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+.content-horizontal .tabs-selector {
+    top: 0;
+    right: 16px;
+    left: auto;
+    bottom: auto;
+    height: auto;
+    width: 2px;
+}
+.tabs-selector-animate {
+    transition: all 0.5s;
+}
+
+
+.tabs-content.tabs-content {
+    display: none;
+}
+.tabs-show.tabs-show {
+    display: block;
+}

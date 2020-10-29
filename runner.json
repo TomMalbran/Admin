@@ -1,0 +1,17 @@
+{
+    "name": "Admin",
+    "scripts": {
+        "icons": {
+            "font": "icoadmin",
+            "input": "misc/icoadmin",
+            "fonts": "public/fonts/icoadmin",
+            "style": "public/styles/components/icoadmin.css"
+        },
+        "minify": {
+            "type": "css",
+            "path": "public/styles/",
+            "input": "main.css",
+            "output": "build.min.css"
+        }
+    }
+}

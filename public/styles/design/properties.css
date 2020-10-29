@@ -1,0 +1,35 @@
+:root {
+    --primary-color     : #282644;
+    --secondary-color   : #323055;
+    --terciary-color    : #3d3b68;
+
+    --drop-color        : rgba(9, 30, 66, 0.5);
+    --border-color      : rgb(241, 241, 241);
+    --bg-color          : rgb(249, 249, 250);
+    --font-color        : rgb(23, 43, 50);
+    --title-color       : rgb(63, 87, 100);
+    --dark-gray         : rgb(224, 225, 227);
+    --darker-gray       : rgb(180, 180, 180);
+    --error-color       : rgb(188, 28, 72);
+    --success-color     : rgb(1, 163, 28);
+    --warning-color     : rgb(240, 150, 9);
+
+    --border-radius     : 4px;
+    --sidebar-width     : 268px;
+    --mainbar-width     : 48px;
+    --subbar-width      : 220px;
+    --topbar-height     : 44px;
+    --header-height     : 70px;
+    
+    --z-header          : 3;
+    --z-sidebar         : 20;
+    --z-mainbar         : 21;
+    --z-dialog          : 100001;
+    --z-dropzone        : 100003;
+    --z-snackbar        : 100004;
+    --z-loader          : 200000;
+    --z-loader-cnt      : 200001;
+
+    --main-font         : Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --title-font        : Cooper, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

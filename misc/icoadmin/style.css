@@ -1,0 +1,115 @@
+@font-face {
+  font-family: 'icoadmin';
+  src:
+    url('fonts/icoadmin.ttf?z697wt') format('truetype'),
+    url('fonts/icoadmin.woff?z697wt') format('woff'),
+    url('fonts/icoadmin.svg?z697wt#icoadmin') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icono-"], [class*=" icono-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icoadmin' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icono-error:before {
+  content: "\e925";
+}
+.icono-file-text:before {
+  content: "\e920";
+}
+.icono-file-zip:before {
+  content: "\e911";
+}
+.icono-file-image:before {
+  content: "\e912";
+}
+.icono-file-presentation:before {
+  content: "\e915";
+}
+.icono-file-spreadsheet:before {
+  content: "\e916";
+}
+.icono-file-document:before {
+  content: "\e919";
+}
+.icono-file-pdf:before {
+  content: "\e91a";
+}
+.icono-file:before {
+  content: "\e91b";
+}
+.icono-file-code:before {
+  content: "\e91c";
+}
+.icono-file-audio:before {
+  content: "\e91d";
+}
+.icono-file-video:before {
+  content: "\e91e";
+}
+.icono-last:before {
+  content: "\e900";
+}
+.icono-first:before {
+  content: "\e902";
+}
+.icono-blank:before {
+  content: "\e926";
+}
+.icono-check:before {
+  content: "\e927";
+}
+.icono-drag:before {
+  content: "\e923";
+}
+.icono-folder:before {
+  content: "\e921";
+}
+.icono-media:before {
+  content: "\e91f";
+}
+.icono-home:before {
+  content: "\e901";
+}
+.icono-user:before {
+  content: "\e932";
+}
+.icono-view:before {
+  content: "\e914";
+}
+.icono-delete:before {
+  content: "\e92a";
+}
+.icono-right:before {
+  content: "\e90a";
+}
+.icono-left:before {
+  content: "\e917";
+}
+.icono-back:before {
+  content: "\e918";
+}
+.icono-close:before {
+  content: "\e90e";
+}
+.icono-menu:before {
+  content: "\e90f";
+}
+.icono-logout:before {
+  content: "\e910";
+}
+.icono-edit:before {
+  content: "\e913";
+}

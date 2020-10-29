@@ -1,0 +1,50 @@
+/**
+ * The Snackbar
+ */
+.snackbar {
+    box-sizing: border-box;
+    visibility: hidden;
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    color: #fff;
+    padding: 16px 32px;
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    white-space: nowrap;
+    transform: translate(-50%);
+    z-index: var(--z-snackbar);
+}
+.snackbar-show {
+    visibility: visible;
+    animation: fadein 0.5s;
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .snackbar {
+        padding: 8px;
+    }
+}
+@media screen and (max-width: 450px) {
+    .snackbar {
+        text-align: center;
+        width: 90%;
+        white-space: normal;
+    }
+}
+@media screen and (max-width: 410px) {
+    .snackbar a {
+        display: block;
+    }
+}

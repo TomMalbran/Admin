@@ -3,12 +3,12 @@
 
 <header class="topbar">
     <div class="topbar-title">
-        <a href="#" class="icon icon-menu topbar-menu"></a>
+        <a href="#" class="icono icono-menu topbar-menu"></a>
         <h1>{{siteName}}</h1>
     </div>
     <div class="topbar-user">
         <a href="{{url}}session/view" class="link link-white topbar-username">{{{userName}}}</a>
-        <a href="#" class="logout mainbar-baricon icon icon-logout"></a>
+        <a href="#" class="logout mainbar-baricon icono icono-logout"></a>
     </div>
 </header>
 
@@ -17,13 +17,13 @@
         <div className="mainbar-topnav">
             <ol class="mainbar-subnav no-list">
                 <li>
-                    <a href="{{appUrl}}" class="mainbar-baricon icon icon-home" target="_blank" data-noajax="1"></a>
+                    <a href="{{appUrl}}" class="mainbar-baricon icono icono-home" target="_blank" data-noajax="1"></a>
                 </li>
             </ol>
         </div>
         <ol class="mainbar-subnav no-list">
             <li>
-                <a href="#" class="logout mainbar-baricon icon icon-logout"></a>
+                <a href="#" class="logout mainbar-baricon icono-logout"></a>
             </li>
             <li>
                 <a href="{{url}}session/view" class="mainbar-avatar">
@@ -38,7 +38,7 @@
             {{#menuItems}}
             <li>
                 <a href="{{url}}{{menuUrl}}" class="{{#isMenuSel}}{{menuKey}}{{/isMenuSel}}" data-menu="{{menuKey}}">
-                    <span class="icon icon-{{menuIcon}}"></span>
+                    <span class="icon-{{menuIcon}}"></span>
                     <span class="main-text">{{menuName}}</span>
                 </a>
             </li>
@@ -46,14 +46,14 @@
 
             <li>
                 <a href="{{url}}media" class="{{#isMenuSel}}media{{/isMenuSel}}" data-menu="media">
-                    <span class="icon icon-media"></span>
+                    <span class="icono icono-media"></span>
                     <span class="main-text">Media</span>
                 </a>
             </li>
             {{#hasAdminAccess}}
             <li>
                 <a href="{{url}}users" class="{{#isMenuSel}}users{{/isMenuSel}}" data-menu="users">
-                    <span class="icon icon-user"></span>
+                    <span class="icono icono-user"></span>
                     <span class="main-text">Usuarios</span>
                 </a>
             </li>

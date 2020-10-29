@@ -222,7 +222,7 @@ class Media {
                     $count.text(resized);
                     $resized.text(resized);
                     $progress.attr("value", resized);
-                    $elem.find("span").removeClass("icon-blank").addClass("icon-check");
+                    $elem.find("span").removeClass("icono-blank").addClass("icono-check");
                     $elem[0].scrollIntoView({ behavior : "smooth", block : "center", inline : "center" });
                 }
             } catch (e) {

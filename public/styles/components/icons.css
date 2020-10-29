@@ -1,0 +1,18 @@
+@font-face {
+    font-family: "icoadmin";
+    src: url("../../fonts/icoadmin/icoadmin.ttf?92zck0") format("truetype"),
+        url("../../fonts/icoadmin/icoadmin.woff?92zck0") format("woff"),
+        url("../../fonts/icoadmin/icoadmin.svg?92zck0#icoadmin") format("svg");
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="icono-"]:before,
+[class*=" icono-"]:before {
+    display: inline-block;
+    padding: 0;
+    font-family: "icoadmin";
+    font-weight: 400;
+    text-align: center;
+}

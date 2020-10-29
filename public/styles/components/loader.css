@@ -1,0 +1,102 @@
+/**
+ * The Animations
+ */
+@keyframes loader-ring {
+    0%   { transform: rotate(0deg);   }
+    100% { transform: rotate(360deg); }
+}
+@keyframes dots-loader {
+    0%, 20% {
+      color: transparent;
+      text-shadow:
+        .25em 0 0 transparent,
+        .5em 0 0 transparent;
+    }
+    40% {
+      color: var(--primary-color);
+      text-shadow:
+        .25em 0 0 transparent,
+        .5em 0 0 transparent;
+    }
+    60% {
+      text-shadow:
+        .25em 0 0 var(--primary-color),
+        .5em 0 0 transparent;
+    }
+    80%, 100% {
+      text-shadow:
+        .25em 0 0 var(--primary-color),
+        .5em 0 0 var(--primary-color);
+    }
+}
+
+
+
+/**
+ * The Loader
+ */
+.loader {
+    position: fixed;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--drop-color);
+    opacity: 0;
+    z-index: var(--z-loader);
+    transition: all 0.3s;
+}
+.show-loader {
+    display: flex;
+    opacity: 1;
+}
+
+
+.loader-ring {
+    flex-grow: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 64px;
+    height: 64px;
+    z-index: var(--z-loader-cnt);
+}
+.loader-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 51px;
+    height: 51px;
+    margin: 6px;
+    border: 6px solid var(--primary-color);
+    border-radius: 50%;
+    animation: loader-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: var(--primary-color) transparent transparent transparent;
+}
+.loader-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.loader-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.loader-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+
+.loader-text {
+    position: relative;
+    color: var(--primary-color);
+    padding-bottom: 80px;
+    z-index: var(--z-loader-cnt);
+}
+.loader-text:after {
+    content: " .";
+    font-size: 1.5em;
+    animation: dots-loader 1s steps(5, end) infinite;
+}

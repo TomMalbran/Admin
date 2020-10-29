@@ -1,0 +1,21 @@
+@import "components/dialog.css";
+@import "components/fancybox.css";
+@import "components/fonts.css";
+@import "components/grid.css";
+@import "components/icons.css";
+@import "components/icoadmin.css";
+@import "components/inputs.css";
+@import "components/links.css";
+@import "components/lists.css";
+@import "components/tables.css";
+@import "components/pagination.css";
+@import "components/tabs.css";
+@import "components/tooltips.css";
+@import "components/loader.css";
+@import "components/snackbar.css";
+
+@import "design/properties.css";
+@import "design/auth.css";
+@import "design/design.css";
+@import "design/sidebar.css";
+@import "design/media.css";

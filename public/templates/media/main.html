@@ -1,6 +1,6 @@
 {{>header/main}}
 <header class="content-header">
-    <h2><span class="icon icon-media"></span> Media</h2>
+    <h2><span class="icono-media"></span> Media</h2>
     <div class="content-actions">
         <input class="media-filter" type="text" name="search" placeholder="Filtrar archivos" autocomplete="off" />
         <a href="{{url}}media/create{{#query}}{{query}}&{{/query}}{{^query}}?{{/query}}path={{path}}" class="btn btn-primary"
@@ -71,13 +71,13 @@
     <div class="media-item {{^isBack}}media-has-actions{{/isBack}} {{#isSelected}}media-selected{{/isSelected}}">
         {{#isBack}}
         <a href="{{url}}media{{route}}{{query}}" class="media-icon">
-            <span class="icon icon-back"></span>
+            <span class="icono-back"></span>
         </a>
         {{/isBack}}
 
         {{#isDir}}
         <a href="{{url}}media{{route}}{{query}}" class="media-icon">
-            <span class="icon icon-folder"></span>
+            <span class="icono-folder"></span>
         </a>
         {{/isDir}}
 
@@ -105,7 +105,7 @@
             data-path="{{value}}"
             data-name="{{name}}"
         >
-            <span class="icon icon-{{icon}}"></span>
+            <span class="icono-{{icon}}"></span>
         </div>
         {{/isFile}}
 
@@ -115,12 +115,12 @@
         <div class="media-actions">
             {{#isDir}}
             <a href="{{url}}media{{route}}{{query}}">
-                <span class="icon icon-view"></span>
+                <span class="icono icono-view"></span>
             </a>
             {{/isDir}}
             {{#isImage}}
             <a href="{{source}}" class="fancybox" rel="media-view" title="{{name}}">
-                <span class="icon icon-view"></span>
+                <span class="icono icono-view"></span>
             </a>
             {{/isImage}}
             <a href="{{url}}media/rename{{#query}}{{query}}&{{/query}}{{^query}}?{{/query}}path={{path}}&oldName={{name}}"
@@ -129,14 +129,14 @@
                 data-key="newName"
                 data-value="{{name}}"
             >
-                <span class="icon icon-edit"></span>
+                <span class="icono icono-edit"></span>
             </a>
             <a href="{{url}}media/delete{{#query}}{{query}}&{{/query}}{{^query}}?{{/query}}path={{path}}&name={{name}}"
                 {{#isDir}}data-confirm="¿Realmente desea eliminar el directorio y todo su contenido?"{{/isDir}}
                 {{^isDir}}data-confirm="¿Realmente desea eliminar el archivo?"{{/isDir}}
                 data-title="Eliminar"
             >
-                <span class="icon icon-delete"></span>
+                <span class="icono-delete"></span>
             </a>
         </div>
         {{/isBack}}

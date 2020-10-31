@@ -106,12 +106,12 @@ class Mailer {
         if (!empty($attachment)) {
             $mail->AddAttachment($attachment);
         }
-        if (self::$smtp->showErrors) {
+        if (!empty(self::$smtp->showErrors)) {
             $mail->SMTPDebug = 3;
         }
         
         $result = $mail->send();
-        if (self::$smtp->showErrors && !$result) {
+        if (!empty(self::$smtp->showErrors) && !$result) {
             echo "Message could not be sent.";
             echo "Mailer Error: " . $mail->ErrorInfo;
         }

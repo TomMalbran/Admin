@@ -92,21 +92,21 @@ a {
 
 
 .link-red {
-    color: var(--error-color);
+    color: var(--red-color);
     font-weight: 600;
 }
     .link-red:before {
-        background-color: var(--error-color);
+        background-color: var(--red-color);
     }
     .link-error:hover {
-        color: var(--error-color);
+        color: var(--red-color);
     }
 
 
 .link-green {
-    color: var(--success-color);
+    color: var(--green-color);
     font-weight: 600;
 }
     .link-green:before {
-        background-color: var(--success-color);
+        background-color: var(--green-color);
     }

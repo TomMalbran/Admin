@@ -138,10 +138,10 @@
     border-radius: var(--border-radius);
 }
 .auth-error {
-    background: var(--error-color);
+    background: var(--red-color);
 }
 .auth-success {
-    background: var(--success-color);
+    background: var(--green-color);
 }
 
 

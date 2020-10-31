@@ -8,11 +8,15 @@
     --bg-color          : rgb(249, 249, 250);
     --font-color        : rgb(23, 43, 50);
     --title-color       : rgb(63, 87, 100);
-    --dark-gray         : rgb(224, 225, 227);
+
     --darker-gray       : rgb(180, 180, 180);
-    --error-color       : rgb(188, 28, 72);
-    --success-color     : rgb(1, 163, 28);
-    --warning-color     : rgb(240, 150, 9);
+    --dark-gray         : rgb(201, 202, 203);
+    --light-gray        : rgb(224, 225, 229);
+    --lighter-gray      : rgb(235, 236, 240);
+    
+    --red-color         : rgb(188, 28, 72);
+    --yellow-color      : rgb(240, 150, 9);
+    --green-color       : rgb(1, 163, 28);
 
     --border-radius     : 4px;
     --sidebar-width     : 268px;
@@ -24,6 +28,7 @@
     --z-header          : 3;
     --z-sidebar         : 20;
     --z-mainbar         : 21;
+    --z-result          : 100;
     --z-dialog          : 100001;
     --z-dropzone        : 100003;
     --z-snackbar        : 100004;

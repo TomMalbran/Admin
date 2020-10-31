@@ -33,7 +33,7 @@
         white-space: nowrap;
     }
     .tooltip-error:after {
-        background-color: var(--error-color);
+        background-color: var(--red-color);
     }
     
     .tooltip:before {
@@ -72,7 +72,7 @@
         left: 15px;
     }
     .tooltip-top.tooltip-error:before {
-        border-color: var(--error-color) transparent transparent transparent;
+        border-color: var(--red-color) transparent transparent transparent;
     }
 
 
@@ -101,7 +101,7 @@
     .tooltip-bottom.tooltip-error:before,
     .tooltip-br.tooltip-error:before,
     .tooltip-bl.tooltip-error:before {
-        border-color: transparent transparent var(--error-color) transparent;
+        border-color: transparent transparent var(--red-color) transparent;
     }
     
     .tooltip-bottom:after {
@@ -142,7 +142,7 @@
         margin-left: 0;
     }
     .tooltip-left.tooltip-error:before {
-        border-color: transparent var(--error-color) transparent transparent;
+        border-color: transparent var(--red-color) transparent transparent;
     }
 
 
@@ -162,7 +162,7 @@
         margin-right: 0;
     }
     .tooltip-right.tooltip-error:before {
-        border-color: transparent transparent transparent var(--error-color);
+        border-color: transparent transparent transparent var(--red-color);
     }
 
 

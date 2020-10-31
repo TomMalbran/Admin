@@ -24,9 +24,9 @@ class Unsplash {
             self::$loaded = true;
 
             HttpClient::init([
-                "applicationId" => Config::get("unsplashClient"),
-                "secret"        => Config::get("unsplashSecret"),
                 "utmSource"     => Config::get("name"),
+                "applicationId" => "12ede3b69ebd10e89dc42649cd3f69a8665c1570e701289b08540c8db1cbd957",
+                "secret"        => "de184adeef5a7bc30bcffc9077695b48a993c6643e817114fbba3dcb951d6d5a",
                 "callbackUrl"   => "https://your-application.com/oauth/callback",
             ]);
         }

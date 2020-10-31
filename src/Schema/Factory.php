@@ -27,7 +27,7 @@ class Factory {
      */
     public static function load(): void {
         if (!self::$loaded) {
-            $config          = Config::get("db");
+            $config       = Config::get("db");
             $adminData    = Admin::loadData(Admin::SchemaData, "admin");
             $internalData = Admin::loadData(Admin::SchemaData, "internal");
 

@@ -35,11 +35,11 @@ class Settings {
 
     /**
      * Returns a single Setting
+     * @param string $section
      * @param string $variable
-     * @param string $section  Optional.
      * @return mixed|null
      */
-    public static function get(string $variable, string $section = "general") {
+    public static function get(string $section, string $variable) {
         $query = Query::create("section", "=", $section);
         $query->add("variable", "=", $variable);
         $model = self::getSchema()->getOne($query);

@@ -135,7 +135,7 @@ class Auth {
      * @return boolean
      */
     public static function isLoginDisabled(Model $credential): bool {
-        return $credential->level < Access::Admin && Settings::get("loginDisabled");
+        return $credential->level < Access::Admin && Settings::get("general", "loginDisabled");
     }
 
 

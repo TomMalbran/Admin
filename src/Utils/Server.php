@@ -97,24 +97,22 @@ class Server {
 
 
     /**
-     * Redirects if the Url is invalid
-     * @return void
+     * Returns a proper url using www and ssl
+     * @return string
      */
-    public static function ensureUrl() {
+    public static function getPropperUrl(): string {
         if (substr($_SERVER["HTTP_HOST"], 0, 9) !== "localhost") {
             if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) !== "www.") {
-                header("Location: https://www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}");
-                exit;
+                return "https://www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
             }
             if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) === "www.") {
-                header("Location: https://{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}");
-                exit;
+                return "https://{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
             }
         }
         if (substr($_SERVER["HTTP_HOST"], 0, 4) !== "www." && substr($_SERVER["HTTP_HOST"], 0, 9) !== "localhost") {
             $protocol = $_SERVER["HTTPS"] == "on" ? "https://" : "http://";
-            header("Location: {$protocol}www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}");
-            exit;
+            return "{$protocol}www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
         }
+        return "";
     }
 }

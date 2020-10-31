@@ -84,7 +84,7 @@ class Output {
             "version"         => Config::getVersion()->full,
             "siteName"        => Config::get("name"),
             "url"             => Config::getAdminUrl(),
-            "appUrl"          => Config::getUrl(),
+            "siteUrl"         => Config::getUrl(),
             "baseUrl"         => Config::getBaseUrl(),
             "publicUrl"       => Config::getPublicUrl(),
             "filesUrl"        => Config::getFilesUrl(),

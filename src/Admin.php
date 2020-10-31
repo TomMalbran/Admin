@@ -19,7 +19,7 @@ use Admin\Utils\JSON;
 use Admin\Utils\Strings;
 
 /**
- * The Admin Service
+ * The Admin
  */
 class Admin {
 
@@ -245,20 +245,6 @@ class Admin {
             return Response::view("core/index");
         }
         return Response::view("core/error");
-    }
-
-    /**
-     * Returns just the data for the requested content
-     * @param string $url
-     * @param array  $request Optional.
-     * @return array
-     */
-    public static function getData(string $url, array $request = []) {
-        $response = self::request($url, $request);
-        if (!empty($response) && !empty($response->data)) {
-            return $response->data;
-        }
-        return [];
     }
 
 

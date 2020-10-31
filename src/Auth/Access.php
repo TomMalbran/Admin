@@ -22,6 +22,7 @@ class Access {
         self::General => "General",
         self::Editor  => "Editor",
         self::Admin   => "Admin",
+        self::API     => "API",
     ];
     public static $Names = [
         self::Editor => "Editor",

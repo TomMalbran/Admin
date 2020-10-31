@@ -151,7 +151,10 @@ class Admin {
      */
     public static function loadJSON(string $dir, string $file, bool $forSite = false): array {
         $path = self::getPath("$dir/$file.json", $forSite ? "site" : "admin");
-        return JSON::readFile($path, true);
+        if (File::exists($path)) {
+            return JSON::readFile($path, true);
+        }
+        return [];
     }
 
     /**
@@ -162,7 +165,10 @@ class Admin {
      */
     public static function loadData(string $file, string $type = "admin"): array {
         $path = self::getPath(self::DataDir . "/$file.json", $type);
-        return JSON::readFile($path, true);
+        if (File::exists($path)) {
+            return JSON::readFile($path, true);
+        }
+        return [];
     }
 
     /**

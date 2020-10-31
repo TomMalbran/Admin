@@ -242,30 +242,47 @@ class Utils {
         return "";
     }
 
+
+
     /**
-     * Returns true if the gven domain or www.domain is delegated
-     * @param string $domain
-     * @param string $serverIP Optional.
-     * @return boolean
+     * Returns the Youtube Embed Url
+     * @param string  $source
+     * @param boolean $autoplay
+     * @param boolean $loop
+     * @return string
      */
-    public static function isDelegated(string $domain, string $serverIP = ""): bool {
-        if (self::verifyDelegation($domain, $serverIP)) {
-            return true;
+    public static function getYoutubeEmbed(string $source, bool $autoplay, bool $loop): string {
+        $videoID = "";
+        $list    = "";
+        if (Strings::startsWith($source, "https://youtu.be/")) {
+            $videoID = Strings::replace($source, "https://youtu.be/", "");
+        } elseif (Strings::startsWith($source, "https://www.youtube.com/watch?v=")) {
+            $videoID = Strings::replace($source, "https://www.youtube.com/watch?v=", "");
         }
-        return self::verifyDelegation("www.$domain", $serverIP);
-    }
-    
-    /**
-     * Returns true if the gven domain is delegated
-     * @param string $domain
-     * @param string $serverIP Optional.
-     * @return boolean
-     */
-    public static function verifyDelegation(string $domain, string $serverIP = ""): bool {
-        $host = gethostbyname($domain);
-        if (!empty($serverIP)) {
-            return !empty($host) && $host == $serverIP;
+        if (Strings::contains($videoID, "&")) {
+            $parts   = Strings::split($videoID, "&");
+            $videoID = $parts[0];
+            if (Strings::startsWith($parts[1], "list")) {
+                $list = Strings::replace($parts[1], "list=", "");
+                if (strstr($list, "&") !== FALSE) {
+                    $list = Strings::split($list, "&")[0];
+                }
+            }
         }
-        return !empty($host) && $host != $domain;
+        if (empty($videoID)) {
+            return "";
+        }
+
+        $result = "https://www.youtube-nocookie.com/embed/${videoID}?version=3&modestbranding=1&rel=0&showinfo=0&color=white";
+        if (!empty($list)) {
+            $result .= "&list=$list";
+        }
+        if ($autoplay) {
+            $result .= "&autoplay=1";
+        }
+        if ($loop) {
+            $result .= "&loop=1";
+        }
+        return $result;
     }
 }

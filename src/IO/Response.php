@@ -135,6 +135,50 @@ class Response {
     }
 
 
+
+    /**
+     * Returns the given data
+     * @param array $data Optional.
+     * @return Response
+     */
+    public static function data(array $data = null): Response {
+        return new Response("API", [
+            "result" => [ "data" => $data ],
+        ]);
+    }
+
+    /**
+     * Returns an API Errors Response
+     * @param Errors $errors
+     * @param array  $data   Optional.
+     * @return Response
+     */
+    public static function errors(Errors $errors, array $data = null): Response {
+        return new Response("API", [
+            "errors" => $errors,
+            "result" => [
+                "errors" => $errors->get(false),
+                "data"   => $data,
+            ],
+        ]);
+    }
+
+    /**
+     * Returns an API Success Response
+     * @param string $success
+     * @param array  $data    Optional.
+     * @return Response
+     */
+    public static function success(string $success, array $data = null): Response {
+        return new Response("API", [
+            "result" => [
+                "success" => $success,
+                "data"    => $data,
+            ],
+        ]);
+    }
+
+
     
     /**
      * Creates a new Response instance

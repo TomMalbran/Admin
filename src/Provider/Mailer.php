@@ -50,11 +50,11 @@ class Mailer {
      * @param string  $to
      * @param string  $subject
      * @param string  $body
-     * @param boolean $sendHtml   Optional.
      * @param string  $attachment Optional.
+     * @param boolean $sendHtml   Optional.
      * @return boolean
      */
-    private static function send(string $to, string $subject, string $body, bool $sendHtml = true, string $attachment = ""): bool {
+    private static function send(string $to, string $subject, string $body, string $attachment = "", bool $sendHtml = true): bool {
         if (self::$smtp->sendDisabled) {
             return false;
         }
@@ -123,9 +123,10 @@ class Mailer {
      * @param string|string[] $sendTo
      * @param string          $subject
      * @param string          $message
+     * @param string          $attachment Optional.
      * @return boolean
      */
-    public static function sendTo(string $sendTo, string $subject, string $message): bool {
+    public static function sendTo(string $sendTo, string $subject, string $message, string $attachment = ""): bool {
         self::load();
         $sendTo  = Arrays::toArray($sendTo);
         $subject = Mustache::render($subject, [
@@ -141,24 +142,23 @@ class Mailer {
         ]);
 
         foreach ($sendTo as $email) {
-            $success = self::send($email, $subject, $message);
+            $success = self::send($email, $subject, $message, $attachment);
         }
         return $success;
     }
-    
 
 
     
     /**
      * Sends a Contact email
+     * @param string $subject
      * @param string $message
-     * @param string $subject Optional.
+     * @param string $attachment Optional.
      * @return boolean
      */
-    public static function sendContact(string $message, string $subject = "") {
+    public static function sendContact(string $subject, string $message, string $attachment = "") {
         $sendTo  = Config::get("smtpSendTo");
-        $subject = $subject ?: "Contacto en {{name}}";
-        return self::sendTo($sendTo, $subject, $message);
+        return self::sendTo($sendTo, $subject, $message, $attachment);
     }
 
     /**
@@ -189,7 +189,7 @@ class Mailer {
         $subject = Config::get("name") . ": Database Backup";
         $message = "Backup de la base de datos al dia: " . date("d M Y, H:i:s");
         
-        return self::send($sendTo, $subject, $message, false, $attachment);
+        return self::send($sendTo, $subject, $message, $attachment, false);
     }
 
 

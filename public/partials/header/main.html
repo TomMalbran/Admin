@@ -41,6 +41,13 @@
                     <span class="icon-{{menuIcon}}"></span>
                     <span class="main-text">{{menuName}}</span>
                 </a>
+                {{#hasSubmenu}}
+                <ol class="sub-nav">
+                    {{#subItems}}
+                    <li><a href="{{url}}{{subUrl}}" class="{{#isSubSel}}{{subKey}}{{/isSubSel}}" data-sub="{{subKey}}">{{subName}}</a></li>
+                    {{/subItems}}
+                </ol>
+                {{/hasSubmenu}}
             </li>
             {{/menuItems}}
 

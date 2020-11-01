@@ -125,11 +125,23 @@ class Output {
         $items  = Admin::loadData(Admin::MenuData);
         $result = [];
         foreach ($items as $item) {
+            $subItems = [];
+            if (!empty($item["items"])) {
+                foreach ($item["items"] as $subItem) {
+                    $subItems[] = [
+                        "subKey"  => $subItem["key"],
+                        "subUrl"  => $subItem["url"],
+                        "subName" => $subItem["name"],
+                    ];
+                }
+            }
             $result[] = [
-                "menuKey"  => $item["key"],
-                "menuUrl"  => $item["url"],
-                "menuIcon" => $item["icon"],
-                "menuName" => $item["name"],
+                "menuKey"    => $item["key"],
+                "menuUrl"    => $item["url"],
+                "menuIcon"   => $item["icon"],
+                "menuName"   => $item["name"],
+                "hasSubmenu" => !empty($subItems),
+                "subItems"   => $subItems,
             ];
         }
         return $result;

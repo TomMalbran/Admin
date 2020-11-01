@@ -486,13 +486,64 @@ class Schema {
 
 
     /**
+     * Creates and ensures the Order
+     * @param Request $request
+     * @return integer
+     */
+    public function createWithOrder(Request $request) {
+        $this->ensureOrder(null, $request);
+        return $this->create($request);
+    }
+
+    /**
+     * Edits and ensures the Order
+     * @param integer $id
+     * @param Request $request
+     * @return void
+     */
+    public function editWithOrder(int $id, Request $request): void {
+        $model = $this->getOne($id);
+        $this->ensureOrder($model, $request);
+        $this->edit($id, $request);
+    }
+
+    /**
+     * Deletes and ensures the Order
+     * @param integer $id
+     * @return boolean
+     */
+    public function deleteWithOrder(int $id): bool {
+        $model = $this->getByID($id);
+        if ($this->delete($id)) {
+            $this->ensureOrder($model, null);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Ensures that the order of the Elements is correct
+     * @param Model   $model   Optional.
+     * @param Request $request Optional.
+     * @return void
+     */
+    public function ensureOrder(Model $model = null, Request $request = null): void {
+        $oldPosition = !empty($model)   ? $model->position             : 0;
+        $newPosition = !empty($request) ? $request->getInt("position") : 0;
+        $updPosition = $this->ensureAdvOrder($oldPosition, $newPosition);
+        if (!empty($request)) {
+            $request->position = $updPosition;
+        }
+    }
+
+    /**
      * Ensures that the order of the Elements is correct on Create/Edit
      * @param integer $oldPosition
      * @param integer $newPosition
      * @param Query   $query       Optional.
      * @return integer
      */
-    public function ensureOrder(int $oldPosition, int $newPosition, Query $query = null): int {
+    public function ensureAdvOrder(int $oldPosition, int $newPosition, Query $query = null): int {
         $isEdit          = !empty($oldPosition);
         $nextPosition    = $this->getNextPosition($query);
         $oldPosition     = $isEdit ? $oldPosition : $nextPosition;

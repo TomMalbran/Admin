@@ -102,7 +102,7 @@ class Mustache {
     public static function render(string $templateOrPath, array $data, bool $forSite = false): string {
         self::load($forSite);
 
-        if (!Strings::match($templateOrPath, '/^[a-z\/]*$/')) {
+        if (!Strings::match($templateOrPath, '/^[a-z\/\-]*$/')) {
             return self::$simpleEngine->render($templateOrPath, $data);
         }
         if (!$forSite && self::$adminEngine != null) {

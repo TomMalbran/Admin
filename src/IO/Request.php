@@ -1,6 +1,7 @@
 <?php
 namespace Admin\IO;
 
+use Admin\IO\Errors;
 use Admin\IO\Status;
 use Admin\File\Path;
 use Admin\File\File;
@@ -725,6 +726,22 @@ class Request implements ArrayAccess {
     }
     
 
+
+    /**
+     * Validates an Image
+     * @param string $key
+     * @param Errors $errors
+     * @return void
+     */
+    public function validateImage(string $key, Errors $errors): void {
+        if (!$this->has($key)) {
+            $errors->add("{$key}Empty");
+        } elseif (!$this->isValidImage($key)) {
+            $error = "{$key}Type";
+        } elseif (!$this->fileExists($key)) {
+            $error = "{$key}Exists";
+        }
+    }
 
     /**
      * Adds Filters to the Query

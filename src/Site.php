@@ -5,6 +5,7 @@ use Admin\Admin;
 use Admin\Config\Config;
 use Admin\Config\Settings;
 use Admin\Auth\Auth;
+use Admin\File\File;
 use Admin\Provider\Mustache;
 use Admin\Utils\Server;
 
@@ -67,15 +68,25 @@ class Site {
     /**
      * Returns just the data for the requested content
      * @param string $url
-     * @param array  $request Optional.
+     * @param array  $params Optional.
      * @return array
      */
-    public static function getData(string $url, array $request = []) {
-        $response = Admin::request($url, $request);
+    public static function getData(string $url, array $params = []) {
+        $response = Admin::request($url, $params);
         if (!empty($response) && !empty($response->data)) {
             return $response->data;
         }
         return [];
+    }
+
+    /**
+     * Returns the requested content
+     * @param string $url
+     * @param array  $params Optional.
+     * @return array
+     */
+    public static function request(string $url, array $params = []) {
+        return Admin::request($url, $params);
     }
 
     /**
@@ -85,7 +96,8 @@ class Site {
      * @return void
      */
     public static function print(string $template, array $data) {
-        if (file_exists("public/templates/{$template}.html")) {
+        $path = Admin::getPath(Admin::PublicDir, "site");
+        if (File::exists($path, Admin::TemplatesDir, "{$template}.html")) {
             Mustache::print($template, $data, true);
         } else {
             Mustache::print("error", $data, true);

@@ -104,6 +104,7 @@ form {
 }
 
 input[type="text"],
+input[type="tel"],
 input[type="url"],
 input[type="email"],
 input[type="number"],
@@ -129,6 +130,7 @@ textarea {
 }
 
 input[type="text"]:focus,
+input[type="tel"]:focus,
 input[type="url"]:focus,
 input[type="email"]:focus,
 input[type="number"]:focus,
@@ -145,6 +147,7 @@ select:focus {
 }
 
 input[type="text"]:disabled,
+input[type="tel"]:disabled,
 input[type="url"]:disabled,
 input[type="email"]:disabled,
 input[type="number"]:disabled,
@@ -158,6 +161,7 @@ textarea:disabled {
 }
 
 input[type="text"],
+input[type="tel"],
 input[type="url"],
 input[type="email"],
 input[type="password"],

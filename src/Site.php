@@ -6,8 +6,10 @@ use Admin\Config\Config;
 use Admin\Config\Settings;
 use Admin\Auth\Auth;
 use Admin\File\File;
+use Admin\File\Path;
 use Admin\Provider\Mustache;
 use Admin\Utils\Server;
+use Admin\Utils\Strings;
 
 /**
  * The Site
@@ -38,15 +40,13 @@ class Site {
      */
     public static function getConfig() {
         $url       = Config::getUrl();
-        $isLocal   = Server::isLocalHost();
-        $baseUrl   = parse_url($url, PHP_URL_PATH);
-        $slugUrl   = str_replace($baseUrl, "", $_SERVER["REQUEST_URI"]);
-        $slugParts = explode("/", $slugUrl);
+        $baseUrl   = Config::getBaseUrl(true);
+        $slugUrl   = Strings::stripStart($_SERVER["REQUEST_URI"], $baseUrl);
+        $slugParts = Strings::split($slugUrl, "/");
         
         return (object)[
             "url"     => $url,
             "params"  => $_REQUEST,
-            "styles"  => $isLocal ? "main.css" : "build.min.css",
             "section" => !empty($slugParts[0]) ? $slugParts[0] : "inicio",
             "page"    => !empty($slugParts[1]) ? $slugParts[1] : "",
         ];
@@ -96,11 +96,17 @@ class Site {
      * @return void
      */
     public static function print(string $template, array $data) {
-        $path = Admin::getPath(Admin::PublicDir, "site");
+        $path    = Admin::getPath(Admin::PublicDir, "site");
+        $content = array_merge([
+            "url"      => Config::getUrl(),
+            "filesUrl" => Path::getUrl(Path::Source),
+            "styles"   => Server::isLocalHost() ? "main.css" : "build.min.css",
+        ], $data);
+
         if (File::exists($path, Admin::TemplatesDir, "{$template}.html")) {
-            Mustache::print($template, $data, true);
+            Mustache::print($template, $content, true);
         } else {
-            Mustache::print("error", $data, true);
+            Mustache::print("error", $content, true);
         }
     }
 }

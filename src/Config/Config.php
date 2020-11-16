@@ -172,10 +172,11 @@ class Config {
 
     /**
      * Return the admin Url adding the url parts at the end
+     * @param boolean $forSite Optional.
      * @return string
      */
-    public static function getBaseUrl(): string {
-        $url = self::getAdminUrl();
+    public static function getBaseUrl($forSite = false): string {
+        $url = $forSite ? self::getUrl() : self::getAdminUrl();
         return parse_url($url, PHP_URL_PATH);
     }
 

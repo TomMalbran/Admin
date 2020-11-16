@@ -101,13 +101,14 @@ class Server {
      * @return string
      */
     public static function getPropperUrl(): string {
-        if (substr($_SERVER["HTTP_HOST"], 0, 9) !== "localhost") {
-            if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) !== "www.") {
-                return "https://www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
-            }
-            if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) === "www.") {
-                return "https://{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
-            }
+        if (self::isLocalHost()) {
+            return "";
+        }
+        if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) !== "www.") {
+            return "https://www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
+        }
+        if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) === "www.") {
+            return "https://{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
         }
         if (substr($_SERVER["HTTP_HOST"], 0, 4) !== "www." && substr($_SERVER["HTTP_HOST"], 0, 9) !== "localhost") {
             $protocol = $_SERVER["HTTPS"] == "on" ? "https://" : "http://";

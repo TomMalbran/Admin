@@ -237,7 +237,11 @@ class Mailer {
      * @return boolean
      */
     public static function isCaptchaValid(Request $request) {
-        $secretKey = urlencode(Config::get("recaptchaKey"));
+        $recaptchaSecret = Config::get("recaptchaSecret");
+        if (!$request->has("g-recaptcha-response") || empty($recaptchaSecret)) {
+            return false;
+        }
+        $secretKey = urlencode($recaptchaSecret);
         $captcha   = urlencode($request->get("g-recaptcha-response"));
         $url       = "https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$captcha";
         $response  = JSON::readUrl($url, true);

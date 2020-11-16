@@ -74,23 +74,24 @@ class Media {
      */
     public static function getAll(Request $request): Response {
         if ($request->has("path")) {
-            return self::getOne($request->path, $request);
+            return self::getOne($request->path, $request, true);
         }
-        return self::getOne("", $request);
+        return self::getOne("", $request, true);
     }
 
     /**
      * Returns the Media list view
      * @param string  $path
      * @param Request $request
+     * @param boolean $useSelected Optional.
      * @return Response
      */
-    public static function getOne(string $path, Request $request): Response {
+    public static function getOne(string $path, Request $request, bool $useSelected = false): Response {
         $path     = Strings::toUrl($path);
         $type     = $request->get("type", "file");
         $selected = "";
 
-        if (empty($path) && $request->has("selected")) {
+        if ($request->has("selected") && (empty($path) || $useSelected)) {
             $selected = $request->selected;
             $pos      = strrpos($request->selected, "/");
             if ($pos !== false) {

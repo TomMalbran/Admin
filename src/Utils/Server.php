@@ -110,7 +110,7 @@ class Server {
         if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) === "www.") {
             return "https://{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
         }
-        if (substr($_SERVER["HTTP_HOST"], 0, 4) !== "www." && substr($_SERVER["HTTP_HOST"], 0, 9) !== "localhost") {
+        if (substr($_SERVER["HTTP_HOST"], 0, 4) !== "www.") {
             $protocol = $_SERVER["HTTPS"] == "on" ? "https://" : "http://";
             return "{$protocol}www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
         }

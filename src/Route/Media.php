@@ -91,7 +91,7 @@ class Media {
         $type     = $request->get("type", "file");
         $selected = "";
 
-        if ($request->has("selected") && (empty($path) || $useSelected)) {
+        if ($request->has("selected") && $useSelected) {
             $selected = $request->selected;
             $pos      = strrpos($request->selected, "/");
             if ($pos !== false) {

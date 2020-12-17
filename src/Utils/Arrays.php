@@ -193,20 +193,20 @@ class Arrays {
     
     /**
      * Creates a select using the given array
-     * @param array             $array
-     * @param string            $key
-     * @param string|string[]   $value
-     * @param integer|integer[] $selectedID Optional.
-     * @param string            $extra      Optional.
+     * @param array           $array
+     * @param string          $key
+     * @param string|string[] $value
+     * @param mixed           $selected Optional.
+     * @param string          $extra    Optional.
      * @return array
      */
-    public static function createSelect(array $array, string $key, $value, $selectedID = null, string $extra = null): array {
+    public static function createSelect(array $array, string $key, $value, $selected = null, string $extra = null): array {
         $result = [];
         foreach ($array as $row) {
             $fields = [
                 "key"        => $row[$key],
                 "value"      => self::getValue($row, $value, " - ", ""),
-                "isSelected" => self::contains($selectedID, $row[$key]),
+                "isSelected" => self::contains($selected, $row[$key]),
             ];
             if ($extra) {
                 $fields[$extra] = self::getValue($row, $extra);
@@ -218,32 +218,45 @@ class Arrays {
     
     /**
      * Creates a select using the given array
-     * @param array             $array
-     * @param integer|integer[] $selectedID Optional.
-     * @param boolean           $withNone   Optional.
+     * @param array   $array
+     * @param mixed   $selected Optional.
+     * @param boolean $withNone Optional.
      * @return array
      */
-    public static function createSelectFromMap(array $array, $selectedID = null, bool $withNone = false): array {
+    public static function createSelectFromMap(array $array, $selected = null, bool $withNone = false): array {
         $result = [];
         if ($withNone) {
             $result[] = [
                 "key"        => 0,
                 "value"      => "",
-                "isSelected" => self::contains($selectedID, 0),
+                "isSelected" => self::contains($selected, 0),
             ];
         }
         foreach ($array as $key => $value) {
             $result[] = [
                 "key"        => $key,
                 "value"      => $value,
-                "isSelected" => self::contains($selectedID, $key),
+                "isSelected" => self::contains($selected, $key),
             ];
         }
         return $result;
     }
 
+    /**
+     * Returns a function to select in a Select
+     * @return function
+     */
+    public static function getSelectedFunc() {
+        return function ($value, $render) {
+            [ $key, $val ] = explode("-", $value);
+            $key = $render($key);
+            $val = $render($val);
+            return $key == $val ? "selected" : "";
+        };
+    }
 
-    
+
+
     /**
      * Returns the key adding the prefix or not
      * @param string $key

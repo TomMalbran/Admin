@@ -76,18 +76,19 @@ class Enum {
 
     /**
      * Creates a Select for the Enum
+     * @param mixed $selected Optional.
      * @return array
      */
-    public static function getSelect(): array {
+    public static function getSelect($selected = null): array {
         $cache = self::load();
         if ($cache->isConstant) {
-            return Arrays::createSelectFromMap($cache->constants);
+            return Arrays::createSelectFromMap($cache->constants, $selected);
         }
         if ($cache->isArray) {
-            return Arrays::createSelectFromMap($cache->data);
+            return Arrays::createSelectFromMap($cache->data, $selected);
         }
         if ($cache->isMap) {
-            return Arrays::createSelect($cache->data, "key", "name");
+            return Arrays::createSelect($cache->data, "key", "name", $selected);
         }
     }
 

@@ -335,7 +335,9 @@ class Strings {
      * @return string
      */
     public static function toUrl(string $value): string {
-        return str_replace("--", "/", $value);
+        $result = str_replace("--", "/", $value);
+        $result = str_replace("%20", " ", $result);
+        return $result;
     }
 
 

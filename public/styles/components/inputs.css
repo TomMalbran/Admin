@@ -171,7 +171,7 @@ select {
     margin: 0;
 }
 textarea {
-    height: 120px;
+    height: 100px;
     width: 100%;
 }
 .textarea-small {

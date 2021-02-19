@@ -72,18 +72,17 @@ class Router {
         }
         $access = Access::getValue($accessLevel);
         
+        if (empty($route) || $route == "/") {
+            $route = self::$defaults[$access];
+        }
         if ($route[0] != "/") {
             $route = "/$route";
         }
+
         $params      = [];
         $routeParsed = parse_url($route);
         $routeParts  = explode("/", $routeParsed["path"]);
         
-        // Nothing
-        if (empty($routeParts[1])) {
-            $routeParts[1] = self::$defaults[$access];
-        }
-
         // 2 parts
         if (empty($routeParts[2])) {
             $routeParts[2] = self::DefaultAction;

@@ -37,56 +37,53 @@ class Mustache {
 
         $path     = Admin::getPath(Admin::PublicDir, $forSite ? "site" : "admin");
         $internal = Admin::getPath(Admin::PublicDir, "internal");
+        $config   = [ "extension" => ".html" ];
+        $loaders  = [];
 
-        if (File::exists($path)) {
-            $config  = [ "extension" => ".html" ];
-            $loaders = [];
-
-            // Create the Admin Eengine
-            if (!$forSite && self::$adminEngine == null) {
-                // Main templates should be in public/templates
-                $internalPath = File::getPath($internal, Admin::TemplatesDir);
-                if (File::exists($path, Admin::TemplatesDir)) {
-                    $loaderPath = File::getPath($path, Admin::TemplatesDir);
-                    $loaders["loader"] = new Mustache_Loader_CascadingLoader([
-                        new Mustache_Loader_FilesystemLoader($loaderPath, $config),
-                        new Mustache_Loader_FilesystemLoader($internalPath, $config),
-                    ]);
-                } else {
-                    $loaders["loader"] = new Mustache_Loader_FilesystemLoader($internalPath, $config);
-                }
-
-                // Partials should be in public/partials
-                $internalPath = File::getPath($internal, Admin::PartialsDir);
-                if (File::exists($path, Admin::PartialsDir)) {
-                    $loaderPath = File::getPath($path, Admin::PartialsDir);
-                    $loaders["partials_loader"] = new Mustache_Loader_CascadingLoader([
-                        new Mustache_Loader_FilesystemLoader($loaderPath, $config),
-                        new Mustache_Loader_FilesystemLoader($internalPath, $config),
-                    ]);
-                } else {
-                    $loaders["partials_loader"] = new Mustache_Loader_FilesystemLoader($internalPath, $config);
-                }
-
-                self::$adminEngine = new Mustache_Engine($loaders);
+        // Create the Admin Eengine
+        if (!$forSite && self::$adminEngine == null && File::exists($internal)) {
+            // Main templates should be in public/templates
+            $internalPath = File::getPath($internal, Admin::TemplatesDir);
+            if (File::exists($path, Admin::TemplatesDir)) {
+                $loaderPath = File::getPath($path, Admin::TemplatesDir);
+                $loaders["loader"] = new Mustache_Loader_CascadingLoader([
+                    new Mustache_Loader_FilesystemLoader($loaderPath, $config),
+                    new Mustache_Loader_FilesystemLoader($internalPath, $config),
+                ]);
+            } else {
+                $loaders["loader"] = new Mustache_Loader_FilesystemLoader($internalPath, $config);
             }
 
-            // Create the Site Engine
-            if ($forSite && self::$siteEngine == null) {
-                // Main templates should be in public/templates
-                if (File::exists($path, Admin::TemplatesDir)) {
-                    $loaderPath = File::getPath($path, Admin::TemplatesDir);
-                    $loaders["loader"] = new Mustache_Loader_FilesystemLoader($loaderPath, $config);
-                }
-
-                // Partials should be in public/partials
-                if (File::exists($path, Admin::PartialsDir)) {
-                    $loaderPath = File::getPath($path, Admin::PartialsDir);
-                    $loaders["partials_loader"] = new Mustache_Loader_FilesystemLoader($loaderPath, $config);
-                }
-
-                self::$siteEngine = new Mustache_Engine($loaders);
+            // Partials should be in public/partials
+            $internalPath = File::getPath($internal, Admin::PartialsDir);
+            if (File::exists($path, Admin::PartialsDir)) {
+                $loaderPath = File::getPath($path, Admin::PartialsDir);
+                $loaders["partials_loader"] = new Mustache_Loader_CascadingLoader([
+                    new Mustache_Loader_FilesystemLoader($loaderPath, $config),
+                    new Mustache_Loader_FilesystemLoader($internalPath, $config),
+                ]);
+            } else {
+                $loaders["partials_loader"] = new Mustache_Loader_FilesystemLoader($internalPath, $config);
             }
+
+            self::$adminEngine = new Mustache_Engine($loaders);
+        }
+
+        // Create the Site Engine
+        if ($forSite && self::$siteEngine == null && File::exists($path)) {
+            // Main templates should be in public/templates
+            if (File::exists($path, Admin::TemplatesDir)) {
+                $loaderPath = File::getPath($path, Admin::TemplatesDir);
+                $loaders["loader"] = new Mustache_Loader_FilesystemLoader($loaderPath, $config);
+            }
+
+            // Partials should be in public/partials
+            if (File::exists($path, Admin::PartialsDir)) {
+                $loaderPath = File::getPath($path, Admin::PartialsDir);
+                $loaders["partials_loader"] = new Mustache_Loader_FilesystemLoader($loaderPath, $config);
+            }
+
+            self::$siteEngine = new Mustache_Engine($loaders);
         }
     }
     

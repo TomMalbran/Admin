@@ -1,5 +1,5 @@
 <?php
-namespace Admin\Route;
+namespace Admin\View;
 
 use Admin\IO\View;
 use Admin\IO\Request;
@@ -11,7 +11,7 @@ use Admin\Auth\Access;
 use Admin\Log\ActionLog;
 
 /**
- * The User Route
+ * The User View
  */
 class User {
     

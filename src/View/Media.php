@@ -1,5 +1,5 @@
 <?php
-namespace Admin\Route;
+namespace Admin\View;
 
 use Admin\IO\View;
 use Admin\IO\Request;
@@ -13,7 +13,7 @@ use Admin\File\MediaType;
 use Admin\Utils\Strings;
 
 /**
- * The Media Route
+ * The Media View
  */
 class Media {
     

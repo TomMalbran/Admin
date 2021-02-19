@@ -5,9 +5,9 @@
         "Admin"   : "session"
     },
     "modules" : {
-        "/session" : "\\Admin\\Route\\Session",
-        "/media"   : "\\Admin\\Route\\Media",
-        "/users"   : "\\Admin\\Route\\User"
+        "/session" : "\\Admin\\View\\Session",
+        "/media"   : "\\Admin\\View\\Media",
+        "/users"   : "\\Admin\\View\\User"
     },
     "routes" : {
         "/session/getAll"   : "General",

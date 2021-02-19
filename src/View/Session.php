@@ -1,5 +1,5 @@
 <?php
-namespace Admin\Route;
+namespace Admin\View;
 
 use Admin\IO\View;
 use Admin\IO\Request;
@@ -16,7 +16,7 @@ use Admin\Provider\Mailer;
 use Admin\Utils\Strings;
 
 /**
- * The Session Route
+ * The Session View
  */
 class Session {
     

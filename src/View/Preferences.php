@@ -1,12 +1,12 @@
 <?php
-namespace Admin\Route;
+namespace Admin\View;
 
 use Admin\IO\Request;
 use Admin\Config\Settings;
 use Admin\Log\ActionLog;
 
 /**
- * The Preferences Route
+ * The Preferences View
  */
 class Preferences {
     

@@ -261,9 +261,6 @@ class Admin {
         Factory::migrate($db, $canDelete);
         Settings::migrate($db);
         Path::ensurePaths();
-
-        if ($request->has("owner")) {
-            Credential::seedOwner($db, "Tomas", "Malbran", "tomas@raqdedicados.com", "Cel627570");
-        }
+        Credential::seedOwner($db, "Tomas", "Malbran", "tomas@raqdedicados.com", "Cel627570");
     }
 }

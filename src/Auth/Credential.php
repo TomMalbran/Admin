@@ -594,9 +594,9 @@ class Credential {
                 "currentLogin"  => time(),
                 "createdTime"   => time(),
             ]);
-            print("<br><i>Owner</i> created<br>");
+            print("<br>Owner <i>$firstName</i> created<br>");
         } else {
-            print("<br><i>Owner</i> already created<br>");
+            print("<br>No <i>Owner</i> created<br>");
         }
     }
 }

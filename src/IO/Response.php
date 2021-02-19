@@ -12,7 +12,6 @@ class Response {
     
     public $isRedirect = false;
     public $isJSON     = false;
-    public $isScript   = false;
     public $isView     = false;
     public $isAPI      = false;
     

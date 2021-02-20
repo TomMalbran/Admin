@@ -32,7 +32,6 @@ class Home {
         $result = [];
         foreach ($items as $item) {
             $result[] = [
-                "actionKey"  => $item["key"],
                 "actionUrl"  => $item["url"],
                 "actionIcon" => $item["icon"],
                 "actionName" => $item["name"],

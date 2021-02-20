@@ -40,16 +40,6 @@ hr {
     margin: 16px 0;
     border-top: 2px dashed rgb(209, 209, 209);
 }
-.top-line.top-line {
-    border-top: 2px dashed rgb(209, 209, 209);
-    margin-top: 32px;
-    padding-top: 32px;
-}
-.bottom-line.bottom-line {
-    border-bottom: 2px dashed rgb(209, 209, 209);
-    margin-bottom: 32px;
-    padding-bottom: 32px;
-}
 
 .bottom-space.bottom-space {
     margin-bottom: 32px;

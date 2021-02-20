@@ -58,6 +58,14 @@
             </li>
             {{/menuItems}}
 
+            {{#hasPersonalize}}
+            <li>
+                <a href="{{url}}personalize" class="{{#isMenuSel}}personalize{{/isMenuSel}}" data-menu="personalize">
+                    <span class="icono icono-personalize"></span>
+                    <span class="main-text">Personalizar</span>
+                </a>
+            </li>
+            {{/hasPersonalize}}
             <li>
                 <a href="{{url}}media" class="{{#isMenuSel}}media{{/isMenuSel}}" data-menu="media">
                     <span class="icono icono-media"></span>

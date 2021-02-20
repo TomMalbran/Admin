@@ -1,4 +1,7 @@
 
+.icono-personalize:before {
+  content: "\e903";
+}
 .icono-error:before {
   content: "\e925";
 }

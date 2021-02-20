@@ -719,7 +719,7 @@ class Request implements ArrayAccess {
      * @return boolean
      */
     public function fileExists(string $key): bool {
-        if ($this->has("image")) {
+        if ($this->has($key)) {
             return Path::exists(Path::Source, $this->get($key));
         }
         return false;

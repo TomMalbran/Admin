@@ -24,29 +24,30 @@ use Admin\Utils\Strings;
 class Admin {
 
     // The Data
-    const RouteData     = "routes";
-    const SchemaData    = "schemas";
-    const KeyData       = "keys";
-    const PathData      = "paths";
-    const TokenData     = "tokens";
-    const SettingsData  = "settings";
-    const ActionData    = "actions";
-    const MenuData      = "menu";
-    const HomeData      = "home";
+    const RouteData       = "routes";
+    const SchemaData      = "schemas";
+    const KeyData         = "keys";
+    const PathData        = "paths";
+    const TokenData       = "tokens";
+    const SettingsData    = "settings";
+    const ActionData      = "actions";
+    const MenuData        = "menu";
+    const HomeData        = "home";
+    const PersonalizeData = "personalize";
 
     // The Directories
-    const AdminDir      = "admin";
-    const SourceDir     = "src";
-    const DataDir       = "data";
+    const AdminDir        = "admin";
+    const SourceDir       = "src";
+    const DataDir         = "data";
     
-    const FilesDir      = "files";
-    const PublicDir     = "public";
-    const TemplatesDir  = "templates";
-    const PartialsDir   = "partials";
-    const MigrationsDir = "data/migrations";
+    const FilesDir        = "files";
+    const PublicDir       = "public";
+    const TemplatesDir    = "templates";
+    const PartialsDir     = "partials";
+    const MigrationsDir   = "data/migrations";
 
     // Config
-    const Namespace     = "App\\Controller\\";
+    const Namespace       = "App\\Controller\\";
 
     // Variables
     private static $adminPath;

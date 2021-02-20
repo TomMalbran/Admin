@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icoadmin';
   src:
-    url('fonts/icoadmin.ttf?z697wt') format('truetype'),
-    url('fonts/icoadmin.woff?z697wt') format('woff'),
-    url('fonts/icoadmin.svg?z697wt#icoadmin') format('svg');
+    url('fonts/icoadmin.ttf?dax8yi') format('truetype'),
+    url('fonts/icoadmin.woff?dax8yi') format('woff'),
+    url('fonts/icoadmin.svg?dax8yi#icoadmin') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -12,6 +12,7 @@
 [class^="icono-"], [class*=" icono-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icoadmin' !important;
+  speak: never;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -23,6 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icono-personalize:before {
+  content: "\e903";
+}
 .icono-error:before {
   content: "\e925";
 }

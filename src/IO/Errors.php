@@ -131,4 +131,19 @@ class Errors {
         }
         return $result;
     }
+
+    /**
+     * Returns the Errors as double object
+     * @return array
+     */
+    public function getObject(): array {
+        $result = [];
+        foreach ($this->errors as $error => $message) {
+            if (empty($result[$error])) {
+                $result[$error] = [ "hasError" => 1 ];
+            }
+            $result[$error]["{$message}Error"] = 1;
+        }
+        return $result;
+    }
 }

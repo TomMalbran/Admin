@@ -35,6 +35,13 @@
     <nav class="subbar">
         <h1>{{siteName}}</h1>
         <ol class="sidebar-menu no-list">
+            <li>
+                <a href="{{url}}" class="{{#isMenuSel}}home{{/isMenuSel}}" data-menu="home">
+                    <span class="icono icono-home"></span>
+                    <span class="main-text">Inicio</span>
+                </a>
+            </li>
+
             {{#menuItems}}
             <li>
                 <a href="{{url}}{{menuUrl}}" class="{{#isMenuSel}}{{menuKey}}{{/isMenuSel}}" data-menu="{{menuKey}}">

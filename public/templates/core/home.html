@@ -1,0 +1,37 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icono icono-home"></span> Bienvenido al Admin de {{siteName}}</h2>
+</header>
+
+
+<section class="content-body">
+    <b>Desde aquí puede:</b>
+
+    <ol class="home-menu no-list">
+        {{#actions}}
+        <li>
+            <a href="{{url}}{{actionUrl}}">
+                <span class="icon-{{actionIcon}}"></span>
+                <span>{{actionName}}</span>
+            </a>
+        </li>
+        {{/actions}}
+
+        <li>
+            <a href="{{url}}media">
+                <span class="icono icono-media"></span>
+                <span>Administrar archivos</span>
+            </a>
+        </li>
+        {{#hasAdminAccess}}
+        <li>
+            <a href="{{url}}users">
+                <span class="icono icono-user"></span>
+                <span>Asignar usuarios</span>
+            </a>
+        </li>
+        {{/hasAdminAccess}}
+    </ol>
+</section>
+
+{{>footer/main}}

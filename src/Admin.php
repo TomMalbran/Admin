@@ -32,6 +32,7 @@ class Admin {
     const SettingsData  = "settings";
     const ActionData    = "actions";
     const MenuData      = "menu";
+    const HomeData      = "home";
 
     // The Directories
     const AdminDir      = "admin";

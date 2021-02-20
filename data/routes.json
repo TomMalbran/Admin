@@ -1,11 +1,12 @@
 {
     "defaults" : {
         "General" : "session",
-        "Editor"  : "session",
-        "Admin"   : "session"
+        "Editor"  : "home",
+        "Admin"   : "home"
     },
     "modules" : {
         "/session" : "\\Admin\\View\\Session",
+        "/home"    : "\\Admin\\View\\Home",
         "/media"   : "\\Admin\\View\\Media",
         "/users"   : "\\Admin\\View\\User"
     },
@@ -19,6 +20,8 @@
         "/session/reset"    : "General",
         "/session/view"     : "Editor",
         "/session/edit"     : "Editor",
+
+        "/home/getAll"      : "Editor",
 
         "/media/getAll"     : "Editor",
         "/media/getOne/{0}" : "Editor",

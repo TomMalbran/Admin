@@ -125,6 +125,26 @@ class Settings {
         }
         return $result;
     }
+
+    /**
+     * Returns all the Settings as a flat array
+     * @param string $section Optional.
+     * @return array
+     */
+    public static function getAllFlat(string $section = null): array {
+        $request = self::getAll($section);
+        if (!empty($section)) {
+            return $request;
+        }
+        
+        $result  = [];
+        foreach ($request as $section => $row) {
+            foreach ($row as $variable => $value) {
+                $result["$section-$variable"] = $value;
+            }
+        }
+        return $result;
+    }
     
     
     
@@ -157,6 +177,20 @@ class Settings {
         if (!empty($batch)) {
             self::$schema->batch($batch);
         }
+    }
+
+    /**
+     * Saves the given Settings of the gien Section if those are already on the DB
+     * @param string $section
+     * @param array  $data
+     * @return void
+     */
+    public function saveSection(string $section, array $data): void {
+        $fields = [];
+        foreach ($data as $key => $value) {
+            $fields["$section-$key"] = $value;
+        }
+        self::save($fields);
     }
 
 

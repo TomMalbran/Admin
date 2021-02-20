@@ -2,9 +2,10 @@
 namespace Admin\Schema;
 
 use Admin\Admin;
-use Admin\File\File;
+use Admin\Config\CoreSetting;
 use Admin\Schema\Database;
 use Admin\Schema\Structure;
+use Admin\File\File;
 use Admin\Utils\Arrays;
 use Admin\Utils\Strings;
 
@@ -256,8 +257,7 @@ class Migration {
      * @return void
      */
     private static function extraMigrations(Database $db) {
-        $query     = Query::create("section", "=", "general")->add("variable", "=", "migration");
-        $migration = $db->getValue("settings", "value", $query);
+        $migration = CoreSetting::get($db, CoreSetting::Migration);
         $path      = Admin::getPath(Admin::MigrationsDir);
 
         if (!File::exists($path)) {
@@ -289,10 +289,6 @@ class Migration {
             }
         }
 
-        $db->insert("settings", [
-            "section"  => "general",
-            "variable" => "migration",
-            "value"    => $last,
-        ], "REPLACE");
+        CoreSetting::set($db, CoreSetting::Migration, $last);
     }
 }

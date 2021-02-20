@@ -7,6 +7,7 @@ use Admin\Schema\Factory;
 use Admin\Schema\Schema;
 use Admin\Schema\Database;
 use Admin\Schema\Query;
+use Admin\Utils\Arrays;
 use Admin\Utils\JSON;
 use Admin\Utils\Strings;
 
@@ -169,12 +170,14 @@ class Settings {
         if (!$db->hasTable("settings")) {
             return;
         }
-        $settings  = Admin::loadData(Admin::SettingsData);
-        $request   = $db->getAll("settings");
+        $adminData    = Admin::loadData(Admin::SettingsData, "admin");
+        $internalData = Admin::loadData(Admin::SettingsData, "internal");
+        $settings     = Arrays::extend($internalData, $adminData);
+        $request      = $db->getAll("settings");
 
-        $variables = [];
-        $adds      = [];
-        $deletes   = [];
+        $variables    = [];
+        $adds         = [];
+        $deletes      = [];
 
         // Adds Settings
         foreach ($settings as $section => $data) {

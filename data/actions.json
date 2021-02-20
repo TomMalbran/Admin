@@ -10,12 +10,6 @@
             "Edit"         : "Cuenta editada"
         }
     },
-    "Preferences" : {
-        "name"    : "Preferencias",
-        "actions" : {
-            "Save" : "Guardadas"
-        }
-    },
     "User" : {
         "name"    : "User",
         "actions" : {

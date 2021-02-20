@@ -17,7 +17,7 @@ class Home {
      * @return Response
      */
     public static function getAll(Request $request): Response {
-        $view = new View("core", "", "home");
+        $view = new View("view", "", "home");
         return $view->create("home", $request, [
             "actions" => self::getActions(),
         ]);

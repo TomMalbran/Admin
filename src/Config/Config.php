@@ -193,6 +193,7 @@ class Config {
         }
         $result = Strings::replace($url, $baseUrl, "/");
         $result = Strings::replace($result, "//", "/");
+        $result = Strings::substringBefore($result, "?");
         return $result;
     }
 

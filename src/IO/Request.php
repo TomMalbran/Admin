@@ -729,17 +729,21 @@ class Request implements ArrayAccess {
 
     /**
      * Validates an Image
-     * @param string $key
-     * @param Errors $errors
+     * @param string  $key
+     * @param Errors  $errors
+     * @param boolean $isRequired Optional.
      * @return void
      */
-    public function validateImage(string $key, Errors $errors): void {
-        if (!$this->has($key)) {
+    public function validateImage(string $key, Errors $errors, bool $isRequired = true): void {
+        if ($isRequired && !$this->has($key)) {
             $errors->add("{$key}Empty");
-        } elseif (!$this->isValidImage($key)) {
-            $error = "{$key}Type";
-        } elseif (!$this->fileExists($key)) {
-            $error = "{$key}Exists";
+        }
+        if ($this->has($key)) {
+            if (!$this->isValidImage($key)) {
+                $error = "{$key}Type";
+            } elseif (!$this->fileExists($key)) {
+                $error = "{$key}Exists";
+            }
         }
     }
 

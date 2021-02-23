@@ -185,7 +185,7 @@ class Settings {
      * @param array  $data
      * @return void
      */
-    public function saveSection(string $section, array $data): void {
+    public static function saveSection(string $section, array $data): void {
         $fields = [];
         foreach ($data as $key => $value) {
             $fields["$section-$key"] = $value;

@@ -247,11 +247,11 @@ class Utils {
     /**
      * Returns the Youtube Embed Url
      * @param string  $source
-     * @param boolean $autoplay
-     * @param boolean $loop
+     * @param boolean $autoplay Optional.
+     * @param boolean $loop     Optional.
      * @return string
      */
-    public static function getYoutubeEmbed(string $source, bool $autoplay, bool $loop): string {
+    public static function getYoutubeEmbed(string $source, bool $autoplay = false, bool $loop = false): string {
         $videoID = "";
         $list    = "";
         if (Strings::startsWith($source, "https://youtu.be/")) {

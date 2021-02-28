@@ -10,6 +10,7 @@ use Admin\IO\Url;
  */
 class Response {
     
+    public $isEmpty    = false;
     public $isRedirect = false;
     public $isJSON     = false;
     public $isView     = false;
@@ -20,6 +21,14 @@ class Response {
     private $storage;
     
     
+    
+    /**
+     * Returns a Null Response
+     * @return Response
+     */
+    public static function empty() {
+        return new Response("empty");
+    }
     
     /**
      * Returns a Redirect Response
@@ -63,28 +72,6 @@ class Response {
         Errors  $errors = null
     ): Response {
         return new Response("JSON", [
-            "result"  => $result,
-            "request" => $request,
-            "errors"  => $errors,
-        ]);
-    }
-    
-    /**
-     * Returns a Script Response
-     * @param string  $action
-     * @param array   $result  Optional.
-     * @param Request $request Optional.
-     * @param Errors  $errors  Optional.
-     * @return Response
-     */
-    public static function script(
-        string  $action,
-        array   $result = null,
-        Request $request = null,
-        Errors  $errors = null
-    ): Response {
-        return new Response("script", [
-            "action"  => $action,
             "result"  => $result,
             "request" => $request,
             "errors"  => $errors,

@@ -234,9 +234,10 @@ class Mailer {
     /**
      * Checks if the Recaptcha is Valid
      * @param Request $request
+     * @param boolean $withScore Optional.
      * @return boolean
      */
-    public static function isCaptchaValid(Request $request) {
+    public static function isCaptchaValid(Request $request, bool $withScore = false): bool {
         $recaptchaSecret = Config::get("recaptchaSecret");
         if (!$request->has("g-recaptcha-response") || empty($recaptchaSecret)) {
             return false;
@@ -247,6 +248,9 @@ class Mailer {
         $response  = JSON::readUrl($url, true);
 
         if (empty($response["success"])) {
+            return false;
+        }
+        if ($withScore && $response["score"] <= 0.5) {
             return false;
         }
         return true;

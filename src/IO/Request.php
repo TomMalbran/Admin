@@ -19,12 +19,12 @@ use ArrayAccess;
  * The Request Wrapper
  */
 class Request implements ArrayAccess {
-    
+
     private $request;
     private $files;
     private $filters;
-    
-    
+
+
     /**
      * Creates a new Request instance
      * @param array $request Optional.
@@ -34,9 +34,9 @@ class Request implements ArrayAccess {
         $this->files   = $_FILES;
         $this->filters = [];
     }
-    
-    
-    
+
+
+
     /**
      * Returns the request data at the given key
      * @param string $key
@@ -45,7 +45,7 @@ class Request implements ArrayAccess {
     public function __get(string $key) {
         return $this->get($key);
     }
-    
+
     /**
      * Sets the given key on the request data with the given value
      * @param string $key
@@ -55,7 +55,7 @@ class Request implements ArrayAccess {
     public function __set(string $key, $value): void {
         $this->set($key, $value);
     }
-    
+
     /**
      * Returns true if the given key is set in the request data
      * @param string $key
@@ -73,9 +73,9 @@ class Request implements ArrayAccess {
     public function __unset(string $key) {
         $this->remove($key);
     }
-    
-    
-    
+
+
+
     /**
      * Returns the request data at the given key or the default
      * @param string $key
@@ -95,7 +95,7 @@ class Request implements ArrayAccess {
     public function getOr(string $key, $default) {
         return !empty($this->request[$key]) ? $this->request[$key] : $default;
     }
-    
+
     /**
      * Returns the request data at the given key or the default
      * @param string  $key
@@ -135,7 +135,7 @@ class Request implements ArrayAccess {
     public function getStringOr(string $key, string $default): string {
         return !empty($this->request[$key]) ? trim((string)$this->request[$key]) : $default;
     }
-    
+
     /**
      * Returns the request data at the given key as an array and removing the empty entries
      * @param string $key
@@ -144,7 +144,7 @@ class Request implements ArrayAccess {
     public function getArray(string $key): array {
         return Arrays::removeEmpty($this->get($key, []));
     }
-    
+
     /**
      * Returns the request data at the given key from an array or the default
      * @param string  $key
@@ -158,7 +158,7 @@ class Request implements ArrayAccess {
         }
         return $default;
     }
-    
+
     /**
      * Returns the request data at the given key as JSON
      * @param string  $key
@@ -180,7 +180,7 @@ class Request implements ArrayAccess {
     public function set(string $key, $value = ""): void {
         $this->request[$key] = $value;
     }
-    
+
     /**
      * Sets the data of the give object
      * @param array $object
@@ -228,7 +228,7 @@ class Request implements ArrayAccess {
         }
         return !empty($this->request[$key]);
     }
-    
+
     /**
      * Returns true if the given key is set in the request data
      * @param string|string[] $key
@@ -245,9 +245,9 @@ class Request implements ArrayAccess {
         }
         return isset($this->request[$key]);
     }
-    
-    
-    
+
+
+
     /**
      * Checks if all the given keys are not empty or set
      * @param string[] $emptyKeys
@@ -267,7 +267,7 @@ class Request implements ArrayAccess {
         }
         return false;
     }
-    
+
     /**
      * Returns true if the array is empty
      * @param string $key
@@ -277,9 +277,9 @@ class Request implements ArrayAccess {
         $array = $this->getArray($key);
         return empty($array);
     }
-    
-    
-    
+
+
+
     /**
      * Returns true if the given value is a number and greater and/or equal to cero
      * @param string  $key
@@ -291,7 +291,7 @@ class Request implements ArrayAccess {
     public function isNumeric(string $key, int $min = 1, int $max = null, int $mult = 1): bool {
         return Numbers::isValid($this->getInt($key) * $mult, $min, $max);
     }
-    
+
     /**
      * Returns true if the given price is valid
      * @param string  $key
@@ -302,7 +302,7 @@ class Request implements ArrayAccess {
     public function isValidPrice(string $key, int $min = 1, int $max = null): bool {
         return Numbers::isValidPrice($this->getInt($key), $min, $max);
     }
-    
+
     /**
      * Returns true if the given value is alpha-numeric
      * @param string  $key
@@ -322,7 +322,7 @@ class Request implements ArrayAccess {
     public function isValidEmail(string $key): bool {
         return Utils::isValidEmail($this->get($key));
     }
-    
+
     /**
      * Returns true if the given password is valid
      * @param string  $key
@@ -333,7 +333,7 @@ class Request implements ArrayAccess {
     public function isValidPassword(string $key, string $checkSets = "ad", int $minLength = 6): bool {
         return Utils::isValidPassword($this->get($key), $checkSets, $minLength);
     }
-    
+
     /**
      * Returns true if the given domain is valid
      * @param string $key
@@ -342,7 +342,7 @@ class Request implements ArrayAccess {
     public function isValidDomain(string $key): bool {
         return Utils::isValidDomain($this->toDomain($key));
     }
-    
+
     /**
      * Returns true if the given name is valid
      * @param string $key
@@ -351,7 +351,7 @@ class Request implements ArrayAccess {
     public function isValidName(string $key): bool {
         return Utils::isValidName($this->get($key));
     }
-    
+
     /**
      * Returns true if the given CUIT is valid
      * @param string $key
@@ -388,7 +388,7 @@ class Request implements ArrayAccess {
     public function isValidStatus(string $key, string $groupName = "general"): bool {
         return Status::isValid($this->get($key), $groupName);
     }
-    
+
 
 
     /**
@@ -399,7 +399,7 @@ class Request implements ArrayAccess {
     public function isValidDate(string $key): bool {
         return DateTime::isValidDate($this->get($key));
     }
-    
+
     /**
      * Returns true if the given hour is Valid
      * @param string   $key
@@ -409,7 +409,7 @@ class Request implements ArrayAccess {
     public function isValidHour(string $key, array $minutes = null): bool {
         return DateTime::isValidHour($this->get($key), $minutes);
     }
-    
+
     /**
      * Returns true if the given dates are a valid period
      * @param string $fromKey
@@ -419,7 +419,7 @@ class Request implements ArrayAccess {
     public function isValidPeriod(string $fromKey, string $toKey): bool {
         return DateTime::isValidPeriod($this->get($fromKey), $this->get($toKey));
     }
-    
+
     /**
      * Returns true if the given hours are a valid period
      * @param string $fromKey
@@ -429,7 +429,7 @@ class Request implements ArrayAccess {
     public function isValidHourPeriod(string $fromKey, string $toKey): bool {
         return DateTime::isValidHourPeriod($this->get($fromKey), $this->get($toKey));
     }
-    
+
     /**
      * Returns true if the given hours are a valid period
      * @param string $fromDateKey
@@ -470,9 +470,9 @@ class Request implements ArrayAccess {
     public function isFutureDate(string $key, string $type = "middle"): bool {
         return DateTime::isFutureDate($this->get($key), $type);
     }
-    
 
-    
+
+
     /**
      * Returns the request as an array
      * @return array
@@ -480,7 +480,7 @@ class Request implements ArrayAccess {
     public function toArray(): array {
         return $this->request;
     }
-    
+
     /**
      * Converts the request data on the given key to binary
      * @param string  $key
@@ -490,7 +490,7 @@ class Request implements ArrayAccess {
     public function toBinary(string $key, int $default = 1): int {
         return $this->has($key) ? $default : 0;
     }
-    
+
     /**
      * Returns the given number as an integer using the given decimals
      * @param string  $key
@@ -500,7 +500,7 @@ class Request implements ArrayAccess {
     public function toInt(string $key, int $decimals): int {
         return Numbers::toInt($this->get($key), $decimals);
     }
-    
+
     /**
      * Returns the given price in Cents
      * @param string  $key
@@ -547,7 +547,7 @@ class Request implements ArrayAccess {
     public function dniToNumber(string $key): string {
         return Utils::dniToNumber($this->get($key));
     }
-    
+
     /**
      * Parsea a Domain to try and return something like "domain.com"
      * @param string $key
@@ -556,7 +556,7 @@ class Request implements ArrayAccess {
     public function toDomain(string $key): string {
         return Utils::parseDomain($this->get($key));
     }
-    
+
 
 
     /**
@@ -579,7 +579,7 @@ class Request implements ArrayAccess {
     public function toTimeHour(string $dateKey, string $hourKey, bool $useTimezone = true): int {
         return DateTime::toTimeHour($this->get($dateKey), $this->get($hourKey), $useTimezone);
     }
-    
+
     /**
      * Returns the given string as a time
      * @param string  $key
@@ -610,7 +610,7 @@ class Request implements ArrayAccess {
     public function toDayMiddle(string $key, bool $useTimezone = true): int {
         return DateTime::toDayMiddle($this->get($key), $useTimezone);
     }
-    
+
     /**
      * Returns the given string as a time of the end of the day
      * @param string  $key
@@ -620,7 +620,7 @@ class Request implements ArrayAccess {
     public function toDayEnd(string $key, bool $useTimezone = true): int {
         return DateTime::toDayEnd($this->get($key), $useTimezone);
     }
-    
+
 
 
     /**
@@ -631,9 +631,9 @@ class Request implements ArrayAccess {
     public function getKeys(string $key): array {
         return array_keys($this->get($key, []));
     }
-    
-    
-    
+
+
+
     /**
      * Returns the request file at the given key
      * @param string $key
@@ -642,7 +642,7 @@ class Request implements ArrayAccess {
     public function getFile(string $key) {
         return isset($this->files[$key]) ? $this->files[$key] : null;
     }
-    
+
     /**
      * Returns the request file name at the given key
      * @param string $key
@@ -654,7 +654,7 @@ class Request implements ArrayAccess {
         }
         return "";
     }
-    
+
     /**
      * Returns the request file temporal name at the given key
      * @param string $key
@@ -666,7 +666,7 @@ class Request implements ArrayAccess {
         }
         return "";
     }
-    
+
     /**
      * Returns true if the given key exists in the files data
      * @param string $key
@@ -675,7 +675,7 @@ class Request implements ArrayAccess {
     public function hasFile(string $key): bool {
         return !empty($this->files[$key]) && !empty($this->files[$key]["name"]);
     }
-    
+
     /**
      * Returns true if there was a size error in the upload
      * @param string $key
@@ -687,7 +687,7 @@ class Request implements ArrayAccess {
         }
         return true;
     }
-    
+
     /**
      * Returns true if the file at the given key has the given extension
      * @param string          $key
@@ -700,7 +700,7 @@ class Request implements ArrayAccess {
         }
         return false;
     }
-    
+
     /**
      * Returns true if the file at the given key is a valid image
      * @param string $key
@@ -724,7 +724,7 @@ class Request implements ArrayAccess {
         }
         return false;
     }
-    
+
 
 
     /**
@@ -740,6 +740,27 @@ class Request implements ArrayAccess {
         }
         if ($this->has($key)) {
             if (!$this->isValidImage($key)) {
+                $error = "{$key}Type";
+            } elseif (!$this->fileExists($key)) {
+                $error = "{$key}Exists";
+            }
+        }
+    }
+
+    /**
+     * Validates a File
+     * @param string          $key
+     * @param Errors          $errors
+     * @param string|string[] $extensions
+     * @param boolean         $isRequired Optional.
+     * @return void
+     */
+    public function validateFile(string $key, Errors $errors, $extensions, bool $isRequired = true): void {
+        if ($isRequired && !$this->has($key)) {
+            $errors->add("{$key}Empty");
+        }
+        if ($this->has($key)) {
+            if (!$this->hasExtension($key, $extensions)) {
                 $error = "{$key}Type";
             } elseif (!$this->fileExists($key)) {
                 $error = "{$key}Exists";
@@ -770,7 +791,7 @@ class Request implements ArrayAccess {
         if ($this->has("page")) {
             $url->set("page", $this->get("page"));
         }
-        
+
         $filters = array_merge([ "search", "filter", "from", "to" ], $this->filters);
         foreach ($filters as $key) {
             if ($this->has($key)) {
@@ -779,9 +800,9 @@ class Request implements ArrayAccess {
         }
         return $url;
     }
-    
-    
-    
+
+
+
     /**
      * Implements the Array Access Interface
      * @param mixed $key
@@ -790,7 +811,7 @@ class Request implements ArrayAccess {
     public function offsetGet($key) {
         return $this->get($key);
     }
-    
+
     /**
      * Implements the Array Access Interface
      * @param mixed $key
@@ -800,7 +821,7 @@ class Request implements ArrayAccess {
     public function offsetSet($key, $value) {
         $this->set($key, $value);
     }
-    
+
     /**
      * Implements the Array Access Interface
      * @param mixed $key
@@ -809,7 +830,7 @@ class Request implements ArrayAccess {
     public function offsetExists($key) {
         return array_key_exists($key, $this->request);
     }
-    
+
     /**
      * Implements the Array Access Interface
      * @param mixed $key

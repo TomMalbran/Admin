@@ -32,6 +32,7 @@
         "/media/create"       : "Editor",
         "/media/upload"       : "Editor",
         "/media/rename"       : "Editor",
+        "/media/move"         : "Editor",
         "/media/delete"       : "Editor",
         "/media/resize"       : "Editor",
         "/media/resizeOne"    : "Editor",

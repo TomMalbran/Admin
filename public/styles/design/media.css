@@ -147,7 +147,7 @@
     z-index: 1;
 }
 
-.media-has-actions:hover .media-name {
+.media-has-actions:not(.ui-draggable-dragging):hover .media-name {
     transform: translateY(-20px);
 }
 .media-actions {
@@ -169,6 +169,19 @@
 .media-selected .media-actions {
     background-color: var(--dark-gray);
 }
+
+
+
+/**
+ * Draggable / Droppable
+ */
+.ui-draggable-dragging {
+    z-index: 2;
+}
+.ui-droppable-hover {
+    border-color: var(--primary-color);
+}
+
 
 
 /**

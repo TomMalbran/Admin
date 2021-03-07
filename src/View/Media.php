@@ -108,19 +108,24 @@ class Media {
 
         foreach ($files as $file) {
             $name  = Strings::replace($file, $source, "");
-            $isDir = FileType::isDir($file);
             if (MediaType::isValid($type, $file, $name)) {
+                $isDir    = FileType::isDir($file);
+                $isImage  = FileType::isImage($name);
+                $isFile   = !$isDir && (FileType::isFile($name) || FileType::isVideo($name));
                 $result[] = [
                     "name"          => $name,
                     "route"         => "/" . Strings::fromUrl(!empty($path) ? "{$path}/{$name}" : $name),
                     "value"         => !empty($path) ? "{$path}/{$name}" : $name,
                     "canSelect"     => !$isDir,
                     "isSelected"    => $selected == $name,
+                    "isBack"        => false,
                     "isDir"         => $isDir,
+                    "isDirOrBack"   => $isDir,
                     "icon"          => FileType::getIcon($name),
-                    "isImage"       => FileType::isImage($name),
+                    "isImage"       => $isImage,
                     "isTransparent" => FileType::isPNG($name),
-                    "isFile"        => !$isDir && (FileType::isFile($name) || FileType::isVideo($name)),
+                    "isFile"        => $isFile,
+                    "isFileOrImage" => $isFile || $isImage,
                     "source"        => Path::getUrl(Path::Source, $path, $name),
                     "thumb"         => Path::getUrl(Path::Thumb,  $path, $name),
                 ];
@@ -143,13 +148,15 @@ class Media {
         if (!empty($path)) {
             $dir = dirname($path);
             array_unshift($result, [
-                "name"      => "...",
-                "route"     => $dir != "." ? "/" . Strings::fromUrl($dir) : "",
-                "canSelect" => false,
-                "isBack"    => true,
+                "name"        => "...",
+                "value"       => $dir != "." ? $dir : "",
+                "route"       => $dir != "." ? "/" . Strings::fromUrl($dir) : "",
+                "canSelect"   => false,
+                "isBack"      => true,
+                "isDirOrBack" => true,
             ]);
         }
-        
+
         return self::getView()->create("main", $request, [
             "files"     => $result,
             "path"      => Strings::toUrl($path),
@@ -217,13 +224,36 @@ class Media {
             $error = "renameOldExists";
         } else {
             $newName = File::parseName($request->newName, $request->oldName);
-            if (Path::exists(Path::Source, $request->path, $newName)) {
+            if (!Strings::isEqual($request->oldName, $request->oldName) && Path::exists(Path::Source, $request->path, $newName)) {
                 $error = "renameNewExists";
             } elseif (!FileMedia::rename($request->path, $request->oldName, $newName)) {
                 $error = "rename";
             }
         }
         return self::redirect($request, $error, "rename");
+    }
+
+    /**
+     * Moves a Media Element
+     * @param Request $request
+     * @return Response
+     */
+    public static function move(Request $request) {
+        $error = "";
+        if (!$request->has("name")) {
+            $error = "moveOldPath";
+        } elseif (!$request->exists("newPath")) {
+            $error = "moveNewPath";
+        } elseif (!Path::exists(Path::Source, $request->oldPath, $request->name)) {
+            $error = "moveOldExists";
+        } elseif (Path::exists(Path::Source, $request->newPath, $request->name)) {
+            $error = "moveNewExists";
+        } elseif (!FileMedia::move($request->oldPath, $request->newPath, $request->name)) {
+            $error = "move";
+        }
+
+        $request->path = $request->oldPath;
+        return self::redirect($request, $error, "move");
     }
 
     /**

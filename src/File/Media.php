@@ -82,9 +82,28 @@ class Media {
     public static function rename(string $path, string $oldName, string $newName): bool {
         $baseDirs = Path::getBaseDirs();
         foreach ($baseDirs as $baseDir) {
-            $oldPath = Path::getPath($baseDir, $path, $oldName);
-            $newPath = Path::getPath($baseDir, $path, $newName);
-            if (!File::move($oldPath, $newPath)) {
+            $oldDir = Path::getPath($baseDir, $path, $oldName);
+            $newDir = Path::getPath($baseDir, $path, $newName);
+            if (!File::move($oldDir, $newDir)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Moves a Media Element
+     * @param string $oldPath
+     * @param string $newPath
+     * @param string $name
+     * @return boolean
+     */
+    public static function move(string $oldPath, string $newPath, string $name): bool {
+        $baseDirs = Path::getBaseDirs();
+        foreach ($baseDirs as $baseDir) {
+            $oldDir = Path::getPath($baseDir, $oldPath, $name);
+            $newDir = Path::getPath($baseDir, $newPath, $name);
+            if (!File::move($oldDir, $newDir)) {
                 return false;
             }
         }

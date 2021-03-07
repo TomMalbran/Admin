@@ -32,6 +32,13 @@
 {{#renameError}}<p class="result-bar result-error">Ocurrió un error al renombrar el archivo/directorio indicado.</p>{{/renameError}}
 {{#renameSuccess}}<p class="result-bar result-success">El archivo/directorio se renombró correctamente.</p>{{/renameSuccess}}
 
+{{#moveOldPathError}}<p class="result-bar result-error">Debe indicar el archivo para mover.</p>{{/moveOldPathError}}
+{{#moveNewPathError}}<p class="result-bar result-error">Debe indicar el directorio a donde mover el archivo.</p>{{/moveNewPathError}}
+{{#moveOldExistsError}}<p class="result-bar result-error">No existe el archivo indicado.</p>{{/moveOldExistsError}}
+{{#moveNewExistsError}}<p class="result-bar result-error">Ya existe un archivo en el directorio indicado con el mismo nombre.</p>{{/moveNewExistsError}}
+{{#moveError}}<p class="result-bar result-error">Ocurrió un error al mover el archivo indicado.</p>{{/moveError}}
+{{#moveSuccess}}<p class="result-bar result-success">El archivo se movió correctamente.</p>{{/moveSuccess}}
+
 {{#deleteConfirmError}}<p class="result-bar result-error">Debe confirmar la eliminación del archivo/directorio.</p>{{/deleteConfirmError}}
 {{#deleteNameError}}<p class="result-bar result-error">Debe indicar el archivo/directorio para eliminar.</p>{{/deleteNameError}}
 {{#deleteExistsError}}<p class="result-bar result-error">No existe el archivo/directorio indicado.</p>{{/deleteExistsError}}
@@ -68,27 +75,38 @@
 
 <section class="media-list">
     {{#files}}
-    <div class="media-item {{^isBack}}media-has-actions{{/isBack}} {{#isSelected}}media-selected{{/isSelected}}">
+    <div
+        class="media-item
+            {{^isBack}}media-has-actions{{/isBack}}
+            {{#isSelected}}media-selected{{/isSelected}}
+            {{#isDirOrBack}}media-dir{{/isDirOrBack}}
+            {{#isFileOrImage}}media-file{{/isFileOrImage}}
+        "
+        data-route="{{value}}"
+        data-path="{{path}}"
+        data-name="{{name}}"
+    >
         {{#isBack}}
-        <a href="{{url}}media{{route}}{{query}}" class="media-icon">
+        <a class="media-icon" href="{{url}}media{{route}}{{query}}">
             <span class="icono-back"></span>
         </a>
         {{/isBack}}
 
         {{#isDir}}
-        <a href="{{url}}media{{route}}{{query}}" class="media-icon">
+        <a class="media-icon" href="{{url}}media{{route}}{{query}}">
             <span class="icono-folder"></span>
         </a>
         {{/isDir}}
 
         {{#isImage}}
         {{^isSelect}}
-        <a href="{{source}}" class="media-image {{#isTransparent}}media-transparent{{/isTransparent}} fancybox" rel="media-image" title="{{name}}">
+        <div class="media-image {{#isTransparent}}media-transparent{{/isTransparent}}">
             <img src="{{thumb}}" alt="{{name}}" />
-        </a>
+        </div>
         {{/isSelect}}
         {{#isSelect}}
-        <div class="media-image media-sel {{#isTransparent}}media-transparent{{/isTransparent}}"
+        <div
+            class="media-image media-sel {{#isTransparent}}media-transparent{{/isTransparent}}"
             data-url="{{source}}"
             data-path="{{value}}"
             data-name="{{name}}"
@@ -100,7 +118,7 @@
 
         {{#isFile}}
         <div
-            class="media-icon {{#canSelect}}media-sel{{/canSelect}}"
+            class="media-file media-icon {{#canSelect}}media-sel{{/canSelect}}"
             data-url="{{source}}"
             data-path="{{value}}"
             data-name="{{name}}"

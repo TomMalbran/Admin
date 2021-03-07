@@ -39,6 +39,24 @@ class Media {
         }
 
         $(".dialog-media .media-sel").removeClass("fancybox");
+        $(".media-file").draggable({
+            addClasses : false,
+            revert     : true,
+            cancel     : ".media-actions",
+            cursor     : "move",
+        });
+        $(".media-dir").droppable({
+            addClasses : false,
+            drop       : async (e, ui) => {
+                const $item    = ui.draggable;
+                const response = await this.ajax.get("media/move", {
+                    newPath : $(e.target).attr("data-route"),
+                    oldPath : $item.attr("data-path"),
+                    name    : $item.attr("data-name"),
+                });
+                this.ajax.resolveResponse(response);
+            }
+        });
     }
 
     /**
@@ -216,7 +234,7 @@ class Media {
             const path  = $elem.attr("data-path");
 
             try {
-                const response = await this.ajax.get(`media/resizeOne`, { path });
+                const response = await this.ajax.get("media/resizeOne", { path });
                 if (response.success) {
                     resized += 1;
                     $count.text(resized);

@@ -24,8 +24,8 @@ class Router {
     private static $modules   = [];
     private static $routes    = [];
     private static $redirects = [];
-    
-    
+
+
     /**
      * Loads the Routes Data
      * @return void
@@ -34,7 +34,7 @@ class Router {
         if (!self::$loaded) {
             $adminData    = Admin::loadData(Admin::RouteData, "admin");
             $internalData = Admin::loadData(Admin::RouteData, "internal");
-            
+
             self::$loaded    = true;
             self::$namespace = Admin::Namespace;
             self::$defaults  = $internalData["defaults"];
@@ -58,7 +58,7 @@ class Router {
     }
 
 
-    
+
     /**
      * Parses the url
      * @param string  $route
@@ -71,7 +71,7 @@ class Router {
             return null;
         }
         $access = Access::getValue($accessLevel);
-        
+
         if (empty($route) || $route == "/") {
             $route = self::$defaults[$access];
         }
@@ -82,7 +82,7 @@ class Router {
         $params      = [];
         $routeParsed = parse_url($route);
         $routeParts  = explode("/", $routeParsed["path"]);
-        
+
         // 2 parts
         if (empty($routeParts[2])) {
             $routeParts[2] = self::DefaultAction;
@@ -95,7 +95,7 @@ class Router {
             array_unshift($params, $routeParts[2]);
             $routeParts[2] = self::OneAction;
             $routeParts[3] = self::Param;
-        
+
         // 3 parts
         } elseif (empty($routeParts[3]) && self::has($routeParts[1], $routeParts[2], self::DefaultAction)) {
             $routeParts[3] = self::DefaultAction;
@@ -113,7 +113,7 @@ class Router {
             array_unshift($params, $routeParts[4]);
             $routeParts[4] = self::Param;
         }
-        
+
         $route = implode("/", $routeParts);
         if (isset(self::$redirects[$access]) && isset(self::$redirects[$access][$route])) {
             $route = self::$redirects[$access][$route];
@@ -129,9 +129,9 @@ class Router {
             "params" => $params,
         ];
     }
-    
-    
-    
+
+
+
     /**
      * Returns true if the give Route exists
      * @param string ...$routeParts
@@ -143,7 +143,7 @@ class Router {
         $route = $route[0] !== "/" ? "/$route" : $route;
         return isset(self::$routes[$route]);
     }
-    
+
     /**
      * Returns the Access Level for the given Route, if it exists
      * @param string $route
@@ -155,7 +155,7 @@ class Router {
         }
         return null;
     }
-    
+
     /**
      * Returns the Module for the given Route, if it exists
      * @param string $route
@@ -171,7 +171,7 @@ class Router {
         }
         return null;
     }
-    
+
     /**
      * Returns the Method for the given Route, if it exists
      * @param string $route

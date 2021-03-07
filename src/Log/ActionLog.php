@@ -14,14 +14,14 @@ use Admin\Utils\Server;
  * The Actions Log
  */
 class ActionLog {
-    
+
     private static $loaded       = false;
     private static $logIDs       = null;
     private static $logSessions  = null;
     private static $logActions   = null;
     private static $credentialID = 0;
-    
-    
+
+
     /**
      * Loads the Action Schemas
      * @return void
@@ -89,7 +89,7 @@ class ActionLog {
         $query->paginate($sort->page, $sort->amount);
         return self::request($query);
     }
-    
+
     /**
      * Returns the Total Actions Log with the given Filters
      * @param Request $filters
@@ -111,11 +111,11 @@ class ActionLog {
         $queryActs  = Query::create("SESSION_ID", "IN", $sessionIDs)->orderBy("time", true);
         $actions    = [];
         $result     = [];
-        
+
         if (empty($sessionIDs)) {
             return [];
         }
-        
+
         $request = self::getActionsSchema()->getMap($queryActs);
         foreach ($request as $row) {
             if (empty($actions[$row["sessionID"]])) {
@@ -128,7 +128,7 @@ class ActionLog {
                 "dataID"  => !empty($row["dataID"]) ? JSON::decode($row["dataID"]) : "",
             ];
         }
-        
+
         $request = self::getSessionsSchema()->getMap($querySess);
         foreach ($request as $row) {
             $result[] = [
@@ -142,12 +142,12 @@ class ActionLog {
                 "actions"        => !empty($actions[$row["sessionID"]]) ? $actions[$row["sessionID"]] : [],
             ];
         }
-        
+
         return $result;
     }
-    
-    
-    
+
+
+
     /**
      * Starts a Log Session
      * @param integer $credentialID
@@ -157,7 +157,7 @@ class ActionLog {
     public static function startSession(int $credentialID, bool $destroy = false): void {
         self::$credentialID = $credentialID;
         $sessionID = self::getSessionID();
-        
+
         if ($destroy || empty($sessionID)) {
             $sessionID = self::getSessionsSchema()->create([
                 "CREDENTIAL_ID" => $credentialID,
@@ -168,7 +168,7 @@ class ActionLog {
             self::setSessionID($sessionID);
         }
     }
-    
+
     /**
      * Ends the Log Session
      * @return void
@@ -177,7 +177,7 @@ class ActionLog {
         self::$credentialID = 0;
         self::setSessionID();
     }
-    
+
 
 
     /**
@@ -194,7 +194,7 @@ class ActionLog {
             foreach ($dataID as $index => $value) {
                 $dataID[$index] = (int)$value;
             }
-            
+
             self::getActionsSchema()->create([
                 "SESSION_ID"    => $sessionID,
                 "CREDENTIAL_ID" => self::$credentialID,

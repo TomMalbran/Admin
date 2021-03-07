@@ -5,7 +5,7 @@ namespace Admin\Utils;
  * Several String Utils
  */
 class Strings {
-    
+
     /**
      * Returns the length og the given String
      * @param string $string
@@ -92,7 +92,7 @@ class Strings {
         $sets   = [];
         $all    = "";
         $result = "";
-        
+
         if (self::contains($availableSets, "a")) {
             $sets[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         } else {
@@ -109,17 +109,17 @@ class Strings {
         if (self::contains($availableSets, "s")) {
             $sets[] = "!@#$%&*?";
         }
-        
+
         foreach ($sets as $set) {
             $result .= self::randomChar($set);
             $all    .= $set;
         }
-        
+
         $all = str_split($all);
         for ($i = 0; $i < $length - count($sets); $i++) {
             $result .= $all[array_rand($all)];
         }
-        
+
         $result = str_shuffle($result);
         return $result;
     }
@@ -179,8 +179,8 @@ class Strings {
         return $string;
     }
 
-    
-    
+
+
     /**
      * Returns a Substring from the Start to the Length
      * @param string  $string
@@ -328,7 +328,7 @@ class Strings {
     public static function fromUrl(string $value): string {
         return str_replace("/", "--", $value);
     }
-    
+
     /**
      * Replaces the double-dashes in a String with slashes to create a Url
      * @param string $value
@@ -409,7 +409,7 @@ class Strings {
         ];
         $clean = trim(str_replace($strip, "", strip_tags($string)));
         $clean = preg_replace('/\s+/', "-", $clean);
-        
+
         if ($anal) {
             $tilde = [ "á", "é", "í", "ó", "ú", "ü", "ñ", "Á", "É", "Í", "Ó", "Ú", "Ü", "Ñ" ];
             $with  = [ "a", "e", "i", "o", "u", "u", "n", "A", "E", "I", "O", "U", "U", "N" ];

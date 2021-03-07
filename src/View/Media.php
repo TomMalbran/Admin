@@ -16,7 +16,7 @@ use Admin\Utils\Strings;
  * The Media View
  */
 class Media {
-    
+
     /**
      * Creates and returns the View
      * @param string $url Optional.
@@ -57,16 +57,16 @@ class Media {
         $result  = empty($error);
         $query   = self::getQuery($request);
         $url     = "media";
-        
+
         if ($request->has("path")) {
             $route = Strings::fromUrl($request->path);
             $url   = "media/$route";
         }
         return self::getView($url)->redirect($request, $message, $result)->withUrl($query);
     }
-    
-    
-    
+
+
+
     /**
      * Returns the Media list view
      * @param Request $request
@@ -99,7 +99,7 @@ class Media {
                 $selected = substr($request->selected, $pos + 1);
             }
         }
-        
+
         $path   = !empty($path) && Path::exists(Path::Source, $path) ? $path : "";
         $source = Path::getPath(Path::Source, $path);
         $source = File::addLastSlash($source);
@@ -246,7 +246,7 @@ class Media {
     }
 
 
-    
+
     /**
      * Returns the Media list view
      * @param Request $request

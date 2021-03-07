@@ -43,7 +43,7 @@ class View {
         $this->url = $url;
         return $this;
     }
-    
+
     /**
      * Sets the SubMenu
      * @param string $subMenu
@@ -53,7 +53,7 @@ class View {
         $this->subMenu = $subMenu;
         return $this;
     }
-    
+
     /**
      * Generates a View Response
      * @param string  $template

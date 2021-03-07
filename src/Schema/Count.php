@@ -16,7 +16,7 @@ class Count {
     public $isCount   = false;
     public $value     = "";
     public $mult      = 1;
-    
+
     public $asKey     = "";
     public $onTable   = "";
     public $leftKey   = "";
@@ -39,7 +39,7 @@ class Count {
         $this->isCount   = empty($data["isSum"])  || !$data["isSum"];
         $this->value     = !empty($data["value"])    ? $data["value"]     : "";
         $this->mult      = !empty($data["mult"])     ? (int)$data["mult"] : 1;
-        
+
         $this->asKey     = !empty($data["asKey"])    ? $data["asKey"]     : "";
         $this->onTable   = !empty($data["onTable"])  ? $data["onTable"]   : "";
         $this->leftKey   = !empty($data["leftKey"])  ? $data["leftKey"]   : $this->key;

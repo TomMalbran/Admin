@@ -254,7 +254,7 @@ ol li:hover .sub-nav {
     content: "\e918";
     transform: rotate(0deg);
 }
-    
+
 .topbar-user {
     display: flex;
     justify-content: flex-end;

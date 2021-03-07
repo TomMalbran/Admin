@@ -89,7 +89,7 @@ class Numbers {
         return $value;
     }
 
-    
+
 
     /**
      * Returns true if the given value is a number and greater and/or equal to cero
@@ -168,7 +168,7 @@ class Numbers {
     public static function isValidPrice($price, int $min = 1, int $max = null): bool {
         return self::isValid($price * 100, $min, $max);
     }
-    
+
     /**
      * Rounds the given price to 2 decimals
      * @param float $price
@@ -177,7 +177,7 @@ class Numbers {
     public static function roundCents(float $price): int {
         return self::round($price, 2);
     }
-    
+
     /**
      * Returns the given price in Cents
      * @param float $price
@@ -186,7 +186,7 @@ class Numbers {
     public static function toCents(float $price): int {
         return self::toInt($price, 2);
     }
-    
+
     /**
      * Returns the given price in Dollars
      * @param integer $price
@@ -259,7 +259,7 @@ class Numbers {
         $currStr     = !empty($currency) ? "<span>$currency</span>" : "";
         $cents       = round($positive * $padding - $noCents * $padding);
         $centsStr    = str_pad($cents, $decimals, "0", STR_PAD_LEFT);
-        
+
         return "$currStr {$negStr}{$noCentsStr}<sup>$centsStr</sup>";
     }
 }

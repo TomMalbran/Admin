@@ -15,14 +15,14 @@ use Mustache_Exception_UnknownTemplateException;
  * The Mustache Provider
  */
 class Mustache {
-    
+
     private static $loaded = false;
 
     private static $simpleEngine = null;
     private static $adminEngine  = null;
     private static $siteEngine   = null;
-    
-    
+
+
     /**
      * Creates the Mustache Provider
      * @param boolean $forSite Optional.
@@ -86,9 +86,9 @@ class Mustache {
             self::$siteEngine = new Mustache_Engine($loaders);
         }
     }
-    
-    
-    
+
+
+
     /**
      * Renders the template using any of the Engines depending on the first parameter
      * @param string  $templateOrPath

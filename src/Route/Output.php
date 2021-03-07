@@ -13,7 +13,7 @@ use Admin\Utils\JSON;
  * The Output Service
  */
 class Output {
-    
+
     /**
      * Prints the Response
      * @param Response $response
@@ -45,7 +45,7 @@ class Output {
      */
     private static function redirect(Response $response, bool $isAjax, bool $isFrame): void {
         $baseUrl = Config::getAdminUrl();
-        
+
         $url = $baseUrl;
         if (!empty($response->url)) {
             $url = str_replace("//", "/", $response->url);
@@ -54,7 +54,7 @@ class Output {
             }
             $url = $baseUrl . $url;
         }
-        
+
         if ($isAjax) {
             echo JSON::encode([
                 "adminJWT" => Auth::getToken(),
@@ -67,7 +67,7 @@ class Output {
             header("Location: $url");
         }
     }
-    
+
     /**
      * Prints the the Response template, if necesary
      * @param Response $response
@@ -105,7 +105,7 @@ class Output {
                 return $val == $response->subMenu ? "sub-item-selected" : "";
             },
         ] + $response->data;
-        
+
         if ($isAjax) {
             $content = Mustache::render($response->template, $data);
             echo JSON::encode([

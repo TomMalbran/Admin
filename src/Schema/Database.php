@@ -13,7 +13,7 @@ use mysqli;
 class Database {
 
     private $mysqli;
-    
+
     public $host;
     public $username;
     public $password;
@@ -21,8 +21,8 @@ class Database {
     public $prefix;
     public $email;
     public $persist;
-        
-    
+
+
     /**
      * Creates a new Database instance
      * @param mixed   $config  Object[
@@ -43,10 +43,10 @@ class Database {
         $this->prefix   = $config->prefix;
         $this->email    = !empty($config->email) ? $config->email : "";
         $this->persist  = $persist;
-        
+
         $this->connect();
     }
-    
+
     /**
      * Closes the connection
      */
@@ -55,9 +55,9 @@ class Database {
             $this->mysqli->close();
         }
     }
-    
-    
-    
+
+
+
     /**
      * Connects with the database
      * @return void
@@ -68,7 +68,7 @@ class Database {
             die("Connect Error ({$this->mysqli->connect_errno}) {$this->mysqli->connect_error}");
         }
     }
-    
+
     /**
      * Closes the connection
      * @return void
@@ -76,9 +76,9 @@ class Database {
     public function close(): void {
         $this->mysqli->close();
     }
-    
-    
-    
+
+
+
     /**
      * Process the given query
      * @param string $expression
@@ -90,7 +90,7 @@ class Database {
         $statement = $this->processQuery($expression, $binds);
         return $this->dynamicBindResults($statement);
     }
-    
+
     /**
      * Selects the given columns from a single table and returns the result as an array
      * @param string          $table
@@ -109,7 +109,7 @@ class Database {
         }
         return $this->query($expression, $params);
     }
-    
+
     /**
      * Selects the given column from a single table and returns a single value
      * @param string $table
@@ -119,13 +119,13 @@ class Database {
      */
     public function getValue(string $table, string $column, Query $query) {
         $request = $this->getAll($table, $column, $query->limit(1));
-        
+
         if (isset($request[0][$column])) {
             return $request[0][$column];
         }
         return "";
     }
-    
+
     /**
      * Selects the given columns from a single table and returns the first row
      * @param string          $table
@@ -135,13 +135,13 @@ class Database {
      */
     public function getRow(string $table, $columns, Query $query): array {
         $request = $this->getAll($table, $columns, $query->limit(1));
-        
+
         if (isset($request[0])) {
             return $request[0];
         }
         return "";
     }
-    
+
     /**
      * Selects the given column from a single table and returns the entire column
      * @param string $table
@@ -152,7 +152,7 @@ class Database {
     public function getColumn(string $table, string $column, Query $query): array {
         $request = $this->getAll($table, $column, $query);
         $result  = [];
-        
+
         foreach ($request as $row) {
             if (!empty($row[$column]) && !Arrays::contains($result, $row[$column])) {
                 $result[] = $row[$column];
@@ -160,7 +160,7 @@ class Database {
         }
         return $result;
     }
-    
+
 
 
     /**
@@ -172,7 +172,7 @@ class Database {
     public function exists(string $table, Query $query): bool {
         return $this->getTotal($table, $query) == 1;
     }
-    
+
     /**
      * Returns the Count in the given table
      * @param string $table
@@ -182,13 +182,13 @@ class Database {
     public function getTotal(string $table, Query $query): int {
         $expression = "SELECT COUNT(*) AS cnt FROM `{dbPrefix}$table` " . $query->get();
         $request    = $this->query($expression, $query);
-        
+
         if (isset($request[0]["cnt"])) {
             return (int)$request[0]["cnt"];
         }
         return 0;
     }
-    
+
     /**
      * Returns the Sums of the given column in the given table
      * @param string $table
@@ -199,14 +199,14 @@ class Database {
     public function getSum(string $table, string $column, Query $query): int {
         $expression = "SELECT COALESCE(SUM($column), 0) AS sum FROM `{dbPrefix}$table` "  . $query->get();
         $request    = $this->query($expression, $query);
-        
+
         if (isset($request[0]["sum"])) {
             return (int)$request[0]["sum"];
         }
         return 0;
     }
-    
-    
+
+
 
     /**
      * Replaces or Inserts the given content into the given table
@@ -221,10 +221,10 @@ class Database {
         $expression .= $this->buildInsertHeader($fields);
         $expression .= $this->buildTableData($fields, $bindParams, true);
         $statement   = $this->processQuery($expression, $bindParams);
-        
+
         return $statement->affected_rows > 0 ? $statement->insert_id : -1;
     }
-    
+
     /**
      * Replaces or Inserts multiple rows
      * @param string $table
@@ -236,20 +236,20 @@ class Database {
         $bindParams  = [];
         $expression  = "$method INTO `{dbPrefix}$table` ";
         $expression .= $this->buildInsertHeader($fields[0]);
-        
+
         $rows = [];
         foreach ($fields as $tableData) {
             $rows[] = $this->buildTableData($tableData, $bindParams, true);
         }
-        
+
         $expression .= Strings::join($rows, ", ");
         $statement   = $this->processQuery($expression, $bindParams);
-        
+
         return $statement->affected_rows > 0;
     }
 
-    
-    
+
+
     /**
      * Updates the content of the database based on the query and given fields
      * @param string $table
@@ -264,10 +264,10 @@ class Database {
         $expression .= " " . $query->get();
         $bindParams  = array_merge($bindParams, $query->params);
         $statement   = $this->processQuery($expression, $bindParams);
-        
+
         return $statement->affected_rows > 0;
     }
-    
+
     /**
      * Updates a single value increasing it by the given amount
      * @param string  $table
@@ -280,8 +280,8 @@ class Database {
         return $this->update($table, [ $column => Query::inc($amount) ], $query);
     }
 
-    
-    
+
+
     /**
      * Deletes from the given table
      * @param string $table
@@ -291,7 +291,7 @@ class Database {
     public function delete(string $table, Query $query): bool {
         $expression = "DELETE FROM `{dbPrefix}$table` " . $query->get();
         $statement  = $this->processQuery($expression, $query->params);
-        
+
         return $statement->affected_rows > 0;
     }
 
@@ -303,7 +303,7 @@ class Database {
     public function deleteAll(string $table): bool {
         $expression = "DELETE FROM `{dbPrefix}$table`";
         $statement  = $this->processQuery($expression, []);
-        
+
         return $statement->affected_rows > 0;
     }
 
@@ -315,11 +315,11 @@ class Database {
     public function truncate(string $table): bool {
         $expression = "TRUNCATE TABLE `{dbPrefix}$table`";
         $statement  = $this->processQuery($expression, []);
-        
+
         return ($statement->affected_rows > 0);
     }
-    
-    
+
+
 
     /**
      * Escape harmful characters which might affect a query
@@ -329,7 +329,7 @@ class Database {
     public function escape(string $str): string {
         return $this->mysqli->real_escape_string($str);
     }
-    
+
     /**
      * Process a mysqli query
      * @param string $expression
@@ -340,11 +340,11 @@ class Database {
         $expression = Strings::replace(trim($expression), "{dbPrefix}", $this->prefix);
         $query      = Strings::replace($expression, "\n", "");
         $statement  = $this->mysqli->prepare($expression);
-        
+
         if (!$statement) {
             trigger_error("Problem preparing query: {$this->mysqli->error} ($query)", E_USER_ERROR);
         }
-        
+
         if (is_array($bindParams) && !empty($bindParams)) {
             $params = [ "" ]; // Create the empty 0 index
             foreach ($bindParams as $value) {
@@ -353,15 +353,15 @@ class Database {
             }
             call_user_func_array([ $statement, "bind_param" ], $this->refValues($params));
         }
-        
+
         $statement->execute();
         if ($statement->error) {
             trigger_error("Problem executing query: {$statement->error} {$this->mysqli->error} ($query)", E_USER_ERROR);
         }
-        
+
         return $statement;
     }
-    
+
     /**
      * This method is used to prepare the statements by turning the item type into a type used by mysqli
      * @param mixed $item Input to determine the type.
@@ -382,7 +382,7 @@ class Database {
         }
         return "";
     }
-    
+
     /**
      * This is required for PHP 5.3+
      * @param string[] $array
@@ -398,7 +398,7 @@ class Database {
         }
         return $array;
     }
-    
+
     /**
      * Takes care of prepared statements' bind_result method, when the number of variables to pass is unknown.
      * @param mixed $statement Equal to the prepared statement object.
@@ -414,7 +414,7 @@ class Database {
         if (!$meta && $statement->sqlstate) {
             return [];
         }
-        
+
         $row = [];
         while ($field = $meta->fetch_field()) {
             $row[$field->name] = null;
@@ -430,10 +430,10 @@ class Database {
             array_push($results, $x);
         }
         $statement->free_result();
-        
+
         return $results;
     }
-    
+
     /**
      * Builds the query for inserting or updating
      * @param array $fields
@@ -442,7 +442,7 @@ class Database {
     private function buildInsertHeader(array $fields): string {
         return "(`" . Strings::joinKeys($fields, "`, `") . "`) VALUES ";
     }
-    
+
     /**
      * Process the table data for building the query for inserting or updating
      * @param array   $fields
@@ -455,12 +455,12 @@ class Database {
         if ($isInsert) {
              $result .= "(";
         }
-        
+
         foreach ($fields as $column => $value) {
             if (!$isInsert) {
                 $result .= "`$column` = ";
             }
-            
+
             if (!is_array($value)) {
                 $result .= "?, ";
                 $bindParams[] = $value;
@@ -494,15 +494,15 @@ class Database {
                 }
             }
         }
-        
+
         $result = rtrim($result, ", ");
         if ($isInsert) {
             $result .= ")";
         }
         return $result;
     }
-    
-    
+
+
 
     /**
      * Returns the Table Name
@@ -560,7 +560,7 @@ class Database {
         $tableName = $this->getTableName($table);
         $request   = $this->query("SHOW KEYS FROM `$tableName`");
         $result    = [];
-        
+
         foreach ($request as $row) {
             if ($row["Key_name"] == "PRIMARY") {
                 $result[] = $row["Column_name"];
@@ -578,7 +578,7 @@ class Database {
         $tableName = $this->getTableName($table);
         return $this->query("SHOW INDEXES IN `$tableName`");
     }
-    
+
     /**
      * Returns the Table Fields
      * @param string $table
@@ -602,7 +602,7 @@ class Database {
     public function createTable(string $table, array $fields, array $primary, array $keys): string {
         $tableName = $this->getTableName($table);
         $sql       = "CREATE TABLE $tableName (\n";
-        
+
         foreach ($fields as $key => $type) {
             $sql .= "  `$key` " . $type . ",\n";
         }
@@ -716,7 +716,7 @@ class Database {
         return $sql;
     }
 
-    
+
 
     /**
      * Dumps the entire database
@@ -726,7 +726,7 @@ class Database {
      */
     public function dump(array $filter = null, $fp = null): void {
         $crlf = "\r\n";
-        
+
         // SQL Dump Header
         $this->write(
             $fp,
@@ -738,16 +738,16 @@ class Database {
             "# ========================================================= $crlf" .
             $crlf
         );
-        
+
         // Get all tables in the database
         $tables = $this->getTables($filter);
-        
+
         // Dump each table
         foreach ($tables as $table) {
             if (function_exists("apache_reset_timeout")) {
                 apache_reset_timeout();
             }
-            
+
             $this->write(
                 $fp,
                 $crlf .
@@ -759,7 +759,7 @@ class Database {
                 $crlf .
                 $this->getTableSQLData($table) . "; $crlf"
             );
-            
+
             // Are there any rows in this table?
             $rows = $this->getTableContent($table);
             if (!empty($rows)) {
@@ -777,7 +777,7 @@ class Database {
         }
         $this->write($fp, $crlf . "# Done" . $crlf);
     }
-    
+
     /**
      * Writes the content in a file or prints them in the screen
      * @param mixed  $fp
@@ -791,7 +791,7 @@ class Database {
             print($content);
         }
     }
-    
+
     /**
      * Returns the table's SQL data
      * @param string $tableName
@@ -801,7 +801,7 @@ class Database {
         $crlf    = "\r\n";
         $result  = "CREATE TABLE `$tableName` (" . $crlf;
         $request = $this->query("SHOW FIELDS FROM `$tableName`");
-        
+
         foreach ($request as $row) {
             // Make the CREATE for this column.
             $result .= "  " . $row["Field"] . " " . $row["Type"] . ($row["Null"] != "YES" ? " NOT NULL" : "");
@@ -819,14 +819,14 @@ class Database {
             // And now any extra information. (such as auto_increment.)
             $result .= ($row["Extra"] != "" ? " " . $row["Extra"] : "") . "," . $crlf;
         }
-        
+
         // Take off the last comma.
         $result = substr($result, 0, -strlen($crlf) - 1);
-        
+
         // Find the keys.
         $request = $this->query("SHOW KEYS FROM `$tableName`");
         $indexes = [];
-        
+
         foreach ($request as $row) {
             // IS this a primary key, unique index, or regular index?
             if ($row["Key_name"] == "PRIMARY") {
@@ -857,17 +857,17 @@ class Database {
             ksort($columns);
             $result .= "," . $crlf . "  $keyname (" . Strings::join($columns, ", ") . ")";
         }
-        
+
         // Now just get the comment and type... (MyISAM, etc.)
         $request = $this->query("
             SHOW TABLE STATUS
             LIKE '" . strtr($tableName, [ '_' => '\\_', '%' => '\\%' ]) . "'
         ");
-        
+
         // Probably MyISAM.... and it might have a comment.
         $result .= $crlf . ") ENGINE=" . (isset($request[0]["Type"]) ? $request[0]["Type"] : $request[0]["Engine"]);
         $result .= $request[0]["Comment"] != "" ? " COMMENT='" . $request[0]["Comment"] . "'" : "";
-        
+
         return $result;
     }
 
@@ -880,14 +880,14 @@ class Database {
         $crlf   = "\r\n";
         $result = "";
         $start  = 0;
-        
+
         do {
             $request = $this->query("SELECT /*!40001 SQL_NO_CACHE */ * FROM $tableName LIMIT $start, 250");
             $start  += 250;
-            
+
             if (!empty($request)) {
                 $result .= "INSERT INTO `$tableName`" . $crlf . "\t(`" . Strings::joinKeys($request[0], "`, `") . "`) $crlf VALUES ";
-                
+
                 foreach ($request as $index => $row) {
                     $fieldList = [];
                     foreach ($row as $value) {
@@ -901,7 +901,7 @@ class Database {
                         }
                     }
                     $result .= "(" . Strings::join($fieldList, ", ") . ")";
-                    
+
                     if ($index < count($request) - 1) {
                         $result .= "," . $crlf . "\t";
                     }
@@ -909,7 +909,7 @@ class Database {
                 $result .= ";" . $crlf;
             }
         } while (!empty($request));
-        
+
         return $result;
     }
 }

@@ -112,7 +112,7 @@ class DateTime {
         }
         return 0;
     }
-    
+
     /**
      * Returns the given string as a time
      * @param string  $string
@@ -144,7 +144,7 @@ class DateTime {
         }
         return 0;
     }
-    
+
     /**
      * Returns the given string as a time of the middle of the day
      * @param string  $string
@@ -185,7 +185,7 @@ class DateTime {
     public static function isValidDate(string $string): bool {
         return strtotime($string) !== false;
     }
-    
+
     /**
      * Returns true if the given hour is Valid
      * @param string $string
@@ -211,7 +211,7 @@ class DateTime {
     public static function isValidPeriod(string $fromDate, string $toDate, bool $useTimezone = true): bool {
         $fromTime = self::toDayStart($fromDate, $useTimezone);
         $toTime   = self::toDayEnd($toDate, $useTimezone);
-        
+
         return $fromTime !== null && $toTime !== null && $fromTime < $toTime;
     }
 
@@ -225,7 +225,7 @@ class DateTime {
         $date     = date("d-m-Y");
         $fromTime = self::toTimeHour($date, $fromHour);
         $toTime   = self::toTimeHour($date, $toHour);
-        
+
         return $fromTime !== 0 && $toTime !== 0 && $fromTime < $toTime;
     }
 
@@ -247,7 +247,7 @@ class DateTime {
     ): bool {
         $fromTime = self::toTimeHour($fromDate, $fromHour, $useTimezone);
         $toTime   = self::toTimeHour($toDate, $toHour, $useTimezone);
-        
+
         return $fromTime !== 0 && $toTime !== 0 && $fromTime < $toTime;
     }
 
@@ -303,7 +303,7 @@ class DateTime {
     public static function isCurrentBetween(int $fromTime, int $toTime): bool {
         return self::isBetween(time(), $fromTime, $toTime);
     }
-    
+
 
 
     /**
@@ -333,7 +333,7 @@ class DateTime {
 
         // Extract the Weeks
         $weeks       = floor($seconds / $secsInWeek);
-        
+
         // Extract the Days
         $daySeconds  = $seconds % $secsInWeek;
         $days        = floor($daySeconds / $secsInDay);
@@ -341,11 +341,11 @@ class DateTime {
         // Extract the Hours
         $hourSeconds = $daySeconds % $secsInDay;
         $hours       = floor($hourSeconds / $secsInHour);
-        
+
         // Extract the Minutes
         $minSeconds  = $daySeconds % $secsInHour;
         $mins        = floor($minSeconds / $secsInMinute);
-        
+
         // Generate the Result
         if ($mins == 0) {
             return "0";
@@ -413,7 +413,7 @@ class DateTime {
         }
         return "";
     }
-    
+
     /**
      * Returns a short version of the Month
      * @param integer $month
@@ -459,7 +459,7 @@ class DateTime {
         $diff = floor(($time1 - $time2) / (7 * 24 * 3600));
         return $min !== null ? max($diff, $min) : $diff;
     }
-    
+
     /**
      * Returns the difference between 2 dates in Days
      * @param integer $time1
@@ -507,7 +507,7 @@ class DateTime {
     public static function getHourSelect(string $selected = "", bool $withHalf = false): array {
         $minutes = $withHalf ? [ "00", "30" ] : [ "00" ];
         $result  = [];
-        
+
         for ($h = 7; $h < 24; $h++) {
             foreach ($minutes as $m) {
                 $string   = str_pad($h, 2, "0", STR_PAD_LEFT) . ":$m";

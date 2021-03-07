@@ -70,7 +70,7 @@
     .dialog-alert {
         width: 650px;
     }
-    
+
 .dialog > header {
     flex-shrink: 0;
     display: flex;
@@ -116,7 +116,7 @@
     .show-dialog {
         transform: scale(0.8);
     }
-    
+
     .dialog-container {
         top: 0;
         left: 0;

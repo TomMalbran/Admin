@@ -486,7 +486,7 @@ class Ajax {
             mediamanager_path  : window.ADMIN_URL,
             mediamanager_files : window.FILES_URL,
             mediamanager_title : "Archivos",
-            external_plugins   : { 
+            external_plugins   : {
                 mediamanager : `${window.PUBLIC_URL}thirdparty/tinymedia.js`,
             },
         };
@@ -548,7 +548,7 @@ class Ajax {
         const navBottom   = navHeight + marginTop;
         const maxMargin   = sideHeight - navHeight;
         let   newMargin   = null;
-        
+
         if (navHeight > sideHeight) {
             if (scrollDiff < 0 && navBottom > sideHeight) {
                 newMargin = marginTop + scrollDiff;
@@ -590,7 +590,7 @@ class Ajax {
             const subHeight   = $sub.outerHeight();
             const titleHeight = this.$title.outerHeight();
             const subBottom   = titleHeight + itemTop + subHeight;
-            
+
             if (subBottom > winHeight) {
                 $sub.css("top", (-subHeight + itemHeight) + "px");
                 $sub.addClass("sub-top");

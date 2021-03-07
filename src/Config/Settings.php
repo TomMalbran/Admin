@@ -15,11 +15,11 @@ use Admin\Utils\Strings;
  * The Settings Data
  */
 class Settings {
-    
+
     private static $loaded = false;
     private static $schema = null;
-    
-    
+
+
     /**
      * Loads the Settings Schemas
      * @return Schema
@@ -31,8 +31,8 @@ class Settings {
         }
         return self::$schema;
     }
-    
-    
+
+
 
     /**
      * Returns a single Setting
@@ -136,7 +136,7 @@ class Settings {
         if (!empty($section)) {
             return $request;
         }
-        
+
         $result  = [];
         foreach ($request as $section => $row) {
             foreach ($row as $variable => $value) {
@@ -145,9 +145,9 @@ class Settings {
         }
         return $result;
     }
-    
-    
-    
+
+
+
     /**
      * Saves the given Settings if those are already on the DB
      * @param array $data
@@ -156,7 +156,7 @@ class Settings {
     public static function save(array $data): void {
         $request = self::getSettings();
         $batch   = [];
-        
+
         foreach ($request as $row) {
             $variable = $row["section"] . "-" . $row["variable"];
             if (isset($data[$variable])) {
@@ -173,7 +173,7 @@ class Settings {
                 ];
             }
         }
-        
+
         if (!empty($batch)) {
             self::$schema->batch($batch);
         }

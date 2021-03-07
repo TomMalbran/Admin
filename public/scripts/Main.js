@@ -121,7 +121,7 @@
             const name   = $(e.target).data("add");
             const $copy  = $(`[data-rows="${name}"]`).find(".copy-row");
             const $clone = $copy.clone(true).removeClass("copy-row").insertBefore($copy);
-            
+
             $clone.find(".datepicker").datepicker();
             if ($copy.data("field")) {
                 const $input = $clone.find(".input-row");
@@ -193,7 +193,7 @@
             const text  = $elem.data("confirm");
             const href  = $elem.attr("href");
             const txt   = text && text !== 1 ? text : "¿Realmente desea eliminar este elemento?";
-        
+
             dialog.confirm(title, txt).then(() => {
                 ajax.loadUrl(href, "confirmed", "1");
             });
@@ -209,7 +209,7 @@
             const href  = $elem.attr("href");
             const key   = $elem.data("key") || "reason";
             const val   = $elem.data("value");
-            
+
             dialog.prompt(title, text, val).then((value) => {
                 ajax.loadUrl(href, key, value);
             });

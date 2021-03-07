@@ -8,7 +8,7 @@ use Admin\Utils\Strings;
  * Several Utils functions
  */
 class Utils {
-    
+
     /**
      * Returns true if the given value is alpha-numeric
      * @param string  $value
@@ -25,7 +25,7 @@ class Utils {
         }
         return ctype_alnum($value);
     }
-    
+
     /**
      * Returns true if the given email is valid
      * @param string $email
@@ -34,7 +34,7 @@ class Utils {
     public static function isValidEmail(string $email): bool {
         return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
-    
+
     /**
      * Returns true if the given password is valid
      * @param string  $password
@@ -60,7 +60,7 @@ class Utils {
         }
         return true;
     }
-    
+
     /**
      * Returns true if the given domain is valid
      * @param string $domain
@@ -69,7 +69,7 @@ class Utils {
     public static function isValidDomain(string $domain): bool {
         return Strings::match($domain, '/^([a-z0-9ñ]([-a-z0-9ñ]*[a-z0-9ñ])?)\.[a-z]{2,5}(\.[a-z]{2})?$/i');
     }
-    
+
     /**
      * Returns true if the given name is valid
      * @param string $name
@@ -78,7 +78,7 @@ class Utils {
     public static function isValidName(string $name): bool {
         return Strings::match($name, '/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/i');
     }
-    
+
     /**
      * Returns true if the given CUIT is valid
      * @param string $value
@@ -94,12 +94,12 @@ class Utils {
         $verify = (int)$cuit[10];
         $mult   = [ 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 ];
         $total  = 0;
-        
+
         // Multiply each number by the multiplier (except the last one)
 		for ($i = 0; $i < count($mult); $i++) {
             $total += (int)$cuit[$i] * $mult[$i];
 		}
-        
+
         // Calculate the left over and value
         $mod = $total % 11;
         if ($mod == 0) {
@@ -125,8 +125,8 @@ class Utils {
         return is_numeric((int)$dni);
     }
 
-    
-    
+
+
     /**
      * Parses the given CUIT if it has 11 chars
      * @param string $value
@@ -138,7 +138,7 @@ class Utils {
         }
         return $value;
     }
-    
+
     /**
      * Removes spaces and dashes in the CUIT
      * @param string $value
@@ -156,7 +156,7 @@ class Utils {
     public static function dniToNumber(string $value): string {
         return Strings::replace($value, [ " ", "." ], "");
     }
-    
+
     /**
      * Generates a username from a domain
      * @param string $domain
@@ -167,13 +167,13 @@ class Utils {
         $parts  = Strings::split($domain, ".");
         $result = Strings::replace($parts[0], ["-", "ñ"], ["", "n"]);
         $result = Strings::substring($result, 0, 8);
-        
+
         if (!empty($email) && is_numeric($result[0])) {
             $result = Strings::substring($email[0] . $result, 0, 8);
         }
         return $result;
     }
-    
+
     /**
      * Generates a domain from an email
      * @param string $email
@@ -185,24 +185,24 @@ class Utils {
             "aol.com", "att.net", "comcast.net", "facebook.com", "fb.com", "gmail.com", "gmx.com", "googlemail.com",
             "google.com", "hotmail.com", "hotmail.co.uk", "hotmail.es", "mac.com", "me.com", "mail.com", "msn.com",
             "live.com", "sbcglobal.net", "verizon.net", "yahoo.com", "yahoo.co.uk",
-            
+
             /* Other global domains */
             "email.com", "fastmail.fm", "games.com" /* AOL */, "gmx.net", "hush.com", "hushmail.com", "icloud.com",
             "iname.com", "inbox.com", "lavabit.com", "love.com" /* AOL */, "outlook.com", "pobox.com", "protonmail.com",
             "rocketmail.com" /* Yahoo */, "safe-mail.net", "wow.com" /* AOL */, "ygm.com" /* AOL */,
             "ymail.com" /* Yahoo */, "zoho.com", "yandex.com",
-            
+
             /* Argentinian ISP domains */
             "hotmail.com.ar", "live.com.ar", "yahoo.com.ar", "fibertel.com.ar", "speedy.com.ar", "arnet.com.ar",
             "ciudad.com.ar", "flash.com.ar", "outlook.com.ar",
-            
+
             /* Other countries */
             "yahoo.es", "yahoo.com.br", "outlook.es", "hotmail.es",
-            
+
             /* Special domain */
             "unbounce.com", "webadictos.net", "telefonica.com", "prueba.com", "tester.com", "demo.com",
         ];
-        
+
         if (self::isValidEmail($email)) {
             $domain = Strings::substringAfter($email, "@");
             $domain = Strings::toLowerCase($domain);
@@ -212,7 +212,7 @@ class Utils {
         }
         return "";
     }
-    
+
 
 
     /**
@@ -223,7 +223,7 @@ class Utils {
     public static function getDomainExtension(string $domain): string {
         return Strings::substringAfter($domain, ".");
     }
-    
+
     /**
      * Parsea a Domain to try and return something like "domain.com"
      * @param string $domain
@@ -235,7 +235,7 @@ class Utils {
             $domain = "http://$domain";
         }
         $host = parse_url($domain, PHP_URL_HOST);
-        
+
         if ($host) {
             return Strings::replace($host, "www.", "");
         }

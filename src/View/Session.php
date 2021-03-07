@@ -19,7 +19,7 @@ use Admin\Utils\Strings;
  * The Session View
  */
 class Session {
-    
+
     /**
      * Creates and returns the View
      * @return View
@@ -49,9 +49,9 @@ class Session {
         }
         return self::getView()->create($template, $request, $result, null, $errors);
     }
-    
-    
-    
+
+
+
     /**
      * Shows the login form
      * @param Request $request
@@ -60,7 +60,7 @@ class Session {
     public static function getAll(Request $request): Response {
         return self::showView("login", $request);
     }
-    
+
     /**
      * Logins the user
      * @param Request $request
@@ -71,7 +71,7 @@ class Session {
         if (Auth::isLoggedIn()) {
             return Response::reload($redirectUrl);
         }
-        
+
         $errors = new Errors();
         if (Spam::protection()) {
             $errors->add("spam");
@@ -91,7 +91,7 @@ class Session {
                 $errors->add("credentials");
             }
         }
-        
+
         if ($errors->has()) {
             return self::showView("login", $request, [
                 "email"       => trim($request->email),
@@ -103,7 +103,7 @@ class Session {
         ActionLog::add("Session", "Login");
         return Response::reload($redirectUrl);
     }
-    
+
     /**
      * Logins as an User
      * @param integer $credentialID
@@ -127,9 +127,9 @@ class Session {
         Auth::logout();
         return Response::reload()->withParam("redirectUrl", $redirectUrl);
     }
-    
-    
-    
+
+
+
     /**
      * Shows the remember password form
      * @param Request $request
@@ -154,7 +154,7 @@ class Session {
         $errors = new Errors("email");
         return self::showView("remember", $request, [], $errors);
     }
-    
+
     /**
      * Shows the Remember Code form
      * @param Request $request
@@ -173,7 +173,7 @@ class Session {
         $errors = new Errors("resetCode");
         return self::showView("code", $request, [], $errors);
     }
-    
+
     /**
      * Shows the Reset Password form
      * @param Request $request
@@ -186,7 +186,7 @@ class Session {
         if (!$request->has("post")) {
             return self::showView("reset", $request);
         }
-        
+
         $errors = new Errors();
         if (!$request->has("password") || !$request->isValidPassword("password")) {
             $errors->add("password");
@@ -198,7 +198,7 @@ class Session {
             $request->remove("password");
             return self::showView("reset", $request, [], $errors);
         }
-        
+
         $credentialID = Reset::getCredentialID($request->resetCode);
         Credential::setPassword($credentialID, $request->password);
         Reset::delete($credentialID);
@@ -206,8 +206,8 @@ class Session {
         return Response::redirect("session")->withSuccess("reset");
     }
 
-    
-    
+
+
     /**
      * Views a Session
      * @param Request $request
@@ -217,7 +217,7 @@ class Session {
         $credential = Credential::getOne(Auth::getID());
         return self::getView()->create("edit", $request, [], $credential);
     }
-    
+
     /**
      * Edits the Session
      * @param Request $request
@@ -225,7 +225,7 @@ class Session {
      */
     public static function edit(Request $request): Response {
         $errors = new Errors();
-        
+
         if (!$request->has("firstName")) {
             $errors->add("firstName");
         }
@@ -238,7 +238,7 @@ class Session {
         if ($request->has("password") && !$request->isValidPassword("password")) {
             $errors->add("password");
         }
-        
+
         if ($errors->has()) {
             $request->remove("password");
             return self::getView()->create("edit", $request, [], null, $errors);

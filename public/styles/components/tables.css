@@ -150,7 +150,7 @@ tfoot tr:first-child th {
     .table-list.table-container tr:nth-child(even) td {
         background: none;
     }
-    
+
     .table-list-break:after {
         content: "\A";
         white-space: pre;
@@ -177,4 +177,3 @@ tfoot tr:first-child th {
         transform: translateY(-50%);
     }
 }
-  

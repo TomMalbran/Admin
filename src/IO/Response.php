@@ -9,19 +9,19 @@ use Admin\IO\Url;
  * The Response wrapper
  */
 class Response {
-    
+
     public $isEmpty    = false;
     public $isRedirect = false;
     public $isJSON     = false;
     public $isView     = false;
     public $isAPI      = false;
-    
+
     private $info;
     private $url;
     private $storage;
-    
-    
-    
+
+
+
     /**
      * Returns a Null Response
      * @return Response
@@ -29,7 +29,7 @@ class Response {
     public static function empty() {
         return new Response("empty");
     }
-    
+
     /**
      * Returns a Redirect Response
      * @param string  $url     Optional.
@@ -58,7 +58,7 @@ class Response {
             "reload" => true,
         ], $url);
     }
-    
+
     /**
      * Returns a JSON Response
      * @param array   $result  Optional.
@@ -77,7 +77,7 @@ class Response {
             "errors"  => $errors,
         ]);
     }
-    
+
     /**
      * Returns the Template Response
      * @param string  $template
@@ -165,7 +165,7 @@ class Response {
     }
 
 
-    
+
     /**
      * Creates a new Response instance
      * @param string $type
@@ -178,7 +178,7 @@ class Response {
         $this->url     = new Url($url);
         $this->storage = [];
     }
-    
+
     /**
      * Returns the request data at the given key
      * @param string $key
@@ -197,7 +197,7 @@ class Response {
         $value = $this->get($key);
         return !empty($value);
     }
-    
+
     /**
      * Returns the request data at the given key
      * @param string $key
@@ -218,9 +218,9 @@ class Response {
         }
         return null;
     }
-    
-    
-    
+
+
+
     /**
      * Adds the given Message key to the storage
      * @param string  $message
@@ -240,7 +240,7 @@ class Response {
     public function withSuccess(string $message): Response {
         return $this->withMessage($message, true);
     }
-    
+
     /**
      * Adds the given error key to the storage
      * @param string $message
@@ -249,7 +249,7 @@ class Response {
     public function withError(string $message): Response {
         return $this->withMessage($message, false);
     }
-    
+
     /**
      * Adds the given data to the storage
      * @param string $key
@@ -260,7 +260,7 @@ class Response {
         $this->storage[$key] = $value;
         return $this;
     }
-    
+
     /**
      * Adds the given object to the storage
      * @param array $object
@@ -272,9 +272,9 @@ class Response {
         }
         return $this;
     }
-    
-    
-    
+
+
+
     /**
      * Adds the given param to the url
      * @param string $key
@@ -285,7 +285,7 @@ class Response {
         $this->url->set($key, $value);
         return $this;
     }
-    
+
     /**
      * Merges the given url with the current url
      * @param Url $url
@@ -295,7 +295,7 @@ class Response {
         $this->url->merge($url);
         return $this;
     }
-    
+
     /**
      * Merges the given url with the current url
      * @param Request $request Optional.
@@ -311,9 +311,9 @@ class Response {
         return $this;
     }
 
-    
-    
-    
+
+
+
     /**
      * Sets the result
      * @param array $result
@@ -325,7 +325,7 @@ class Response {
         }
         return $this;
     }
-    
+
     /**
      * Sets the request
      * @param Request $request
@@ -337,7 +337,7 @@ class Response {
         }
         return $this;
     }
-    
+
     /**
      * Sets the errors
      * @param Errors $errors Optional.
@@ -349,9 +349,9 @@ class Response {
         }
         return $this;
     }
-    
-    
-    
+
+
+
     /**
      * Returns the given data as an Object
      * @return array

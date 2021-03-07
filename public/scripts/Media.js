@@ -186,7 +186,7 @@ class Media {
 
         // request.addEventListener("error", errorHandler, false);
         // request.addEventListener("abort", abortHandler, false);
-        
+
         // @ts-ignore
         request.open("POST", url);
         request.send(formData);

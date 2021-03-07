@@ -14,7 +14,7 @@ use Admin\Log\ActionLog;
  * The User View
  */
 class User {
-    
+
     /**
      * Creates and returns the View
      * @return View
@@ -22,9 +22,9 @@ class User {
     private static function getView(): View {
         return new View("users", "users", "users");
     }
-    
-    
-    
+
+
+
     /**
      * Returns the Users list view
      * @param Request $request
@@ -37,7 +37,7 @@ class User {
             "hasList" => !empty($list),
         ]);
     }
-    
+
     /**
      * Returns the view for a single User
      * @param integer $credentialID
@@ -48,7 +48,7 @@ class User {
         $credential = Credential::getOne($credentialID);
         return self::getView()->create("view", $request, [], $credential);
     }
-    
+
     /**
      * Returns the User create view
      * @param Request $request
@@ -75,9 +75,9 @@ class User {
             "statuses" => Status::getSelect($credential->status),
         ], $credential);
     }
-    
-    
-    
+
+
+
     /**
      * Creates/Edits a User
      * @param Request $request
@@ -87,7 +87,7 @@ class User {
         $isEdit       = $request->has("credentialID");
         $credentialID = $request->getInt("credentialID");
         $errors       = new Errors();
-        
+
         if ($isEdit && !Credential::exists($credentialID)) {
             $errors->add("exists");
         } else {
@@ -114,7 +114,7 @@ class User {
                 $errors->add("status");
             }
         }
-        
+
         if ($errors->has()) {
             return self::getView()->create("edit", $request, [
                 "isEdit"   => $isEdit,
@@ -122,7 +122,7 @@ class User {
                 "statuses" => Status::getSelect($request->getInt("status")),
             ], null, $errors);
         }
-        
+
         if (!$isEdit) {
             $credentialID = Credential::create($request, $request->status, $request->level);
             ActionLog::add("User", "Create", $credentialID);
@@ -132,7 +132,7 @@ class User {
         }
         return self::getView()->edit($request, $isEdit, $credentialID);
     }
-    
+
     /**
      * Deletes the given User
      * @param integer $credentialID

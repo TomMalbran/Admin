@@ -18,13 +18,13 @@ class Path {
     const Small  = "small";
     const Thumb  = "thumb";
     const Temp   = "temp";
-    
+
     private static $loaded   = false;
     private static $data     = [];
     private static $basePath = null;
     private static $relPath  = null;
-    
-    
+
+
     /**
      * Loads the Path Data
      * @return void
@@ -64,7 +64,7 @@ class Path {
         return [];
     }
 
-    
+
 
     /**
      * Returns the path used to store the files
@@ -106,7 +106,7 @@ class Path {
         self::load();
         return File::exists(self::$basePath, ...$pathParts);
     }
-    
+
 
 
     /**
@@ -118,14 +118,14 @@ class Path {
     public static function getTempPath(int $credentialID, bool $create = true): string {
         $path   = self::getPath(self::Temp, $credentialID);
         $exists = File::exists($path);
-        
+
         if (!$exists && $create) {
             File::createDir($path);
             return $path;
         }
         return $exists ? $path : "";
     }
-    
+
     /**
      * Creates an url to the files temp directory
      * @param integer $credentialID

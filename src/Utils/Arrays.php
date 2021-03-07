@@ -25,7 +25,7 @@ class Arrays {
     }
 
 
-    
+
     /**
      * Returns the length of the given array
      * @param array|mixed $array
@@ -54,7 +54,7 @@ class Arrays {
     public static function containsKey(array $array, $needle): bool {
         return in_array($needle, array_keys($array));
     }
-    
+
 
 
     /**
@@ -74,7 +74,7 @@ class Arrays {
     public static function toObject(array $array = null) {
         return !empty($array) ? $array : new \stdClass();
     }
-    
+
     /**
      * Returns a random value from the array
      * @param array $array
@@ -98,7 +98,7 @@ class Arrays {
         }
         return $result;
     }
-    
+
     /**
      * Returns an array with values in the Base
      * @param array $base
@@ -176,7 +176,7 @@ class Arrays {
         }
         return $result;
     }
-    
+
     /**
      * Creates an sub array using the given array
      * @param array           $array
@@ -190,7 +190,7 @@ class Arrays {
         }
         return $result;
     }
-    
+
     /**
      * Creates a select using the given array
      * @param array           $array
@@ -215,7 +215,7 @@ class Arrays {
         }
         return $result;
     }
-    
+
     /**
      * Creates a select using the given array
      * @param array   $array

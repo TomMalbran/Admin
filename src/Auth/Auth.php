@@ -186,7 +186,7 @@ class Auth {
         if (!empty($parts[0]) && !empty($parts[1])) {
             $admin = Credential::getByEmail($parts[0], true);
             $user  = Credential::getByEmail($parts[1], true);
-            
+
             if (self::canLoginAs($admin, $user)) {
                 $user->password = $admin->password;
                 $user->salt     = $admin->salt;

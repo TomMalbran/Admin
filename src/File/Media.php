@@ -59,7 +59,7 @@ class Media {
         $source  = Path::getPath(Path::Source, $directory);
         $path    = File::upload($source, $fileName, $tmpFile);
         $relPath = Path::getRelPath($path);
-        
+
         if (!File::exists($path)) {
             return null;
         }
@@ -119,7 +119,7 @@ class Media {
         $basePath = Path::getPath(Path::Source);
         $files    = File::getFilesInDir($basePath, true);
         $result   = [];
-        
+
         foreach ($files as $file) {
             if (!FileType::isImage($file)) {
                 continue;

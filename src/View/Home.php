@@ -10,7 +10,7 @@ use Admin\IO\Response;
  * The Home View
  */
 class Home {
-    
+
     /**
      * Shows the home page
      * @param Request $request

@@ -5,11 +5,11 @@ namespace Admin\IO;
  * The Url wrapper
  */
 class Url {
-    
+
     private $uri    = "";
     private $params = [];
-    
-    
+
+
     /**
      * Creates a new Url instance
      * @param string $uri
@@ -17,9 +17,9 @@ class Url {
     public function __construct(string $uri = "") {
         $this->uri = $uri instanceof Url ? $uri->toString() : $uri;
     }
-    
-    
-    
+
+
+
     /**
      * Sets a new param
      * @param string         $key
@@ -30,7 +30,7 @@ class Url {
         $this->params[$key] = (string)$value;
         return $this;
     }
-    
+
     /**
      * Removes a param
      * @param string $key
@@ -52,9 +52,9 @@ class Url {
         $this->params = array_merge($this->params, $url->toArray());
         return $this;
     }
-    
-    
-    
+
+
+
     /**
      * Returns the params as an Object
      * @return array
@@ -62,7 +62,7 @@ class Url {
     public function toArray(): array {
         return $this->params;
     }
-    
+
     /**
      * Returns the url as a string
      * @return string
@@ -77,7 +77,7 @@ class Url {
         }
         return $this->uri;
     }
-    
+
     /**
      * Returns the url as a string
      * @param string $uri

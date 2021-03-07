@@ -7,13 +7,13 @@ use ArrayAccess;
  * The Database Model
  */
 class Model implements ArrayAccess {
-    
+
     private $idKey   = "";
     private $idValue = 0;
     private $data    = [];
     private $empty   = true;
-    
-    
+
+
     /**
      * Creates a new Model instance
      * @param string $idKey Optional.
@@ -40,9 +40,9 @@ class Model implements ArrayAccess {
         $model->empty   = true;
         return $model;
     }
-    
-    
-    
+
+
+
     /**
      * Gets the Data
      * @param string $key
@@ -51,7 +51,7 @@ class Model implements ArrayAccess {
     public function __get(string $key) {
         return $this->get($key);
     }
-    
+
     /**
      * Gets the Data
      * @param string $key
@@ -94,9 +94,9 @@ class Model implements ArrayAccess {
     public function getAnyValue(array $keys, $default = null) {
         return Arrays::getAnyValue($this->data, $keys, $default);
     }
-    
-    
-    
+
+
+
     /**
      * Returns true if the key exists
      * @param string $key
@@ -105,7 +105,7 @@ class Model implements ArrayAccess {
     public function __isset(string $key): bool {
         return $this->has($key);
     }
-    
+
     /**
      * Returns true if the key exists
      * @param string $key
@@ -117,9 +117,9 @@ class Model implements ArrayAccess {
         }
         return !empty($this->data[$key]);
     }
-    
-    
-    
+
+
+
     /**
      * Sets the Data
      * @param string $key
@@ -129,7 +129,7 @@ class Model implements ArrayAccess {
     public function __set(string $key, $value): void {
         $this->set($key, $value);
     }
-    
+
     /**
      * Sets the Data
      * @param string $key
@@ -150,7 +150,7 @@ class Model implements ArrayAccess {
             }
         }
     }
-    
+
     /**
      * Adds Data
      * @param array $data
@@ -173,9 +173,9 @@ class Model implements ArrayAccess {
             $this->set($key, $value);
         }
     }
-    
-    
-    
+
+
+
     /**
      * Returns true if the Model is Empty
      * @return boolean
@@ -183,7 +183,7 @@ class Model implements ArrayAccess {
     public function isEmpty(): bool {
         return $this->empty;
     }
-    
+
     /**
      * Returns a new Model
      * @return Model
@@ -212,7 +212,7 @@ class Model implements ArrayAccess {
         }
         return $result;
     }
-    
+
     /**
      * Returns the Data as an Array
      * @return array
@@ -220,7 +220,7 @@ class Model implements ArrayAccess {
     public function toArray(): array {
         return [ $this->data ];
     }
-    
+
     /**
      * Returns the Data as an Array
      * @return array
@@ -285,9 +285,9 @@ class Model implements ArrayAccess {
         }
         return true;
     }
-    
-    
-    
+
+
+
     /**
      * Prints the Model
      * @return void
@@ -307,7 +307,7 @@ class Model implements ArrayAccess {
     }
 
 
-    
+
     /**
      * Implements the Array Access Interface
      * @param mixed $key
@@ -316,7 +316,7 @@ class Model implements ArrayAccess {
     public function offsetGet($key) {
         return $this->get($key);
     }
-    
+
     /**
      * Implements the Array Access Interface
      * @param mixed $key
@@ -326,7 +326,7 @@ class Model implements ArrayAccess {
     public function offsetSet($key, $value) {
         $this->set($key, $value);
     }
-    
+
     /**
      * Implements the Array Access Interface
      * @param mixed $key
@@ -335,7 +335,7 @@ class Model implements ArrayAccess {
     public function offsetExists($key) {
         return array_key_exists($key, $this->data);
     }
-    
+
     /**
      * Implements the Array Access Interface
      * @param mixed $key

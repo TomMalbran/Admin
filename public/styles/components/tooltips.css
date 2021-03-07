@@ -9,7 +9,7 @@
     .tooltip:before {
         position: absolute;
         z-index: 100;
-        
+
     }
     .tooltip:after {
         content: attr(data-tip);
@@ -35,7 +35,7 @@
     .tooltip-error:after {
         background-color: var(--red-color);
     }
-    
+
     .tooltip:before {
         content: "";
         width: 0;
@@ -44,7 +44,7 @@
         border-style: solid;
         opacity: 0;
     }
-    
+
     .tooltip-show:after,
     .tooltip:hover:after {
         visibility: visible;
@@ -103,7 +103,7 @@
     .tooltip-bl.tooltip-error:before {
         border-color: transparent transparent var(--red-color) transparent;
     }
-    
+
     .tooltip-bottom:after {
         left: calc(50% - 100px);
     }

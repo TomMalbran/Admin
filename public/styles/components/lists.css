@@ -9,7 +9,7 @@
     .ordered-list li {
         margin-bottom: 16px;
     }
-    
+
     .ordered-list dt,
     .ordered-list dl {
         color: var(--title-color);

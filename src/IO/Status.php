@@ -7,11 +7,11 @@ use Admin\Utils\Arrays;
  * The Status used by the System
  */
 class Status {
-    
+
     const Active   = 0;
     const Inactive = 1;
-    
-    
+
+
     /**
      * All the posible Values
      */
@@ -33,8 +33,8 @@ class Status {
         self::Inactive => "<span class='result-error'>Inactiva</span>",
     ];
 
-    
-    
+
+
     /**
      * Returns true if the given Value is valid
      * @param integer $value
@@ -43,7 +43,7 @@ class Status {
     public static function isValid(int $value): bool {
         return is_numeric($value) && in_array($value, array_keys(self::$List));
     }
-    
+
     /**
      * Returns the Status from a Value
      * @param integer|string $value
@@ -73,7 +73,7 @@ class Status {
     public static function getFemSelect(int $selectedID = 0): array {
         return Arrays::createSelectFromMap(self::$FemList, $selectedID);
     }
-    
+
     /**
      * Returns the Name for the given Value
      * @param integer $value

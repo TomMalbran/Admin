@@ -13,7 +13,7 @@ use Admin\Utils\Strings;
  * The Schema Migration
  */
 class Migration {
-    
+
     /**
      * Migrates the Tables
      * @param Database $db
@@ -24,12 +24,12 @@ class Migration {
     public static function migrate(Database $db, array $schemas, bool $canDelete = false): void {
         $tableNames  = $db->getTables(null, false);
         $schemaNames = [];
-        
+
         // Create or update the Tables
         foreach ($schemas as $schemaKey => $schemaData) {
             $structure     = new Structure($schemaKey, $schemaData);
             $schemaNames[] = $structure->table;
-            
+
             if (!Arrays::contains($tableNames, $structure->table)) {
                 self::createTable($db, $structure);
             } else {
@@ -54,7 +54,7 @@ class Migration {
         $fields  = [];
         $primary = [];
         $keys    = [];
-        
+
         foreach ($structure->fields as $field) {
             $fields[$field->key] = $field->getType();
             if ($field->isPrimary) {
@@ -64,7 +64,7 @@ class Migration {
                 $keys[] = $field->key;
             }
         }
-        
+
         $sql = $db->createTable($structure->table, $fields, $primary, $keys);
         print("<br>Created table <b>$structure->table</b> ... <br>");
         print(Strings::toHtml($sql) . "<br><br>");
@@ -113,7 +113,7 @@ class Migration {
         $addPrimary  = false;
         $keys        = [];
         $prev        = "";
-        
+
         // Add new Columns
         foreach ($structure->fields as $field) {
             $found  = false;
@@ -148,7 +148,7 @@ class Migration {
             }
             $prev = $field->key;
         }
-        
+
         // Remove Columns
         foreach ($tableFields as $tableField) {
             $tableKey = $tableField["Field"];
@@ -213,13 +213,13 @@ class Migration {
                 }
             }
         }
-        
+
         // Nothing to change
         if (!$update) {
             print("No changes for <i>$structure->table</i><br>");
             return;
         }
-        
+
         // Update the Table
         print("<br>Updated table <b>$structure->table</b> ... <br>");
         foreach ($adds as $add) {

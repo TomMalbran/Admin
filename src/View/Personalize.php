@@ -13,7 +13,7 @@ use Admin\Log\ActionLog;
  * The Personalize View
  */
 class Personalize {
-    
+
     /**
      * Returns true if there are options
      * @return boolean

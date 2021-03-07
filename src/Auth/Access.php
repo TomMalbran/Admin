@@ -7,14 +7,14 @@ use Admin\Utils\Arrays;
  * The Auth Access
  */
 class Access {
-    
+
     const General = 0;
     const Editor  = 1;
     const Admin   = 2;
     const API     = 10;
-    
-    
-    
+
+
+
     /**
      * All the valid levels
      */
@@ -28,9 +28,9 @@ class Access {
         self::Editor => "Editor",
         self::Admin  => "Administrador",
     ];
-    
-    
-    
+
+
+
     /**
      * Returns true if the given level is valid
      * @param mixed $value
@@ -39,7 +39,7 @@ class Access {
     public static function isValid($value): bool {
         return is_numeric($value) && in_array($value, array_keys(self::$Names));
     }
-    
+
     /**
      * Creates a select for the templates
      * @param integer $selectedID Optional.
@@ -49,8 +49,8 @@ class Access {
         return Arrays::createSelectFromMap(self::$Names, $selectedID);
     }
 
-    
-    
+
+
     /**
      * Returns the Access Value
      * @param string $accessValue

@@ -39,7 +39,7 @@ class Admin {
     const AdminDir        = "admin";
     const SourceDir       = "src";
     const DataDir         = "data";
-    
+
     const FilesDir        = "files";
     const PublicDir       = "public";
     const TemplatesDir    = "templates";
@@ -199,7 +199,7 @@ class Admin {
         $isAjax   = !empty($params["ajax"]);
         $isReload = !empty($params["reload"]);
         $isFrame  = !empty($params["iframe"]);
-        
+
         unset($params["token"]);
         unset($params["jwt"]);
 
@@ -215,7 +215,7 @@ class Admin {
                 http_response_code(400);
                 die($e->getMessage());
             }
-        
+
         // For Credential
         } else {
             if (!empty($jwt)) {
@@ -236,7 +236,7 @@ class Admin {
         $accessLevel = Auth::getAccessLevel();
         $route       = Router::get($url, $accessLevel);
         $request     = new Request($params);
-        
+
         if ($route != null && Auth::grant($route->access)) {
             return Router::call($route, $request);
         }

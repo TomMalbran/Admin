@@ -14,11 +14,11 @@ use Admin\Utils\Strings;
  * The Database Schema
  */
 class Schema {
-    
+
     private $db;
     private $structure;
     private $subrequests;
-    
+
 
     /**
      * Creates a new Schema instance
@@ -31,7 +31,7 @@ class Schema {
         $this->structure   = $structure;
         $this->subrequests = $subrequests;
     }
-    
+
     /**
      * Returns the Schema Fields
      * @return array
@@ -48,9 +48,9 @@ class Schema {
     public function encrypt(string $value): array {
         return Query::encrypt($value, $this->structure->masterKey);
     }
-    
-    
-    
+
+
+
     /**
      * Returns the Model with the given Where
      * @param Query|integer $query
@@ -63,7 +63,7 @@ class Schema {
         $request = $this->request($query, $decrypted);
         return $this->getModel($request);
     }
-    
+
     /**
      * Creates a new Model using the given Data
      * @param array $request Optional.
@@ -126,7 +126,7 @@ class Schema {
         $request = $this->request($query, $decrypted);
         return Arrays::createMap($request, $this->structure->idName);
     }
-    
+
     /**
      * Requests data to the database
      * @param Query   $query     Optional.
@@ -207,7 +207,7 @@ class Schema {
         $selection = new Selection($this->db, $this->structure);
         $selection->addSelects("COUNT($column) AS cnt");
         $selection->addJoins();
-        
+
         $request = $selection->request($query);
         if (isset($request[0]["cnt"])) {
             return (int)$request[0]["cnt"];
@@ -226,7 +226,7 @@ class Schema {
         $selection = new Selection($this->db, $this->structure);
         $selection->addSelects("SUM($column) AS cnt");
         $selection->addJoins();
-        
+
         $request = $selection->request($query);
         if (isset($request[0]["cnt"])) {
             return (int)$request[0]["cnt"];
@@ -260,7 +260,7 @@ class Schema {
         $query   = $this->generateQuery($query);
         $request = $this->request($query);
         $result  = [];
-        
+
         foreach ($request as $row) {
             $result[] = [
                 "id"    => $row[$this->structure->idName],
@@ -283,7 +283,7 @@ class Schema {
         $selection  = new Selection($this->db, $this->structure);
         $selection->addSelects($column, true);
         $selection->addJoins();
-        
+
         $request = $selection->request($query);
         $result  = [];
         foreach ($request as $row) {
@@ -328,7 +328,7 @@ class Schema {
     public function getValue(Query $query, string $column) {
         return $this->db->getValue($this->structure->table, $column, $query);
     }
-    
+
 
 
     /**
@@ -361,7 +361,7 @@ class Schema {
         $query->orderBy($field, $orderAsc);
         return $this->getSelect($query, $name, $selectedID, $extra);
     }
-    
+
     /**
      * Returns a select of Schemas
      * @param Query             $query
@@ -379,8 +379,8 @@ class Schema {
         $request   = $selection->resolve();
         return Arrays::createSelect($request, $this->structure->idName, $name ?: $this->structure->name, $selectedID, $extra);
     }
-    
-    
+
+
 
     /**
      * Creates a new Schema
@@ -396,7 +396,7 @@ class Schema {
         $modification->addModification();
         return $modification->insert();
     }
-    
+
     /**
      * Replaces the Schema
      * @param Request|array $fields
@@ -440,7 +440,7 @@ class Schema {
         $query = $this->generateQueryID($query, false);
         return $this->db->increase($this->structure->table, $column, $amount, $query);
     }
-    
+
     /**
      * Batches the Schema
      * @param array $fields
@@ -449,7 +449,7 @@ class Schema {
     public function batch(array $fields): bool {
         return $this->db->batch($this->structure->table, $fields);
     }
-    
+
     /**
      * Deletes the given Schema
      * @param Query|integer $query
@@ -464,7 +464,7 @@ class Schema {
         }
         return false;
     }
-    
+
     /**
      * Removes the given Schema
      * @param Query|integer $query
@@ -638,7 +638,7 @@ class Schema {
      */
     private function generateQuerySort(Query $query = null, Request $sort = null): Query {
         $query = $this->generateQuery($query);
-        
+
         if (!empty($sort)) {
             if ($sort->has("orderBy")) {
                 $query->orderBy($sort->orderBy, !empty($sort->orderAsc));

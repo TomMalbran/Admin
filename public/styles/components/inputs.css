@@ -516,7 +516,7 @@ label input[type="radio"]:disabled + span {
     td.ui-datepicker-current-day {
         border-color: rgb(96, 96, 96);
     }
-    
+
     .ui-datepicker-calendar a {
         color: rgb(106, 106, 106);
         font-size: 12px;

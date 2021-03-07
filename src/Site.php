@@ -43,7 +43,7 @@ class Site {
         $baseUrl   = Config::getBaseUrl(true);
         $slugUrl   = Strings::stripStart($_SERVER["REQUEST_URI"], $baseUrl);
         $slugParts = Strings::split($slugUrl, "/");
-        
+
         return (object)[
             "url"     => $url,
             "params"  => $_REQUEST,

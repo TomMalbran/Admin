@@ -17,7 +17,7 @@ use League\OAuth2\Client\Provider\Google;
  * The Mailer Provider
  */
 class Mailer {
-    
+
     private static $loaded   = false;
     private static $template = null;
     private static $url      = "";
@@ -25,8 +25,8 @@ class Mailer {
     private static $smtp     = null;
     private static $google   = null;
     private static $emails   = [];
-    
-    
+
+
     /**
      * Loads the Mailer Config
      * @return void
@@ -42,9 +42,9 @@ class Mailer {
             self::$emails   = Config::getArray("smtpActiveEmails");
         }
     }
-    
-    
-    
+
+
+
     /**
      * Sends the Email
      * @param string  $to
@@ -63,7 +63,7 @@ class Mailer {
         }
 
         $mail = new PHPMailer();
-        
+
         $mail->isSMTP();
         $mail->isHTML($sendHtml);
         $mail->clearAllRecipients();
@@ -75,7 +75,7 @@ class Mailer {
         $mail->SMTPSecure  = self::$smtp->secure;
         $mail->SMTPAuth    = true;
         $mail->SMTPAutoTLS = false;
-        
+
         if (self::$smtp->useOauth) {
             $mail->SMTPAuth = true;
             $mail->AuthType = "XOAUTH2";
@@ -95,13 +95,13 @@ class Mailer {
             $mail->Username = self::$smtp->email;
             $mail->Password = self::$smtp->password;
         }
-        
+
         $mail->CharSet  = "UTF-8";
         $mail->From     = self::$smtp->email;
         $mail->FromName = self::$name;
         $mail->Subject  = $subject;
         $mail->Body     = $body;
-        
+
         $mail->addAddress($to);
         if (!empty($attachment)) {
             $mail->AddAttachment($attachment);
@@ -109,7 +109,7 @@ class Mailer {
         if (!empty(self::$smtp->showErrors)) {
             $mail->SMTPDebug = 3;
         }
-        
+
         $result = $mail->send();
         if (!empty(self::$smtp->showErrors) && !$result) {
             echo "Message could not be sent.";
@@ -148,7 +148,7 @@ class Mailer {
     }
 
 
-    
+
     /**
      * Sends a Contact email
      * @param string $subject
@@ -175,7 +175,7 @@ class Mailer {
         $message .= "$url</p>";
         $message .= "<p>Ó puede completar el formulario con el siguiente código:<br> <b>$resetCode</b></p>";
         $message .= "<p>Si no ha sido usted, puede simplemente eliminar este mail.</p>";
-        
+
         return self::sendTo($sendTo, $subject, $message);
     }
 
@@ -188,7 +188,7 @@ class Mailer {
     public static function sendBackup(string $sendTo, string $attachment): bool {
         $subject = Config::get("name") . ": Database Backup";
         $message = "Backup de la base de datos al dia: " . date("d M Y, H:i:s");
-        
+
         return self::send($sendTo, $subject, $message, $attachment, false);
     }
 

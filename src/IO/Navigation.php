@@ -10,10 +10,10 @@ use Admin\IO\Url;
  * The Navigation wrapper
  */
 class Navigation {
-    
+
     private $request;
     private $errors;
-    
+
     private $list       = [];
     private $total      = 0;
     private $page       = 0;
@@ -24,13 +24,13 @@ class Navigation {
     private $totalPages = 0;
     private $prevPage   = 0;
     private $nextPage   = 0;
-    
+
     private $filters    = [];
     private $extras     = [];
     private $fromTime   = 0;
     private $toTime     = 0;
-    
-    
+
+
     /**
      * Creates a new Navigation instance
      * @param Request $request
@@ -44,7 +44,7 @@ class Navigation {
         $this->to      = $this->from + $amount - 1;
         $this->errors  = new Errors();
     }
-    
+
     /**
      * Gets a Property
      * @param string $property
@@ -60,8 +60,8 @@ class Navigation {
         return null;
     }
 
-    
-    
+
+
     /**
      * Returns true if there are Errors
      * @return boolean
@@ -100,7 +100,7 @@ class Navigation {
                 $this->fromTime = $this->request->toDayStart("from");
                 $this->toTime   = $this->request->toDayEnd("to");
             }
-        
+
         // Just From Date
         } elseif ($this->request->has("from")) {
             if (!$this->request->isValidDate("from")) {
@@ -108,7 +108,7 @@ class Navigation {
             } else {
                 $this->fromTime = $this->request->toDayStart("from");
             }
-        
+
         // Just To Date
         } elseif ($this->request->has("to")) {
             if (!$this->request->isValidDate("to")) {
@@ -170,7 +170,7 @@ class Navigation {
         $toPad      = $this->page < $middlePage + 1                 ? $totalPages + 1 - $this->page                   : $middlePage;
         $fromPage   = max(1,                 $this->page - $fromPad);
         $toPage     = min($this->totalPages, $this->page + $toPad);
-        
+
         $this->pages = [];
         if ($this->totalPages > 1) {
             for ($i = $fromPage; $i <= $toPage; $i++) {
@@ -182,7 +182,7 @@ class Navigation {
             }
         }
     }
-    
+
     /**
      * Creates a Response for the Admin
      * @return array

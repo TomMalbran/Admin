@@ -7,11 +7,11 @@ use Admin\Admin;
  * The Action Data
  */
 class Action {
-    
+
     private static $loaded = false;
     private static $data   = [];
-    
-    
+
+
     /**
      * Loads the Actions Data
      * @return void
@@ -27,7 +27,7 @@ class Action {
     }
 
 
-    
+
     /**
      * Returns the Name for the given Section
      * @param string $section

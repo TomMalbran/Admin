@@ -1,6 +1,8 @@
 <?php
 namespace Admin\View;
 
+use Admin\Admin;
+use Admin\Config\Config;
 use Admin\IO\View;
 use Admin\IO\Request;
 use Admin\IO\Response;
@@ -10,12 +12,46 @@ use Admin\File\File;
 use Admin\File\FileType;
 use Admin\File\Media as FileMedia;
 use Admin\File\MediaType;
+use Admin\Schema\Field;
+use Admin\Schema\Query;
+use Admin\Schema\Database;
 use Admin\Utils\Strings;
 
 /**
  * The Media View
  */
 class Media {
+
+    /**
+     * Updates the Paths in the Database
+     * @param string $oldPath
+     * @param string $oldName
+     * @param string $newPath Optional.
+     * @param string $newName Optional.
+     * @return void
+     */
+    private static function update(string $oldPath, string $oldName, string $newPath = "", string $newName = ""): void {
+        $config     = Config::get("db");
+        $db         = new Database($config);
+        $schemas    = Admin::loadData(Admin::SchemaData, "admin");
+
+        $oldRelPath = File::removeFirstSlash(File::getPath($oldPath, $oldName));
+        $newRelPath = !empty($newPath) ? File::removeFirstSlash(File::getPath($newPath, $newName)) : "";
+
+        foreach ($schemas as $schema) {
+            foreach ($schema["fields"] as $key => $field) {
+                if ($field["type"] == Field::File || $field["type"] == Field::Image) {
+                    $query = Query::create($key, "=", $oldRelPath);
+                    $db->update($schema["table"], [ $key => $newRelPath ], $query);
+                }
+            }
+        }
+
+        $query = Query::create("value", "=", $oldRelPath);
+        $db->update("settings", [ "value" => $newRelPath ], $query);
+    }
+
+
 
     /**
      * Creates and returns the View
@@ -230,6 +266,8 @@ class Media {
                 $error = "rename";
             }
         }
+
+        self::update($request->path, $request->oldName, $request->path, $newName);
         return self::redirect($request, $error, "rename");
     }
 
@@ -253,6 +291,7 @@ class Media {
         }
 
         $request->path = $request->oldPath;
+        self::update($request->oldPath, $request->name, $request->newPath, $request->name);
         return self::redirect($request, $error, "move");
     }
 
@@ -272,6 +311,8 @@ class Media {
         } elseif (!FileMedia::delete($request->path, $request->name)) {
             $error = "delete";
         }
+
+        self::update($request->path, $request->name);
         return self::redirect($request, $error, "delete");
     }
 

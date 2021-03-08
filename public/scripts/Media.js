@@ -41,7 +41,7 @@ class Media {
         $(".dialog-media .media-sel").removeClass("fancybox");
         $(".media-file").draggable({
             addClasses : false,
-            revert     : true,
+            revert     : "invalid",
             cancel     : ".media-actions",
             cursor     : "move",
         });

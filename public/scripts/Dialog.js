@@ -42,7 +42,7 @@ class Dialog {
             .on("click", ".dialog-cancel", () => {
                 this.close($elem, onCancel);
             })
-            .on("click", (e) => {
+            .on("mousedown", (e) => {
                 const $main = $(e.target).closest(".dialog");
                 if (!$main.length) {
                     this.close($elem, onCancel);

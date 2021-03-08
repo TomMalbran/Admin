@@ -36,7 +36,7 @@ class Media {
         $schemas    = Admin::loadData(Admin::SchemaData, "admin");
 
         $oldRelPath = File::removeFirstSlash(File::getPath($oldPath, $oldName));
-        $newRelPath = !empty($newPath) ? File::removeFirstSlash(File::getPath($newPath, $newName)) : "";
+        $newRelPath = !empty($newName) ? File::removeFirstSlash(File::getPath($newPath, $newName)) : "";
 
         foreach ($schemas as $schema) {
             foreach ($schema["fields"] as $key => $field) {
@@ -143,7 +143,7 @@ class Media {
         $result = [];
 
         foreach ($files as $file) {
-            $name  = Strings::replace($file, $source, "");
+            $name = Strings::replace($file, $source, "");
             if (MediaType::isValid($type, $file, $name)) {
                 $isDir    = FileType::isDir($file);
                 $isImage  = FileType::isImage($name);
@@ -267,7 +267,20 @@ class Media {
             }
         }
 
-        self::update($request->path, $request->oldName, $request->path, $newName);
+        if (empty($error)) {
+            $fullPath = Path::getPath(Path::Source, $request->path, $newName);
+            if (FileType::isDir($fullPath)) {
+                $files   = File::getFilesInDir($fullPath);
+                $oldPath = File::getPath($request->path, $request->oldName);
+                $newPath = File::getPath($request->path, $newName);
+                foreach ($files as $file) {
+                    $relPath = File::removeFirstSlash(Strings::substringAfter($file, $fullPath));
+                    self::update($oldPath, $relPath, $newPath, $relPath);
+                }
+            } else {
+                self::update($request->path, $request->oldName, $request->path, $newName);
+            }
+        }
         return self::redirect($request, $error, "rename");
     }
 
@@ -290,8 +303,10 @@ class Media {
             $error = "move";
         }
 
+        if (empty($error)) {
+            self::update($request->oldPath, $request->name, $request->newPath, $request->name);
+        }
         $request->path = $request->oldPath;
-        self::update($request->oldPath, $request->name, $request->newPath, $request->name);
         return self::redirect($request, $error, "move");
     }
 
@@ -312,7 +327,9 @@ class Media {
             $error = "delete";
         }
 
-        self::update($request->path, $request->name);
+        if (empty($error)) {
+            self::update($request->path, $request->name);
+        }
         return self::redirect($request, $error, "delete");
     }
 

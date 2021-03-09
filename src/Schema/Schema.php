@@ -488,34 +488,39 @@ class Schema {
     /**
      * Creates and ensures the Order
      * @param Request $request
+     * @param array   $extra        Optional.
+     * @param integer $credentialID Optional.
      * @return integer
      */
-    public function createWithOrder(Request $request) {
-        $this->ensureOrder(null, $request);
+    public function createWithOrder(Request $request, array $extra = null, int $credentialID = 0): int {
+        $this->ensurePosOrder(null, $request);
         return $this->create($request);
     }
 
     /**
      * Edits and ensures the Order
-     * @param integer $id
-     * @param Request $request
-     * @return void
-     */
-    public function editWithOrder(int $id, Request $request): void {
-        $model = $this->getOne($id);
-        $this->ensureOrder($model, $request);
-        $this->edit($id, $request);
-    }
-
-    /**
-     * Deletes and ensures the Order
-     * @param integer $id
+     * @param Query|integer $query
+     * @param Request       $request
+     * @param array         $extra        Optional.
+     * @param integer       $credentialID Optional.
      * @return boolean
      */
-    public function deleteWithOrder(int $id): bool {
-        $model = $this->getByID($id);
+    public function editWithOrder($query, Request $request, array $extra = null, int $credentialID = 0): bool {
+        $model = $this->getOne($id);
+        $this->ensurePosOrder($model, $request);
+        return $this->edit($id, $request);
+    }
+
+   /**
+     * Deletes and ensures the Order
+     * @param Query|integer $query
+     * @param integer       $credentialID Optional.
+     * @return boolean
+     */
+    public function deleteWithOrder($query, int $credentialID = 0): bool {
+        $model = $this->getOne($id);
         if ($this->delete($id)) {
-            $this->ensureOrder($model, null);
+            $this->ensurePosOrder($model, null);
             return true;
         }
         return false;
@@ -527,10 +532,10 @@ class Schema {
      * @param Request $request Optional.
      * @return void
      */
-    public function ensureOrder(Model $model = null, Request $request = null): void {
+    public function ensurePosOrder(Model $model = null, Request $request = null): void {
         $oldPosition = !empty($model)   ? $model->position             : 0;
         $newPosition = !empty($request) ? $request->getInt("position") : 0;
-        $updPosition = $this->ensureAdvOrder($oldPosition, $newPosition);
+        $updPosition = $this->ensureOrder($oldPosition, $newPosition);
         if (!empty($request)) {
             $request->position = $updPosition;
         }
@@ -543,7 +548,7 @@ class Schema {
      * @param Query   $query       Optional.
      * @return integer
      */
-    public function ensureAdvOrder(int $oldPosition, int $newPosition, Query $query = null): int {
+    public function ensureOrder(int $oldPosition, int $newPosition, Query $query = null): int {
         $isEdit          = !empty($oldPosition);
         $nextPosition    = $this->getNextPosition($query);
         $oldPosition     = $isEdit ? $oldPosition : $nextPosition;

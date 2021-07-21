@@ -74,6 +74,16 @@ class Admin {
 
 
     /**
+     * Returns true if there are Personalize Options
+     * @return boolean
+     */
+    public static function hasPersonalize(): bool {
+        return self::dataExists(self::PersonalizeData);
+    }
+
+
+
+    /**
      * Returns the Base Path with the given dir
      * @param string $dir  Optional.
      * @param string $type Optional.
@@ -157,6 +167,17 @@ class Admin {
             return JSON::readFile($path, true);
         }
         return [];
+    }
+
+    /**
+     * Returns true if the Data File exists
+     * @param string $file
+     * @param string $type Optional.
+     * @return array
+     */
+    public static function dataExists(string $file, string $type = "admin"): bool {
+        $path = self::getPath(self::DataDir . "/$file.json", $type);
+        return File::exists($path);
     }
 
     /**

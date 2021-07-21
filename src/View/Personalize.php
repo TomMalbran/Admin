@@ -15,15 +15,6 @@ use Admin\Log\ActionLog;
 class Personalize {
 
     /**
-     * Returns true if there are options
-     * @return boolean
-     */
-    public static function hasOptions() {
-        $data = Admin::loadData(Admin::PersonalizeData);
-        return !empty($data);
-    }
-
-    /**
      * Creates and returns the View
      * @return View
      */

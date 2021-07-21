@@ -6,7 +6,6 @@ use Admin\IO\Response;
 use Admin\Auth\Auth;
 use Admin\Config\Config;
 use Admin\Provider\Mustache;
-use Admin\View\Personalize;
 use Admin\Utils\JSON;
 
 /**
@@ -96,7 +95,7 @@ class Output {
             "isLoggedIn"      => Auth::isLoggedIn(),
             "hasEditorAccess" => Auth::isEditor(),
             "hasAdminAccess"  => Auth::isAdmin(),
-            "hasPersonalize"  => Personalize::hasOptions(),
+            "hasPersonalize"  => Admin::hasPersonalize(),
             "menuItems"       => $forBody ? self::getMenuItems() : [],
             "isMenuSel"       => function ($val) use ($response) {
                 return $val == $response->mainMenu ? "menu-item-selected" : "";

@@ -506,9 +506,9 @@ class Schema {
      * @return boolean
      */
     public function editWithOrder($query, Request $request, array $extra = null, int $credentialID = 0): bool {
-        $model = $this->getOne($id);
+        $model = $this->getOne($query);
         $this->ensurePosOrder($model, $request);
-        return $this->edit($id, $request);
+        return $this->edit($query, $request);
     }
 
    /**
@@ -518,8 +518,8 @@ class Schema {
      * @return boolean
      */
     public function deleteWithOrder($query, int $credentialID = 0): bool {
-        $model = $this->getOne($id);
-        if ($this->delete($id)) {
+        $model = $this->getOne($query);
+        if ($this->delete($query)) {
             $this->ensurePosOrder($model, null);
             return true;
         }

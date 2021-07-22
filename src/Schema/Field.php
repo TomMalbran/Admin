@@ -264,9 +264,9 @@ class Field {
         case self::Date:
         case self::Hour:
             $result[$key]           = $number;
-            $result["{$key}Date"]   = !empty($number) ? date("d-m-Y",     $number) : "";
-            $result["{$key}Full"]   = !empty($number) ? date("d-m-Y H:i", $number) : "";
-            $result["{$key}ISO"]    = !empty($number) ? date("Y-m-d H:i", $number) : "";
+            $result["{$key}Date"]   = !empty($number) ? date("d-m-Y",       $number) : "";
+            $result["{$key}Full"]   = !empty($number) ? date("d-m-Y @ H:i", $number) : "";
+            $result["{$key}ISO"]    = !empty($number) ? date("Y-m-d H:i",   $number) : "";
             break;
         case self::JSON:
             $result[$key]           = JSON::decode($text, true);

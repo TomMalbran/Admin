@@ -164,7 +164,7 @@ class Path {
 
         if (!empty($paths)) {
             print("<br>Added <i>" . count($paths) . " paths</i><br>");
-            print(implode($paths, ", ") . "<br>");
+            print(Strings::join($paths, ", ") . "<br>");
         } else {
             print("<br>No <i>paths</i> added<br>");
         }

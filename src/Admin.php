@@ -33,6 +33,9 @@ class Admin {
     const ActionData      = "actions";
     const MenuData        = "menu";
     const HomeData        = "home";
+
+    // Custom Data
+    const SlideData       = "slides";
     const PersonalizeData = "personalize";
 
     // The Directories
@@ -72,6 +75,14 @@ class Admin {
     }
 
 
+
+    /**
+     * Returns true if there are Slide Options
+     * @return boolean
+     */
+    public static function hasSlides(): bool {
+        return self::dataExists(self::SlideData);
+    }
 
     /**
      * Returns true if there are Personalize Options
@@ -182,14 +193,15 @@ class Admin {
 
     /**
      * Loads a Data File
-     * @param string $file
-     * @param string $type Optional.
-     * @return array
+     * @param string  $file
+     * @param string  $type    Optional.
+     * @param boolean $asArray Optional.
+     * @return mixed
      */
-    public static function loadData(string $file, string $type = "admin"): array {
+    public static function loadData(string $file, string $type = "admin", bool $asArray = true) {
         $path = self::getPath(self::DataDir . "/$file.json", $type);
         if (File::exists($path)) {
-            return JSON::readFile($path, true);
+            return JSON::readFile($path, $asArray);
         }
         return [];
     }

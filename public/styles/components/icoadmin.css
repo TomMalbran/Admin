@@ -1,4 +1,7 @@
 
+.icono-slides:before {
+  content: "\e904";
+}
 .icono-personalize:before {
   content: "\e903";
 }

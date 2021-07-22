@@ -95,6 +95,7 @@ class Output {
             "isLoggedIn"      => Auth::isLoggedIn(),
             "hasEditorAccess" => Auth::isEditor(),
             "hasAdminAccess"  => Auth::isAdmin(),
+            "hasSlides"       => Admin::hasSlides(),
             "hasPersonalize"  => Admin::hasPersonalize(),
             "menuItems"       => $forBody ? self::getMenuItems() : [],
             "isMenuSel"       => function ($val) use ($response) {

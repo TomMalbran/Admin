@@ -1,0 +1,86 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icono-view"></span> Banner "{{name}}"</h2>
+</header>
+
+{{#createSuccess}}<p class="result-bar result-success">El banner fue creado correctamente.</p>{{/createSuccess}}
+{{#editSuccess}}<p class="result-bar result-success">El banner fue editado correctamente.</p>{{/editSuccess}}
+{{#deleteError}}<p class="result-bar result-error">No fue posible eliminar el banner indicado.</p>{{/deleteError}}
+
+
+<section class="content-body">
+    <ol class="ordered-list ordered-two-cols">
+        <li>
+            <dt><label>Nombre</label></dt>
+            <dd>{{name}}</dd>
+        </li>
+        {{#title}}
+        <li>
+            <dt><label>Título</label></dt>
+            <dd>{{title}}</dd>
+        </li>
+        {{/title}}
+        {{#description}}
+        <li>
+            <dt><label>Descripción</label></dt>
+            <dd>{{description}}</dd>
+        </li>
+        {{/description}}
+        {{#button}}
+        <li>
+            <dt><label>Botón</label></dt>
+            <dd>{{button}}</dd>
+        </li>
+        {{/button}}
+        {{#link}}
+        <li>
+            <dt><label>Url</label></dt>
+            <dd>{{link}}</dd>
+        </li>
+        {{/link}}
+        {{#color}}
+        <li>
+            <dt><label>Color del texto</label></dt>
+            <dd>{{color}}</dd>
+        </li>
+        {{/color}}
+        <li>
+            <dt><label>Imagen</label></dt>
+            <dd>
+                <a href="{{imageLarge}}" class="link-img fancybox" rel="slide" title="{{name}}">
+                    <img src="{{imageThumb}}" />
+                </a>
+            </dd>
+        </li>
+        {{#logoLarge}}
+        <li>
+            <dt><label>Logo</label></dt>
+            <dd>
+                <a href="{{logoLarge}}" class="link-img fancybox" rel="slide" title="{{name}}">
+                    <img src="{{logoThumb}}" />
+                </a>
+            </dd>
+        </li>
+        {{/logoLarge}}
+        <li>
+            <dt><label>Estado</label></dt>
+            <dd>{{{statusName}}}</dd>
+        </li>
+        <li>
+            <dt><label>Posición</label></dt>
+            <dd>{{position}}</dd>
+        </li>
+        <li>
+            <dt><label>Creado el</label></dt>
+            <dd>{{createdTimeFull}}</dd>
+        </li>
+    </ol>
+</section>
+
+
+<footer class="content-footer">
+    <a href="{{url}}slides/edit/{{slideID}}{{query}}" class="btn btn-primary">Editar</a>
+    <a href="{{url}}slides/delete/{{slideID}}{{query}}" class="btn btn-primary" data-confirm="">Eliminar</a>
+    <a href="{{url}}slides{{query}}" class="btn btn-cancel">Volver</a>
+</footer>
+{{>footer/main}}

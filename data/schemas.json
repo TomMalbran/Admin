@@ -1,4 +1,27 @@
 {
+    "slides" : {
+        "table"  : "slides",
+        "fields" : {
+            "SLIDE_ID"    : { "type" : "id",     "name"    : "slideID" },
+            "name"        : { "type" : "string", "isName"  : true      },
+            "image"       : { "type" : "image",  "noEmpty" : true      },
+            "logo"        : { "type" : "image",  "noEmpty" : true      },
+            "title"       : { "type" : "string"                        },
+            "description" : { "type" : "string"                        },
+            "button"      : { "type" : "string"                        },
+            "link"        : { "type" : "string"                        },
+            "color"       : { "type" : "string"                        }
+        },
+        "hasStatus"     : true,
+        "hasPosition"   : true,
+        "hasTimestamps" : true,
+        "canCreate"     : true,
+        "canEdit"       : true,
+        "canDelete"     : true
+    },
+
+
+
     "credentials" : {
         "table"  : "credentials",
         "fields" : {

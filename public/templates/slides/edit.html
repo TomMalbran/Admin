@@ -1,0 +1,116 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icono-edit"></span> {{#isEdit}}Editar{{/isEdit}}{{^isEdit}}Crear{{/isEdit}} Banner</h2>
+</header>
+
+{{#existsError}}<p class="result-bar result-error">El banner indicado no existe.</p>{{/existsError}}
+
+
+<form method="post" action="{{url}}slides/process">
+    <section class="content-body">
+        <ol class="ordered-list ordered-two-cols">
+            <li>
+                <dt><label for="slide-name" class="required-input">Nombre</label></dt>
+                <dd>
+                    <input id="slide-name" type="text" name="name" value="{{name}}" {{#nameError}}class="error-input"{{/nameError}} />
+                    {{#nameError}}<div class="result-error">Debe completar el nombre del banner.</div>{{/nameError}}
+                </dd>
+            </li>
+            {{#hasTitle}}
+            <li>
+                <dt><label for="slide-title" {{#titleRequired}}class="required-input"{{/titleRequired}}>Título</label></dt>
+                <dd>
+                    <input id="slide-title" type="text" name="title" value="{{title}}" {{#titleError}}class="error-input"{{/titleError}} />
+                    {{#titleError}}<div class="result-error">Debe completar el título del banner.</div>{{/titleError}}
+                </dd>
+            </li>
+            {{/hasTitle}}
+            {{#hasDescription}}
+            <li>
+                <dt><label for="slide-description" {{#descriptionRequired}}class="required-input"{{/descriptionRequired}}>Descripción</label></dt>
+                <dd>
+                    <textarea id="slide-description" name="description" {{#descriptionError}}class="error-input"{{/descriptionError}}>{{description}}</textarea>
+                    {{#descriptionError}}<div class="result-error">Debe completar la descripción del banner.</div>{{/descriptionError}}
+                </dd>
+            </li>
+            {{/hasDescription}}
+            {{#hasButton}}
+            <li>
+                <dt><label for="slide-button" {{#buttonRequired}}class="required-input"{{/buttonRequired}}>Botón</label></dt>
+                <dd>
+                    <input id="slide-button" type="text" name="button" value="{{button}}" {{#buttonError}}class="error-input"{{/buttonError}} />
+                    {{#buttonError}}<div class="result-error">Debe completar el botón del banner.</div>{{/buttonError}}
+                </dd>
+            </li>
+            {{/hasButton}}
+            {{#hasLink}}
+            <li>
+                <dt><label for="slide-link" {{#linkRequired}}class="required-input"{{/linkRequired}}>Url</label></dt>
+                <dd>
+                    <input id="slide-link" type="text" name="link" value="{{link}}" {{#linkError}}class="error-input"{{/linkError}} />
+                    {{#linkError}}<div class="result-error">Debe completar la url del banner.</div>{{/linkError}}
+                </dd>
+            </li>
+            {{/hasLink}}
+            {{#hasColor}}
+            <li>
+                <dt><label for="slide-color" {{#colorRequired}}class="required-input"{{/colorRequired}}>Color del texto</label></dt>
+                <dd>
+                    <input id="slide-color" type="text" name="color" value="{{color}}" {{#colorError}}class="error-input"{{/colorError}} />
+                    {{#colorError}}<div class="result-error">Debe completar la url del banner.</div>{{/colorError}}
+                </dd>
+            </li>
+            {{/hasColor}}
+            <li>
+                <dt><label for="slide-image" {{^isEdit}}class="required-input"{{/isEdit}}>Imagen</label></dt>
+                <dd>
+                    <div class="file-container">
+                        <input type="text" id="slide-image" name="image" value="{{image}}" class="file-input" />
+                        <a href="{{url}}media?type=image&path=banners" data-field="slide-image" class="btn btn-primary media file-box">Seleccionar Imagen</a>
+                    </div>
+                    {{#imageEmptyError}}<div class="result-error">Debe incluir una imagen.</div>{{/imageEmptyError}}
+                    {{#imageSizeError}}<div class="result-error">El archivo indicado pesa más de 8mb.</div>{{/imageSizeError}}
+                    {{#imageTypeError}}<div class="result-error">El archivo debe ser de una imagen.</div>{{/imageTypeError}}
+                </dd>
+            </li>
+            {{#hasLogo}}
+            <li>
+                <dt><label for="slide-logo" {{^isEdit}}class="required-input"{{/isEdit}}>Logo</label></dt>
+                <dd>
+                    <div class="file-container">
+                        <input type="text" id="slide-logo" name="logo" value="{{logo}}" class="file-input" />
+                        <a href="{{url}}media?type=image&path=banners" data-field="slide-logo" class="btn btn-primary media file-box">Seleccionar Imagen</a>
+                    </div>
+                    {{#logoEmptyError}}<div class="result-error">Debe incluir una imagen.</div>{{/logoEmptyError}}
+                    {{#logoSizeError}}<div class="result-error">El archivo indicado pesa más de 8mb.</div>{{/logoSizeError}}
+                    {{#logoTypeError}}<div class="result-error">El archivo debe ser de una imagen.</div>{{/logoTypeError}}
+                </dd>
+            </li>
+            {{/hasLogo}}
+            <li>
+                <dt><label for="slide-status" class="required-input">Estado</label></dt>
+                <dd>
+                    <select id="slide-status" name="status" {{#statusError}}class="error-input"{{/statusError}}>
+                        {{#statuses}}<option value="{{key}}" {{#isSelected}}selected{{/isSelected}}>{{value}}</option>{{/statuses}}
+                    </select>
+                    {{#statusError}}<div class="result-error">El estado indicado no existe.</div>{{/statusError}}
+                </dd>
+            </li>
+            <li>
+                <dt><label for="slide-position">Posición</label></dt>
+                <dd>
+                    <input id="slide-position" type="number" name="position" value="{{position}}" min="1" step="1" {{#positionError}}class="error-input"{{/positionError}} />
+                    {{#positionError}}<div class="result-error">La posición debe ser un número mayor a 0.</div>{{/positionError}}
+                </dd>
+            </li>
+        </ol>
+    </section>
+
+
+    <footer class="content-footer">
+        <button class="btn btn-primary">Guardar</button>
+        <a href="{{url}}slides{{#isEdit}}/{{slideID}}{{/isEdit}}{{query}}" class="btn btn-cancel">Cancelar</a>
+    </footer>
+    <input type="hidden" name="slideID" value="{{slideID}}" />
+</form>
+{{>footer/main}}

@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icoadmin';
   src:
-    url('fonts/icoadmin.ttf?dax8yi') format('truetype'),
-    url('fonts/icoadmin.woff?dax8yi') format('woff'),
-    url('fonts/icoadmin.svg?dax8yi#icoadmin') format('svg');
+    url('fonts/icoadmin.ttf?pqlkdp') format('truetype'),
+    url('fonts/icoadmin.woff?pqlkdp') format('woff'),
+    url('fonts/icoadmin.svg?pqlkdp#icoadmin') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,6 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icono-slides:before {
+  content: "\e904";
+}
 .icono-personalize:before {
   content: "\e903";
 }

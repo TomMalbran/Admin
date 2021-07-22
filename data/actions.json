@@ -10,6 +10,14 @@
             "Edit"         : "Cuenta editada"
         }
     },
+    "Slide" : {
+        "name"    : "Banner",
+        "actions" : {
+            "Create" : "Creado",
+            "Edit"   : "Editado",
+            "Delete" : "Eliminado"
+        }
+    },
     "Personalize" : {
         "name"    : "Personalizar",
         "actions" : {

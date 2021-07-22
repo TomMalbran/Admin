@@ -41,6 +41,14 @@
                     <span class="main-text">Inicio</span>
                 </a>
             </li>
+            {{#hasSlides}}
+            <li>
+                <a href="{{url}}slides" class="{{#isMenuSel}}slides{{/isMenuSel}}" data-menu="slides">
+                    <span class="icono icono-slides"></span>
+                    <span class="main-text">Banners</span>
+                </a>
+            </li>
+            {{/hasSlides}}
 
             {{#menuItems}}
             <li>

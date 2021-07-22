@@ -7,6 +7,7 @@
     "modules" : {
         "/session"     : "\\Admin\\View\\Session",
         "/home"        : "\\Admin\\View\\Home",
+        "/slides"      : "\\Admin\\View\\Slide",
         "/personalize" : "\\Admin\\View\\Personalize",
         "/media"       : "\\Admin\\View\\Media",
         "/users"       : "\\Admin\\View\\User"
@@ -23,6 +24,14 @@
         "/session/edit"       : "Editor",
 
         "/home/getAll"        : "Editor",
+
+        "/slides/getAll"      : "Editor",
+        "/slides/getActive"   : "API",
+        "/slides/getOne/{0}"  : "Editor",
+        "/slides/create"      : "Editor",
+        "/slides/edit/{0}"    : "Editor",
+        "/slides/process"     : "Editor",
+        "/slides/delete/{0}"  : "Editor",
 
         "/personalize/getAll" : "Editor",
         "/personalize/save"   : "Editor",

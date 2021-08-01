@@ -60,7 +60,7 @@ class Site {
      */
     public static function getSettings(string $section, string $variable = null) {
         if (empty($variable)) {
-            return Settings::getAll($section);
+            return Settings::getAllParsed($section);
         }
         return Settings::get($section, $variable);
     }
@@ -98,6 +98,7 @@ class Site {
     public static function print(string $template, array $data) {
         $path    = Admin::getPath(Admin::PublicDir, "site");
         $content = array_merge([
+            "title"    => Config::get("name"),
             "url"      => Config::getUrl(),
             "filesUrl" => Path::getUrl(Path::Source),
             "styles"   => Server::isLocalHost() ? "main.css" : "build.min.css",

@@ -7,8 +7,11 @@ use Admin\Schema\Factory;
 use Admin\Schema\Schema;
 use Admin\Schema\Database;
 use Admin\Schema\Query;
+use Admin\File\Path;
+use Admin\File\FileType;
 use Admin\Utils\Arrays;
 use Admin\Utils\JSON;
+use Admin\Utils\Numbers;
 use Admin\Utils\Strings;
 
 /**
@@ -113,11 +116,24 @@ class Settings {
         $result  = [];
 
         foreach ($request as $row) {
-            if (empty($result[$row["section"]])) {
-                $result[$row["section"]] = [];
+            $section  = $row["section"];
+            $variable = $row["variable"];
+            $value    = $row["value"];
+
+            if (empty($result[$section])) {
+                $result[$section] = [];
             }
-            $value = SettingType::parseValue($row);
-            $result[$row["section"]][$row["variable"]] = $value;
+            if ($row["type"] == SettingType::General) {
+                $result[$section][$variable] = $value;
+                if (!empty($value) && FileType::isImage($value)) {
+                    $result[$section]["{$variable}Url"]   = Path::getUrl(Path::Source, $value);
+                    $result[$section]["{$variable}Large"] = Path::getUrl(Path::Large,  $value);
+                } elseif (!Numbers::isNumber($value)) {
+                    $result[$section]["{$variable}Html"] = Strings::toHtml($value);
+                }
+            } else {
+                $result[$section][$variable] = SettingType::parseValue($row);
+            }
         }
 
         if (!empty($section)) {

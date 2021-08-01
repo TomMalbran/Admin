@@ -92,7 +92,16 @@ class Numbers {
 
 
     /**
-     * Returns true if the given value is a number and greater and/or equal to cero
+     * Returns true if the given value is a number
+     * @param mixed $number
+     * @return boolean
+     */
+    public static function isNumber($number): bool {
+        return is_numeric($number);
+    }
+
+    /**
+     * Returns true if the given value is a number between the given min and max
      * @param mixed   $number
      * @param integer $min    Optional.
      * @param integer $max    Optional.

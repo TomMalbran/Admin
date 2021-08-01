@@ -7,7 +7,6 @@ use Admin\Auth\Credential;
 use Admin\Auth\Token;
 use Admin\Auth\Reset;
 use Admin\Config\Config;
-use Admin\Config\Settings;
 use Admin\File\Path;
 use Admin\File\File;
 use Admin\Log\ActionLog;
@@ -135,7 +134,7 @@ class Auth {
      * @return boolean
      */
     public static function isLoginDisabled(Model $credential): bool {
-        return $credential->level < Access::Admin && Settings::get("general", "loginDisabled");
+        return $credential->level < Access::Admin && Config::get("authDisabled");
     }
 
 

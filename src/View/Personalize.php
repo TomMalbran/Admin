@@ -14,12 +14,32 @@ use Admin\Log\ActionLog;
  */
 class Personalize {
 
+    private static $loaded   = false;
+    private static $sections = [];
+    private static $useTabs  = false;
+
+
+    /**
+     * Loads the Data
+     * @return void
+     */
+    public static function loadData() {
+        if (!self::$loaded) {
+            $data = Admin::loadData(Admin::PersonalizeData);
+            self::$loaded   = false;
+            self::$sections = $data["sections"];
+            self::$useTabs  = $data["useTabs"];
+        }
+    }
+
     /**
      * Creates and returns the View
+     * @param string $hash Optional.
      * @return View
      */
-    private static function getView(): View {
-        return new View("view", "personalize", "personalize");
+    private static function getView(string $hash = ""): View {
+        $url = "personalize" . (!empty($hash) ? "#$hash" : "");
+        return new View("view", $url, "personalize");
     }
 
     /**
@@ -29,10 +49,15 @@ class Personalize {
      * @return array
      */
     private static function getOptions(array $settings, array $errors = []): array {
-        $sections = Admin::loadData(Admin::PersonalizeData);
-        $result   = [];
-        foreach ($sections as $section) {
+        self::loadData();
+        $tabs       = [];
+        $options    = [];
+        $isSelected = true;
+
+        foreach (self::$sections as $section) {
+            $content = [];
             $isFirst = true;
+
             foreach ($section["options"] as $option) {
                 $key    = $option["key"];
                 $fields = [
@@ -46,11 +71,25 @@ class Personalize {
                 if (!empty($errors[$key])) {
                     $fields += $errors[$key];
                 }
-                $result[] = $fields;
-                $isFirst  = false;
+                $options[] = $fields;
+                $content[] = $fields;
+                $isFirst   = false;
             }
+
+            $tabs[] = [
+                "key"        => $section["key"],
+                "value"      => $section["title"],
+                "isSelected" => $isSelected,
+                "options"    => $content,
+            ];
+            $isSelected = false;
         }
-        return $result;
+
+        return [
+            "useTabs" => self::$useTabs,
+            "tabs"    => $tabs,
+            "options" => $options,
+        ];
     }
 
 
@@ -62,9 +101,8 @@ class Personalize {
      */
     public static function getAll(Request $request): Response {
         $settings = Settings::getAllFlat();
-        return self::getView()->create("personalize", $request, [
-            "options" => self::getOptions($settings),
-        ]);
+        $options  = self::getOptions($settings);
+        return self::getView()->create("personalize", $request, $options);
     }
 
     /**
@@ -73,10 +111,10 @@ class Personalize {
      * @return Response
      */
     public static function save(Request $request) {
-        $sections = Admin::loadData(Admin::PersonalizeData);
-        $errors   = new Errors();
+        self::loadData();
+        $errors = new Errors();
 
-        foreach ($sections as $section) {
+        foreach (self::$sections as $section) {
             $isFirst = true;
             foreach ($section["options"] as $option) {
                 $key = $option["key"];
@@ -96,13 +134,12 @@ class Personalize {
             }
         }
         if ($errors->has()) {
-            return self::getView()->create("personalize", $request, [
-                "options" => self::getOptions($request->toArray(), $errors->getObject()),
-            ]);
+            $options = self::getOptions($request->toArray(), $errors->getObject());
+            return self::getView($request->subsection)->create("personalize", $request, $options);
         }
 
         Settings::save($request->toArray());
         ActionLog::add("Personalize", "Save");
-        return self::getView()->success($request, "save");
+        return self::getView($request->subsection)->success($request, "save");
     }
 }

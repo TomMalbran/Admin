@@ -638,11 +638,15 @@ class Ajax {
             if ($current.length) {
                 $current.fadeOut(() => {
                     $current.removeClass("tabs-show");
-                    $new.addClass("tabs-show").fadeIn();
+                    $new.addClass("tabs-show").fadeIn(() => {
+                        $(".autogrow").css({ height : "" }).autogrow();
+                    });
                     history.pushState(null, null, `#${name}`);
                 });
             } else {
-                $new.addClass("tabs-show").fadeIn();
+                $new.addClass("tabs-show").fadeIn(() => {
+                    $(".autogrow").css({ height : "" }).autogrow();
+                });
                 history.pushState(null, null, `#${name}`);
             }
         } else {

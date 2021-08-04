@@ -1,0 +1,30 @@
+<li {{#topLine}}class="top-line"{{/topLine}}>
+    <dt><label for="personalize-{{key}}" {{#isRequired}}class="required-input"{{/isRequired}}>{{label}}</label></dt>
+    <dd>
+        {{#isText}}
+        <input id="personalize-{{key}}" type="text" name="{{key}}" value="{{value}}" {{#hasError}}class="error-input"{{/hasError}} />
+        {{#emptyError}}<div class="result-error">Debe incluir un texto.</div>{{/emptyError}}
+        {{/isText}}
+
+        {{#isNumber}}
+        <input id="personalize-{{key}}" type="number" name="{{key}}" value="{{value}}" {{#hasError}}class="error-input"{{/hasError}} />
+        {{#emptyError}}<div class="result-error">Debe incluir un número.</div>{{/emptyError}}
+        {{#numberError}}<div class="result-error">El valor debe ser un número mayor a 0.</div>{{/numberError}}
+        {{/isNumber}}
+
+        {{#isTextarea}}
+        <textarea id="personalize-{{key}}" name="{{key}}" class="autogrow textarea-small {{#hasError}}error-input{{/hasError}}">{{value}}</textarea>
+        {{#emptyError}}<div class="result-error">Debe incluir un texto.</div>{{/emptyError}}
+        {{/isTextarea}}
+
+        {{#isImage}}
+        <div class="file-container">
+            <input type="text" id="personalize-{{key}}" name="{{key}}" value="{{value}}" class="file-input {{#hasError}}error-input{{/hasError}}" />
+            <a href="{{url}}media?type=image" data-field="personalize-{{key}}" class="btn btn-primary media file-box">Seleccionar Imagen</a>
+        </div>
+        {{#emptyError}}<div class="result-error">Debe incluir una imagen.</div>{{/emptyError}}
+        {{#typeError}}<div class="result-error">El archivo debe ser de una imagen.</div>{{/typeError}}
+        {{#existsError}}<div class="result-error">El archivo indicado no existe.</div>{{/existsError}}
+        {{/isImage}}
+    </dd>
+</li>

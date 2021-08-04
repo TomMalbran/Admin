@@ -23,7 +23,7 @@ class Slide {
 
 
     /**
-     * Loads the Credential Schema
+     * Loads the Slides Schema
      * @return Schema
      */
     public static function getSchema(): Schema {

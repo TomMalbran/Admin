@@ -1,0 +1,41 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icono-contact"></span> Contactos</h2>
+</header>
+
+{{#deleteSuccess}}<p class="result-bar result-success">El contacto fue eliminado correctamente.</p>{{/deleteSuccess}}
+
+
+<section class="content-table">
+    {{#hasList}}
+    <div class="table-overflow">
+        <table class="{{tableClasses}}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Nombre</th>
+                    {{#hasCompany}}<th>Empresa</th>{{/hasCompany}}
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#list}}
+                <tr>
+                    <td><a href="{{url}}contacts/{{contactID}}{{query}}" class="link link-main">#{{contactID}}</a></td>
+                    <td>{{createdTimeFull}}</td>
+                    <td class="table-list-secondary">{{name}}</td>
+                    {{#hasCompany}}<td class="table-list-secondary">{{company}}</td>{{/hasCompany}}
+                    <td class="table-list-terciary">{{email}}</td>
+                    <td class="table-list-terciary">{{phone}}</td>
+                </tr>
+                {{/list}}
+            </tbody>
+        </table>
+    </div>
+    {{>common/pagination}}
+    {{/hasList}}
+    {{^hasList}}<p class="table-none">No hay contactos disponibles.</p>{{/hasList}}
+</section>
+{{>footer/main}}

@@ -1,0 +1,45 @@
+{{>header/main}}
+<header class="content-header">
+    <h2><span class="icono-view"></span> Contacto "{{name}}"</h2>
+</header>
+
+
+<section class="content-body">
+    <ol class="ordered-list ordered-two-cols">
+        <li>
+            <dt><label>Nombre</label></dt>
+            <dd>{{name}}</dd>
+        </li>
+        {{#company}}
+        <li>
+            <dt><label>Empresa</label></dt>
+            <dd>{{company}}</dd>
+        </li>
+        {{/company}}
+        <li>
+            <dt><label>Email</label></dt>
+            <dd>{{email}}</dd>
+        </li>
+        {{#phone}}
+        <li>
+            <dt><label>Teléfono</label></dt>
+            <dd>{{phone}}</dd>
+        </li>
+        {{/phone}}
+        <li>
+            <dt><label>Mensaje</label></dt>
+            <dd>{{{messageHtml}}}</dd>
+        </li>
+        <li>
+            <dt><label>Enviado el</label></dt>
+            <dd>{{createdTimeFull}}</dd>
+        </li>
+    </ol>
+</section>
+
+
+<footer class="content-footer">
+    <a href="{{url}}contacts/delete/{{contactID}}{{query}}" class="btn btn-primary" data-confirm="">Eliminar</a>
+    <a href="{{url}}contacts{{query}}" class="btn btn-cancel">Volver</a>
+</footer>
+{{>footer/main}}

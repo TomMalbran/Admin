@@ -19,6 +19,21 @@
         "canEdit"       : true,
         "canDelete"     : true
     },
+    "contacts" : {
+        "table"  : "contacts",
+        "fields" : {
+            "CONTACT_ID" : { "type" : "id",    "name" : "contactID" },
+            "name"       : { "type" : "string"                      },
+            "company"    : { "type" : "string"                      },
+            "email"      : { "type" : "string"                      },
+            "phone"      : { "type" : "string"                      },
+            "message"    : { "type" : "text"                        }
+        },
+        "hasTimestamps" : true,
+        "canCreate"     : true,
+        "canEdit"       : false,
+        "canDelete"     : true
+    },
 
 
 

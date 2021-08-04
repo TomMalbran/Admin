@@ -74,6 +74,14 @@
                 </a>
             </li>
             {{/hasPersonalize}}
+            {{#hasContact}}
+            <li>
+                <a href="{{url}}contacts" class="{{#isMenuSel}}contacts{{/isMenuSel}}" data-menu="contacts">
+                    <span class="icono icono-contact"></span>
+                    <span class="main-text">Contactos</span>
+                </a>
+            </li>
+            {{/hasContact}}
             <li>
                 <a href="{{url}}media" class="{{#isMenuSel}}media{{/isMenuSel}}" data-menu="media">
                     <span class="icono icono-media"></span>

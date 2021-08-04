@@ -1,4 +1,7 @@
 
+.icono-contact:before {
+  content: "\e905";
+}
 .icono-slides:before {
   content: "\e904";
 }

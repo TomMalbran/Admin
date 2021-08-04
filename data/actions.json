@@ -24,6 +24,12 @@
             "Save" : "Guardado"
         }
     },
+    "Contact" : {
+        "name"    : "Contacto",
+        "actions" : {
+            "Delete" : "Eliminado"
+        }
+    },
     "User" : {
         "name"    : "User",
         "actions" : {

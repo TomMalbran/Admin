@@ -37,6 +37,7 @@ class Admin {
     // Custom Data
     const SlideData       = "slides";
     const PersonalizeData = "personalize";
+    const ContactData     = "contact";
 
     // The Directories
     const AdminDir        = "admin";
@@ -90,6 +91,14 @@ class Admin {
      */
     public static function hasPersonalize(): bool {
         return self::dataExists(self::PersonalizeData);
+    }
+
+    /**
+     * Returns true if there are Contact Options
+     * @return boolean
+     */
+    public static function hasContact(): bool {
+        return self::dataExists(self::ContactData);
     }
 
 

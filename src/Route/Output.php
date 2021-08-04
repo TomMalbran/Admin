@@ -97,6 +97,7 @@ class Output {
             "hasAdminAccess"  => Auth::isAdmin(),
             "hasSlides"       => Admin::hasSlides(),
             "hasPersonalize"  => Admin::hasPersonalize(),
+            "hasContact"      => Admin::hasContact(),
             "menuItems"       => $forBody ? self::getMenuItems() : [],
             "isMenuSel"       => function ($val) use ($response) {
                 return $val == $response->mainMenu ? "menu-item-selected" : "";

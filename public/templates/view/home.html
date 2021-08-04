@@ -8,6 +8,15 @@
     <b>Desde aquí puede:</b>
 
     <ol class="home-menu no-list">
+        {{#hasSlides}}
+        <li>
+            <a href="{{url}}slides">
+                <span class="icono icono-slides"></span>
+                <span>Crear banners</span>
+            </a>
+        </li>
+        {{/hasSlides}}
+
         {{#actions}}
         <li>
             <a href="{{url}}{{actionUrl}}">

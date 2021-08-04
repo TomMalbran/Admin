@@ -134,19 +134,19 @@ class Slide {
             if (!$request->has("name")) {
                 $errors->add("name");
             }
-            if ($options->hasTitle && $options->titleRequired && !$request->has("title")) {
+            if ($options->hasTitle && $options->reqTitle && !$request->has("title")) {
                 $errors->add("title");
             }
-            if ($options->hasDescription && $options->descriptionRequired && !$request->has("description")) {
+            if ($options->hasDescription && $options->reqDescription && !$request->has("description")) {
                 $errors->add("description");
             }
-            if ($options->hasButton && $options->buttonRequired && !$request->has("button")) {
+            if ($options->hasButton && $options->reqButton && !$request->has("button")) {
                 $errors->add("button");
             }
-            if ($options->hasLink && $options->linkRequired && !$request->has("link")) {
+            if ($options->hasLink && $options->reqLink && !$request->has("link")) {
                 $errors->add("link");
             }
-            if ($options->hasColor && $options->colorRequired && !$request->has("color")) {
+            if ($options->hasColor && $options->reqColor && !$request->has("color")) {
                 $errors->add("color");
             }
 

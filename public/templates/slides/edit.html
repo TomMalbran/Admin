@@ -18,7 +18,7 @@
             </li>
             {{#hasTitle}}
             <li>
-                <dt><label for="slide-title" {{#titleRequired}}class="required-input"{{/titleRequired}}>Título</label></dt>
+                <dt><label for="slide-title" {{#reqTitle}}class="required-input"{{/reqTitle}}>Título</label></dt>
                 <dd>
                     <input id="slide-title" type="text" name="title" value="{{title}}" {{#titleError}}class="error-input"{{/titleError}} />
                     {{#titleError}}<div class="result-error">Debe completar el título del banner.</div>{{/titleError}}
@@ -27,7 +27,7 @@
             {{/hasTitle}}
             {{#hasDescription}}
             <li>
-                <dt><label for="slide-description" {{#descriptionRequired}}class="required-input"{{/descriptionRequired}}>Descripción</label></dt>
+                <dt><label for="slide-description" {{#reqDescription}}class="required-input"{{/reqDescription}}>Descripción</label></dt>
                 <dd>
                     <textarea id="slide-description" name="description" {{#descriptionError}}class="error-input"{{/descriptionError}}>{{description}}</textarea>
                     {{#descriptionError}}<div class="result-error">Debe completar la descripción del banner.</div>{{/descriptionError}}
@@ -36,7 +36,7 @@
             {{/hasDescription}}
             {{#hasButton}}
             <li>
-                <dt><label for="slide-button" {{#buttonRequired}}class="required-input"{{/buttonRequired}}>Botón</label></dt>
+                <dt><label for="slide-button" {{#reqButton}}class="required-input"{{/reqButton}}>Botón</label></dt>
                 <dd>
                     <input id="slide-button" type="text" name="button" value="{{button}}" {{#buttonError}}class="error-input"{{/buttonError}} />
                     {{#buttonError}}<div class="result-error">Debe completar el botón del banner.</div>{{/buttonError}}
@@ -45,7 +45,7 @@
             {{/hasButton}}
             {{#hasLink}}
             <li>
-                <dt><label for="slide-link" {{#linkRequired}}class="required-input"{{/linkRequired}}>Url</label></dt>
+                <dt><label for="slide-link" {{#reqLink}}class="required-input"{{/reqLink}}>Url</label></dt>
                 <dd>
                     <input id="slide-link" type="text" name="link" value="{{link}}" {{#linkError}}class="error-input"{{/linkError}} />
                     {{#linkError}}<div class="result-error">Debe completar la url del banner.</div>{{/linkError}}
@@ -54,7 +54,7 @@
             {{/hasLink}}
             {{#hasColor}}
             <li>
-                <dt><label for="slide-color" {{#colorRequired}}class="required-input"{{/colorRequired}}>Color del texto</label></dt>
+                <dt><label for="slide-color" {{#reqColor}}class="required-input"{{/reqColor}}>Color del texto</label></dt>
                 <dd>
                     <input id="slide-color" type="text" name="color" value="{{color}}" {{#colorError}}class="error-input"{{/colorError}} />
                     {{#colorError}}<div class="result-error">Debe completar la url del banner.</div>{{/colorError}}

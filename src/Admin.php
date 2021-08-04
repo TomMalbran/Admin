@@ -44,6 +44,7 @@ class Admin {
     const SourceDir       = "src";
     const DataDir         = "data";
 
+    const LibDir          = "lib";
     const FilesDir        = "files";
     const PublicDir       = "public";
     const TemplatesDir    = "templates";

@@ -101,6 +101,7 @@ class Site {
             "title"    => Config::get("name"),
             "url"      => Config::getUrl(),
             "filesUrl" => Path::getUrl(Path::Source),
+            "libUrl"   => Config::getLibUrl(),
             "styles"   => Server::isLocalHost() ? "main.css" : "build.min.css",
         ], $data);
 

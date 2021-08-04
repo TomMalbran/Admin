@@ -171,6 +171,16 @@ class Config {
     }
 
     /**
+     * Return the internal lib Url adding the url parts at the end
+     * @return string
+     */
+    public static function getLibUrl() {
+        $route = Admin::getInternalRoute();
+        $url   = self::getUrl($route, Admin::LibDir);
+        return File::addLastSlash($url);
+    }
+
+    /**
      * Return the admin Url adding the url parts at the end
      * @param boolean $forSite Optional.
      * @return string

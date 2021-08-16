@@ -22,8 +22,9 @@ class Enum {
      * Loads the Data from the Cache
      * @return object
      */
-    public static function load(): object {
+    private static function load(): object {
         $class = get_called_class();
+
         if (empty(self::$cache[$class])) {
             $reflection = new ReflectionClass($class);
             $properties = $reflection->getStaticProperties();

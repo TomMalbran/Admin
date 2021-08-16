@@ -30,30 +30,31 @@ class Router {
      * Loads the Routes Data
      * @return void
      */
-    public static function load(): void {
-        if (!self::$loaded) {
-            $adminData    = Admin::loadData(Admin::RouteData, "admin");
-            $internalData = Admin::loadData(Admin::RouteData, "internal");
+    private static function load(): void {
+        if (self::$loaded) {
+            return;
+        }
+        $adminData    = Admin::loadData(Admin::RouteData, "admin");
+        $internalData = Admin::loadData(Admin::RouteData, "internal");
 
-            self::$loaded    = true;
-            self::$namespace = Admin::Namespace;
-            self::$defaults  = $internalData["defaults"];
-            self::$modules   = $internalData["modules"];
-            self::$routes    = $internalData["routes"];
-            self::$redirects = $internalData["redirects"];
+        self::$loaded    = true;
+        self::$namespace = Admin::Namespace;
+        self::$defaults  = $internalData["defaults"];
+        self::$modules   = $internalData["modules"];
+        self::$routes    = $internalData["routes"];
+        self::$redirects = $internalData["redirects"];
 
-            if (!empty($adminData["defaults"])) {
-                self::$defaults = Arrays::extend(self::$defaults, $adminData["defaults"]);
-            }
-            if (!empty($adminData["modules"])) {
-                self::$modules = Arrays::extend(self::$modules, $adminData["modules"]);
-            }
-            if (!empty($adminData["routes"])) {
-                self::$routes = Arrays::extend(self::$routes, $adminData["routes"]);
-            }
-            if (!empty($adminData["redirects"])) {
-                self::$redirects = Arrays::extend(self::$redirects, $adminData["redirects"]);
-            }
+        if (!empty($adminData["defaults"])) {
+            self::$defaults = Arrays::extend(self::$defaults, $adminData["defaults"]);
+        }
+        if (!empty($adminData["modules"])) {
+            self::$modules = Arrays::extend(self::$modules, $adminData["modules"]);
+        }
+        if (!empty($adminData["routes"])) {
+            self::$routes = Arrays::extend(self::$routes, $adminData["routes"]);
+        }
+        if (!empty($adminData["redirects"])) {
+            self::$redirects = Arrays::extend(self::$redirects, $adminData["redirects"]);
         }
     }
 

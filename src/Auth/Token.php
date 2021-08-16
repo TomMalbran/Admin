@@ -17,11 +17,12 @@ class Token {
      * Loads the Tokens Data
      * @return void
      */
-    public static function load(): void {
-        if (!self::$loaded) {
-            self::$loaded = true;
-            self::$data   = Admin::loadData(Admin::TokenData);
+    private static function load(): void {
+        if (self::$loaded) {
+            return;
         }
+        self::$loaded = true;
+        self::$data   = Admin::loadData(Admin::TokenData);
     }
 
 

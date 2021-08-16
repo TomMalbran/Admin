@@ -26,12 +26,13 @@ class ActionLog {
      * Loads the Action Schemas
      * @return void
      */
-    public static function load(): void {
-        if (!self::$loaded) {
-            self::$logIDs      = Factory::getSchema("logIDs");
-            self::$logSessions = Factory::getSchema("logSessions");
-            self::$logActions  = Factory::getSchema("logActions");
+    private static function load(): void {
+        if (self::$loaded) {
+            return;
         }
+        self::$logIDs      = Factory::getSchema("logIDs");
+        self::$logSessions = Factory::getSchema("logSessions");
+        self::$logActions  = Factory::getSchema("logActions");
     }
 
     /**

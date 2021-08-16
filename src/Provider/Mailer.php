@@ -31,16 +31,17 @@ class Mailer {
      * Loads the Mailer Config
      * @return void
      */
-    public static function load(): void {
-        if (!self::$loaded) {
-            self::$loaded   = true;
-            self::$template = Admin::loadFile(Admin::DataDir, "email.html");
-            self::$url      = Config::get("url");
-            self::$name     = Config::get("name");
-            self::$smtp     = Config::get("smtp");
-            self::$google   = Config::get("google");
-            self::$emails   = Config::getArray("smtpActiveEmails");
+    private static function load(): void {
+        if (self::$loaded) {
+            return;
         }
+        self::$loaded   = true;
+        self::$template = Admin::loadFile(Admin::DataDir, "email.html");
+        self::$url      = Config::get("url");
+        self::$name     = Config::get("name");
+        self::$smtp     = Config::get("smtp");
+        self::$google   = Config::get("google");
+        self::$emails   = Config::getArray("smtpActiveEmails");
     }
 
 

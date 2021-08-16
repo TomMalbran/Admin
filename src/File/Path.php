@@ -29,13 +29,14 @@ class Path {
      * Loads the Path Data
      * @return void
      */
-    public static function load(): void {
-        if (!self::$loaded) {
-            self::$loaded   = true;
-            self::$data     = Admin::loadData(Admin::PathData);
-            self::$basePath = Admin::getFilesPath();
-            self::$relPath  = Admin::getFilesRelPath();
+    private static function load(): void {
+        if (self::$loaded) {
+            return;
         }
+        self::$loaded   = true;
+        self::$data     = Admin::loadData(Admin::PathData);
+        self::$basePath = Admin::getFilesPath();
+        self::$relPath  = Admin::getFilesRelPath();
     }
 
     /**

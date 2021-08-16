@@ -25,29 +25,30 @@ class Factory {
      * Loads the Schemas Data
      * @return void
      */
-    public static function load(): void {
-        if (!self::$loaded) {
-            $config       = Config::get("db");
-            $adminData    = Admin::loadData(Admin::SchemaData, "admin");
-            $internalData = Admin::loadData(Admin::SchemaData, "internal");
+    private static function load(): void {
+        if (self::$loaded) {
+            return;
+        }
+        $config       = Config::get("db");
+        $adminData    = Admin::loadData(Admin::SchemaData, "admin");
+        $internalData = Admin::loadData(Admin::SchemaData, "internal");
 
-            self::$loaded = true;
-            self::$db     = new Database($config);
+        self::$loaded = true;
+        self::$db     = new Database($config);
 
-            foreach ($adminData as $key => $data) {
-                if ($key === "slides" && !Admin::hasSlides()) {
-                    continue;
-                }
-                if (!empty($internalData[$key])) {
-                    self::$data[$key] = Arrays::extend($internalData[$key], $data);
-                } else {
-                    self::$data[$key] = $data;
-                }
+        foreach ($adminData as $key => $data) {
+            if ($key === "slides" && !Admin::hasSlides()) {
+                continue;
             }
-            foreach ($internalData as $key => $data) {
-                if (empty($adminData[$key])) {
-                    self::$data[$key] = $data;
-                }
+            if (!empty($internalData[$key])) {
+                self::$data[$key] = Arrays::extend($internalData[$key], $data);
+            } else {
+                self::$data[$key] = $data;
+            }
+        }
+        foreach ($internalData as $key => $data) {
+            if (empty($adminData[$key])) {
+                self::$data[$key] = $data;
             }
         }
     }

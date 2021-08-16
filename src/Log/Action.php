@@ -16,14 +16,15 @@ class Action {
      * Loads the Actions Data
      * @return void
      */
-    public static function load(): void {
-        if (!self::$loaded) {
-            $adminData    = Admin::loadData(Admin::ActionData, "admin");
-            $internalData = Admin::loadData(Admin::ActionData, "internal");
-
-            self::$loaded = true;
-            self::$data   = Arrays::extend($internalData, $adminData);
+    private static function load(): void {
+        if (self::$loaded) {
+            return;
         }
+        $adminData    = Admin::loadData(Admin::ActionData, "admin");
+        $internalData = Admin::loadData(Admin::ActionData, "internal");
+
+        self::$loaded = true;
+        self::$data   = Arrays::extend($internalData, $adminData);
     }
 
 

@@ -404,23 +404,21 @@ class DateTime {
 
     /**
      * Returns the Month at the given month
-     * @param integer $month
+     * @param integer $time
      * @return string
      */
-    public static function getMonth(int $month): string {
-        if ($month >= 1 && $month <= 12) {
-            return self::$months[$month - 1];
-        }
-        return "";
+    public static function getMonth(int $time): string {
+        $month = date("n", $time);
+        return self::$months[$month - 1];
     }
 
     /**
      * Returns a short version of the Month
-     * @param integer $month
+     * @param integer $time
      * @return string
      */
-    public static function getShortMonth(int $month): string {
-        $result = self::getMonth($month);
+    public static function getShortMonth(int $time): string {
+        $result = self::getMonth($time);
         $result = Strings::substring($result, 0, 3);
         return Strings::toUpperCase($result);
     }
@@ -431,7 +429,7 @@ class DateTime {
      * @return string
      */
     public static function getMonthYear(int $time): string {
-        return self::getMonth(date("n", $time)) . " " . date("Y", $time);
+        return self::getMonth($time) . " " . date("Y", $time);
     }
 
 

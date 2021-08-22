@@ -751,16 +751,16 @@ class Request implements ArrayAccess {
      * Validates a File
      * @param string          $key
      * @param Errors          $errors
-     * @param string|string[] $extensions
+     * @param string|string[] $extensions Optional.
      * @param boolean         $isRequired Optional.
      * @return void
      */
-    public function validateFile(string $key, Errors $errors, $extensions, bool $isRequired = true): void {
+    public function validateFile(string $key, Errors $errors, $extensions = null, bool $isRequired = true): void {
         if ($isRequired && !$this->has($key)) {
             $errors->add("{$key}Empty");
         }
         if ($this->has($key)) {
-            if (!$this->hasExtension($key, $extensions)) {
+            if (!empty($extensions) && !$this->hasExtension($key, $extensions)) {
                 $error = "{$key}Type";
             } elseif (!$this->fileExists($key)) {
                 $error = "{$key}Exists";

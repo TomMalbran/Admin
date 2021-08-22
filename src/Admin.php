@@ -16,6 +16,7 @@ use Admin\File\Path;
 use Admin\Schema\Factory;
 use Admin\Schema\Database;
 use Admin\Utils\JSON;
+use Admin\Utils\Server;
 use Admin\Utils\Strings;
 
 /**
@@ -64,9 +65,18 @@ class Admin {
      * Sets the Basic data
      * @param string  $adminPath
      * @param boolean $logErrors Optional.
+     * @param boolean $ensureUrl Optional.
      * @return void
      */
-    public static function create(string $adminPath, bool $logErrors = false): void {
+    public static function create(string $adminPath, bool $logErrors = false, bool $ensureUrl = false): void {
+        if ($ensureUrl) {
+            $url = Server::getProperUrl();
+            if (!empty($url)) {
+                header("Location: $url");
+                exit;
+            }
+        }
+
         self::$adminPath     = $adminPath;
         self::$internalPath  = dirname(__FILE__, 2);
         self::$internalRoute = Strings::replace(self::$internalPath, $adminPath, "");

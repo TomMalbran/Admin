@@ -65,7 +65,7 @@ class Server {
      * Returns a proper url using www and ssl
      * @return string
      */
-    public static function getPropperUrl(): string {
+    public static function getProperUrl(): string {
         if (self::isLocalHost()) {
             return "";
         }
@@ -88,7 +88,7 @@ class Server {
      * @return boolean
      */
     public static function urlStartsWith(string $url): bool {
-        $currentUrl = self::getPropperUrl();
+        $currentUrl = self::getProperUrl();
         if (empty($currentUrl)) {
 			$currentUrl = self::getFullUrl();
 		}

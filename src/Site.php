@@ -24,7 +24,7 @@ class Site {
      */
     public static function create(string $adminPath, bool $ensureUrl = false): void {
         if ($ensureUrl) {
-            $url = Server::getPropperUrl();
+            $url = Server::getProperUrl();
             if (!empty($url)) {
                 header("Location: $url");
                 exit;

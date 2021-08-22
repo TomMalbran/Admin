@@ -38,7 +38,7 @@ class Server {
 
     /**
      * Returns the Origin Url
-     * @param boolean $useForwarded
+     * @param boolean $useForwarded Optional.
      * @return string
      */
     public static function getUrl(bool $useForwarded = false): string {
@@ -60,6 +60,42 @@ class Server {
     public static function getFullUrl(bool $useForwarded = false): string {
         return self::getUrl($useForwarded) . $_SERVER["REQUEST_URI"];
     }
+
+    /**
+     * Returns a proper url using www and ssl
+     * @return string
+     */
+    public static function getPropperUrl(): string {
+        if (self::isLocalHost()) {
+            return "";
+        }
+        if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) !== "www.") {
+            return "https://www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
+        }
+        if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) === "www.") {
+            return "https://{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
+        }
+        if (substr($_SERVER["HTTP_HOST"], 0, 4) !== "www.") {
+            $protocol = $_SERVER["HTTPS"] == "on" ? "https://" : "http://";
+            return "{$protocol}www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
+        }
+        return "";
+    }
+
+    /**
+     * Returns true if the given Url is at the start
+     * @param string $url
+     * @return boolean
+     */
+    public static function urlStartsWith(string $url): bool {
+        $currentUrl = self::getPropperUrl();
+        if (empty($currentUrl)) {
+			$currentUrl = self::getFullUrl();
+		}
+        return Strings::startsWith($currentUrl, $url);
+    }
+
+
 
     /**
      * Returns the user IP
@@ -92,28 +128,5 @@ class Server {
      */
     public static function getUserAgent(): string {
         return $_SERVER["HTTP_USER_AGENT"];
-    }
-
-
-
-    /**
-     * Returns a proper url using www and ssl
-     * @return string
-     */
-    public static function getPropperUrl(): string {
-        if (self::isLocalHost()) {
-            return "";
-        }
-        if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) !== "www.") {
-            return "https://www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
-        }
-        if ($_SERVER["HTTPS"] !== "on" && substr($_SERVER["HTTP_HOST"], 0, 4) === "www.") {
-            return "https://{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
-        }
-        if (substr($_SERVER["HTTP_HOST"], 0, 4) !== "www.") {
-            $protocol = $_SERVER["HTTPS"] == "on" ? "https://" : "http://";
-            return "{$protocol}www.{$_SERVER["HTTP_HOST"]}{$_SERVER["REQUEST_URI"]}";
-        }
-        return "";
     }
 }

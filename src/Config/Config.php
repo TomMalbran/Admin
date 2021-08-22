@@ -22,35 +22,38 @@ class Config {
      * Loads the Config Data
      * @return void
      */
-    public static function load(): void {
-        if (!self::$loaded) {
-            $path    = Admin::getPath();
-            $data    = Dotenv::createImmutable($path)->load();
-            $replace = [];
+    private static function load(): void {
+        if (self::$loaded) {
+            return;
+        }
+        $path    = Admin::getPath();
+        $data    = Dotenv::createImmutable($path)->load();
+        $replace = [];
 
-            if (Server::isDevHost()) {
-                if (File::exists($path, ".env.dev")) {
-                    $replace = Dotenv::createMutable($path, ".env.dev")->load();
-                }
-            } elseif (Server::isStageHost()) {
-                if (File::exists($path, ".env.stage")) {
-                    $replace = Dotenv::createMutable($path, ".env.stage")->load();
-                }
-            } elseif (!Server::isLocalHost()) {
-                if (File::exists($path, ".env.production")) {
-                    $replace = Dotenv::createMutable($path, ".env.production")->load();
-                }
+        if (File::exists($path, ".env.dev")) {
+            $config = Dotenv::createMutable($path, ".env.dev")->load();
+            if (Server::isDevHost() || (!empty($config["URL"]) && Server::urlStartsWith($config["URL"]))) {
+                $replace = $config;
             }
+        }
+        if (empty($replace) && File::exists($path, ".env.stage")) {
+            $config = Dotenv::createMutable($path, ".env.stage")->load();
+            if (Server::isStageHost() || (!empty($config["URL"]) && Server::urlStartsWith($config["URL"]))) {
+                $replace = $config;
+            }
+        }
+        if (empty($replace) && !Server::isLocalHost() && File::exists($path, ".env.production")) {
+            $replace = Dotenv::createMutable($path, ".env.production")->load();
+        }
 
-            self::$loaded = true;
-            self::$data   = array_merge($data, $replace);
+        self::$loaded = true;
+        self::$data   = array_merge($data, $replace);
 
-            foreach (self::$data as $key => $value) {
-                if ($value === "true") {
-                    self::$data[$key] = true;
-                } elseif ($value === "false") {
-                    self::$data[$key] = false;
-                }
+        foreach (self::$data as $key => $value) {
+            if ($value === "true") {
+                self::$data[$key] = true;
+            } elseif ($value === "false") {
+                self::$data[$key] = false;
             }
         }
     }

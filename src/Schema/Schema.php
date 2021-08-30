@@ -494,7 +494,7 @@ class Schema {
      */
     public function createWithOrder(Request $request, array $extra = null, int $credentialID = 0): int {
         $this->ensurePosOrder(null, $request);
-        return $this->create($request);
+        return $this->create($request, $extra, $credentialID);
     }
 
     /**
@@ -508,7 +508,7 @@ class Schema {
     public function editWithOrder($query, Request $request, array $extra = null, int $credentialID = 0): bool {
         $model = $this->getOne($query);
         $this->ensurePosOrder($model, $request);
-        return $this->edit($query, $request);
+        return $this->edit($query, $request, $extra, $credentialID);
     }
 
    /**

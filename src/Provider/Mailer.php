@@ -158,7 +158,7 @@ class Mailer {
      * @return boolean
      */
     public static function sendContact(string $subject, string $message, string $attachment = "") {
-        $sendTo  = Config::get("smtpSendTo");
+        $sendTo = Config::get("smtpSendTo");
         return self::sendTo($sendTo, $subject, $message, $attachment);
     }
 

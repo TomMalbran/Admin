@@ -73,7 +73,14 @@ class Slide {
     public static function getActive() {
         $query = Query::create("status", "=", Status::Active);
         $list  = self::getSchema()->getAll($query);
-        return Response::json($list);
+        $total = count($list);
+
+        return Response::json([
+            "list"       => $list,
+            "amount"     => $total,
+            "totalWidth" => $total * 100,
+            "slideWidth" => 100 / $total,
+        ]);
     }
 
     /**

@@ -134,10 +134,10 @@ class Contact {
     private static function send(Request $request) {
         $subject  = "Contacto en {{name}}";
         $message  = "<p>Han enviado un mensaje con los datos:</p>";
-        $message .= "<p>Nombre y Apellido: {$request->name}.</p>";
-        $message .= $request->has("company") ? "<p>Empresa: {$request->company}.</p>" : "";
+        $message .= "<p>Nombre y Apellido: {$request->name}</p>";
+        $message .= $request->has("company") ? "<p>Empresa: {$request->company}</p>" : "";
         $message .= "<p>Email: {$request->email}.</p>";
-        $message .= $request->has("phone") ? "<p>Teléfono: {$request->phone}.</p>" : "";
+        $message .= $request->has("phone") ? "<p>Teléfono: {$request->phone}</p>" : "";
         $message .= "<p>Mensaje:<br/>" . Strings::toHtml($request->message) . "</p>";
 
         return Mailer::sendContact($subject, $message);

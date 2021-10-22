@@ -97,11 +97,13 @@ class Site {
     public static function print(string $template, array $data) {
         $path    = Admin::getPath(Admin::PublicDir, "site");
         $content = array_merge([
-            "title"    => Config::get("name"),
-            "url"      => Config::getUrl(),
-            "filesUrl" => Path::getUrl(Path::Source),
-            "libUrl"   => Config::getLibUrl(),
-            "styles"   => Server::isLocalHost() ? "main.css" : "build.min.css",
+            "title"     => Config::get("name"),
+            "url"       => Config::getUrl(),
+            "filesUrl"  => Path::getUrl(Path::Source),
+            "libUrl"    => Config::getLibUrl(),
+            "styles"    => Server::isLocalHost() ? "main.css" : "build.min.css",
+            "recaptcha" => Config::get("recaptchaKey"),
+            "year"      => date("Y"),
         ], $data);
 
         if (File::exists($path, Admin::TemplatesDir, "{$template}.html")) {

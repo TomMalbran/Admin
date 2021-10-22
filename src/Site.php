@@ -18,11 +18,10 @@ class Site {
 
     /**
      * Creates the Admin
-     * @param string  $adminPath
      * @param boolean $ensureUrl Optional.
      * @return void
      */
-    public static function create(string $adminPath, bool $ensureUrl = false): void {
+    public static function create(bool $ensureUrl = true): void {
         if ($ensureUrl) {
             $url = Server::getProperUrl();
             if (!empty($url)) {
@@ -30,7 +29,7 @@ class Site {
                 exit;
             }
         }
-        Admin::create($adminPath, false);
+        Admin::create(false, false);
         Auth::validateInternal();
     }
 

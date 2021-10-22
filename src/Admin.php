@@ -63,12 +63,11 @@ class Admin {
 
     /**
      * Sets the Basic data
-     * @param string  $adminPath
      * @param boolean $logErrors Optional.
      * @param boolean $ensureUrl Optional.
      * @return void
      */
-    public static function create(string $adminPath, bool $logErrors = false, bool $ensureUrl = false): void {
+    public static function create(bool $logErrors = false, bool $ensureUrl = false): void {
         if ($ensureUrl) {
             $url = Server::getProperUrl();
             if (!empty($url)) {
@@ -77,9 +76,9 @@ class Admin {
             }
         }
 
-        self::$adminPath     = $adminPath;
-        self::$internalPath  = dirname(__FILE__, 2);
-        self::$internalRoute = Strings::replace(self::$internalPath, $adminPath, "");
+        self::$adminPath     = dirname(__DIR__, 5);
+        self::$internalPath  = dirname(__DIR__, 1);
+        self::$internalRoute = Strings::replace(self::$internalPath, self::$adminPath, "");
 
         if ($logErrors) {
             ErrorLog::init();

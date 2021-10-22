@@ -255,8 +255,12 @@ class Admin {
         unset($params["token"]);
         unset($params["jwt"]);
 
+        // Run the migrations
+        if (!empty($params["migrate"])) {
+            self::migrate();
+
         // For API
-        if (!empty($token)) {
+        } elseif (!empty($token)) {
             Auth::validateAPI($token);
             try {
                 $response = self::request($route, $params);
@@ -300,8 +304,6 @@ class Admin {
         }
         return Response::view("core/error");
     }
-
-
 
     /**
      * Runs the Migrations for the Admin

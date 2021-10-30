@@ -47,6 +47,9 @@ class Factory {
             if ($key == "slides" && !Admin::hasSlides()) {
                 continue;
             }
+            if ($key == "contacts" && !Admin::hasContact()) {
+                continue;
+            }
             if (empty($adminData[$key])) {
                 self::$data[$key] = $data;
             }

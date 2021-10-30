@@ -37,9 +37,6 @@ class Factory {
         self::$db     = new Database($config);
 
         foreach ($adminData as $key => $data) {
-            if ($key === "slides" && !Admin::hasSlides()) {
-                continue;
-            }
             if (!empty($internalData[$key])) {
                 self::$data[$key] = Arrays::extend($internalData[$key], $data);
             } else {
@@ -47,6 +44,9 @@ class Factory {
             }
         }
         foreach ($internalData as $key => $data) {
+            if ($key == "slides" && !Admin::hasSlides()) {
+                continue;
+            }
             if (empty($adminData[$key])) {
                 self::$data[$key] = $data;
             }

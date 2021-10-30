@@ -37,14 +37,6 @@ class Contact {
     }
 
     /**
-     * Creates and returns the View
-     * @return View
-     */
-    private static function getView(): View {
-        return new View("contacts", "contacts", "contacts");
-    }
-
-    /**
      * Returns the Contact Options
      * @param boolean $asArray Optional.
      * @return mixed
@@ -52,6 +44,14 @@ class Contact {
     private static function getOptions(bool $asArray = true) {
         $data = Admin::loadData(Admin::ContactData, "admin", $asArray);
         return $asArray ? $data["options"] : $data->options;
+    }
+
+    /**
+     * Creates and returns the View
+     * @return View
+     */
+    private static function getView(): View {
+        return new View("contacts", "contacts", "contacts");
     }
 
 

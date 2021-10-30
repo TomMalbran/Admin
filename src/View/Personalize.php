@@ -23,13 +23,14 @@ class Personalize {
      * Loads the Data
      * @return void
      */
-    public static function loadData() {
-        if (!self::$loaded) {
-            $data = Admin::loadData(Admin::PersonalizeData);
-            self::$loaded   = false;
-            self::$sections = $data["sections"];
-            self::$useTabs  = $data["useTabs"];
+    public static function load() {
+        if (self::$loaded) {
+            return;
         }
+        $data = Admin::loadData(Admin::PersonalizeData);
+        self::$loaded   = true;
+        self::$sections = $data["sections"];
+        self::$useTabs  = $data["useTabs"];
     }
 
     /**
@@ -49,7 +50,7 @@ class Personalize {
      * @return array
      */
     private static function getOptions(array $settings, array $errors = []): array {
-        self::loadData();
+        self::load();
         $tabs       = [];
         $options    = [];
         $isSelected = true;
@@ -111,7 +112,7 @@ class Personalize {
      * @return Response
      */
     public static function save(Request $request) {
-        self::loadData();
+        self::load();
         $errors = new Errors();
 
         foreach (self::$sections as $section) {

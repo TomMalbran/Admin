@@ -28,11 +28,17 @@ class Arrays {
 
     /**
      * Returns the length of the given array
-     * @param array|mixed $array
+     * @param mixed $array
      * @return integer
      */
     public static function length($array): int {
-        return is_array($array) ? count($array) : 0;
+        if (self::isMap($array)) {
+            return count(array_keys($array));
+        }
+        if (is_array($array)) {
+            return count($array);
+        }
+        return 0;
     }
 
     /**
@@ -73,6 +79,15 @@ class Arrays {
      */
     public static function toObject(array $array = null) {
         return !empty($array) ? $array : new \stdClass();
+    }
+
+    /**
+     * Converts a single value or a map into an array
+     * @param array|mixed $array
+     * @return array
+     */
+    public static function getValues($array): array {
+        return is_array($array) ? array_values($array) : [ $array ];
     }
 
     /**
@@ -314,6 +329,31 @@ class Arrays {
             }
         }
         return $default;
+    }
+
+    /**
+     * Returns the first Key of the given array
+     * @param array $array
+     * @return string|integer
+     */
+    public static function getFirstKey(array $array) {
+        return array_keys($array)[0];
+    }
+
+    /**
+     * Returns the index at the given id key with the given is value
+     * @param array  $array
+     * @param string $idKey
+     * @param mixed  $idValue
+     * @return string|integer
+     */
+    public static function findIndex(array $array, string $idKey, $idValue) {
+        foreach ($array as $index => $elem) {
+            if ($elem[$idKey] == $idValue) {
+                return $index;
+            }
+        }
+        return -1;
     }
 
     /**

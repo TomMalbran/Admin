@@ -11,27 +11,61 @@ use Admin\Schema\Factory;
 use Admin\Schema\Schema;
 use Admin\Schema\Query;
 use Admin\Log\ActionLog;
+use Admin\Utils\Arrays;
 
 /**
  * The Slide View
  */
 class Slide {
 
-    private static $loaded  = false;
-    private static $schema  = null;
-    private static $options = null;
+    private static $loaded   = false;
+    private static $schema   = null;
+    private static $options  = null;
+    private static $useTabs  = false;
+    private static $mainType = "";
 
 
     /**
-     * Loads the Slides Schema
-     * @return Schema
+     * Loads the Data
+     * @return void
      */
-    public static function getSchema(): Schema {
-        if (!self::$loaded) {
-            self::$loaded = false;
-            self::$schema = Factory::getSchema("slides");
+    public static function load() {
+        if (self::$loaded) {
+            return;
         }
-        return self::$schema;
+        self::$loaded   = true;
+        self::$schema   = Factory::getSchema("slides");
+        self::$options  = Admin::loadData(Admin::SlideData, "admin", true);
+        self::$useTabs  = Arrays::length(self::$options) > 1;
+        self::$mainType = Arrays::getFirstKey(self::$options);
+    }
+
+    /**
+     * Creates a list of tabs
+     * @param string $selected
+     * @return array
+     */
+    private static function getTabs(string $selected): array {
+        $result = [];
+        foreach (self::$options as $key => $option) {
+            $result[] = [
+                "key"        => $key,
+                "value"      => $option["name"],
+                "isSelected" => $selected === $key,
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * Returns the Options for the given type
+     * @param string  $type
+     * @param boolean $asObject Optional.
+     * @return mixed
+     */
+    private static function getOptions(string $type, bool $asObject = false) {
+        $result = self::$options[$type]["options"];
+        return $asObject ? (object)$result : $result;
     }
 
     /**
@@ -42,15 +76,6 @@ class Slide {
         return new View("slides", "slides", "slides");
     }
 
-    /**
-     * Returns the Slide Options
-     * @param boolean $asArray Optional.
-     * @return mixed
-     */
-    private static function getOptions(bool $asArray = true) {
-        return Admin::loadData(Admin::SlideData, "admin", $asArray);
-    }
-
 
 
     /**
@@ -59,20 +84,42 @@ class Slide {
      * @return Response
      */
     public static function getAll(Request $request): Response {
-        $list = self::getSchema()->getAll();
+        self::load();
+        $slides = self::$schema->getAll();
+        $tabs   = self::getTabs(self::$mainType);
+        $lists  = [];
+
+        foreach ($tabs as $tab) {
+            $lists[$tab["key"]] = [
+                "key"        => $tab["key"],
+                "list"       => [],
+                "hasList"    => false,
+                "isSelected" => $tab["isSelected"],
+            ];
+        }
+        foreach ($slides as $slide) {
+            $lists[$slide["type"]]["list"][]  = $slide;
+            $lists[$slide["type"]]["hasList"] = true;
+        }
+
         return self::getView()->create("main", $request, [
-            "list"    => $list,
-            "hasList" => !empty($list),
+            "useTabs" => self::$useTabs,
+            "tabs"    => $tabs,
+            "lists"   => Arrays::getValues($lists),
         ]);
     }
 
     /**
      * Returns the Active Slides
+     * @param string $type Optional.
      * @return Response
      */
-    public static function getActive() {
+    public static function getActive(string $type = ""): Response {
+        self::load();
         $query = Query::create("status", "=", Status::Active);
-        $list  = self::getSchema()->getAll($query);
+        $query->add("type", "=", empty($type) ? self::$mainType : $type);
+
+        $list  = self::$schema->getAll($query);
         $total = count($list);
 
         return Response::json([
@@ -90,20 +137,24 @@ class Slide {
      * @return Response
      */
     public static function getOne(int $slideID, Request $request): Response {
-        $slide = self::getSchema()->getOne($slideID);
+        self::load();
+        $slide = self::$schema->getOne($slideID);
         return self::getView()->create("view", $request, [], $slide);
     }
 
     /**
      * Returns the Slide create view
+     * @param string  $type
      * @param Request $request
      * @return Response
      */
-    public static function create(Request $request): Response {
-        $options = self::getOptions();
+    public static function create(string $type, Request $request): Response {
+        self::load();
         return self::getView()->create("edit", $request, [
+            "type"     => $type,
+            "useTabs"  => self::$useTabs,
             "statuses" => Status::getSelect(),
-        ] + $options);
+        ] + self::getOptions($type));
     }
 
     /**
@@ -113,12 +164,14 @@ class Slide {
      * @return Response
      */
     public static function edit(int $slideID, Request $request): Response {
-        $options = self::getOptions();
-        $slide   = self::getSchema()->getOne($slideID);
+        self::load();
+        $slide = self::$schema->getOne($slideID);
         return self::getView()->create("edit", $request, [
             "isEdit"   => true,
+            "type"     => $slide->type,
+            "useTabs"  => self::$useTabs,
             "statuses" => Status::getSelect($slide->status),
-        ] + $options, $slide);
+        ] + self::getOptions($slide->type), $slide);
     }
 
 
@@ -129,13 +182,14 @@ class Slide {
      * @return Response
      */
     public static function process(Request $request): Response {
-        $options = self::getOptions(false);
-        $schema  = self::getSchema();
+        self::load();
         $isEdit  = $request->has("slideID");
         $slideID = $request->getInt("slideID");
+        $type    = $request->getString("type");
+        $options = self::getOptions($type, true);
         $errors  = new Errors();
 
-        if ($isEdit && !$schema->exists($slideID)) {
+        if ($isEdit && !self::$schema->exists($slideID)) {
             $errors->add("exists");
         } else {
             if (!$request->has("name")) {
@@ -173,15 +227,18 @@ class Slide {
         if ($errors->has()) {
             return self::getView()->create("edit", $request, [
                 "isEdit"   => $isEdit,
+                "type"     => $type,
+                "useTabs"  => self::$useTabs,
                 "statuses" => Status::getSelect($request->getInt("status")),
-            ], null, $errors);
+            ] + (array)$options, null, $errors);
         }
 
+        $query = Query::create("type", "=", $type);
         if (!$isEdit) {
-            $slideID = $schema->createWithOrder($request);
+            $slideID = self::$schema->createWithOrder($request, null, $query);
             ActionLog::add("Slide", "Create", $slideID);
         } else {
-            $schema->editWithOrder($slideID, $request);
+            self::$schema->editWithOrder($slideID, $request, null, $query);
             ActionLog::add("Slide", "Edit", $slideID);
         }
         return self::getView()->edit($request, $isEdit, $slideID);
@@ -194,8 +251,12 @@ class Slide {
      * @return Response
      */
     public static function delete(int $slideID, Request $request): Response {
+        self::load();
         $success = false;
-        if ($request->has("confirmed") && self::getSchema()->deleteWithOrder($slideID)) {
+        $slide   = self::$schema->getOne($slideID);
+        if ($request->has("confirmed") && !$slide->isEmpty()) {
+            $query = Query::create("type", "=", $sldie->type);
+            self::$schema->deleteWithOrder($slideID, $query);
             ActionLog::add("Slide", "Delete", $slideID);
             $success = true;
         }

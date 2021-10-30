@@ -1,13 +1,33 @@
 {{>header/main}}
 <header class="content-header">
     <h2><span class="icono-slides"></span> Banners</h2>
-    <a href="{{url}}slides/create" class="btn btn-primary">Crear</a>
+    {{#tabs}}
+    <a href="{{url}}slides/create/{{key}}"
+        class="btn btn-primary tabs-content {{#isSelected}}tabs-show{{/isSelected}}"
+        data-tab="{{key}}"
+    >Crear</a>
+    {{/tabs}}
 </header>
 
 {{#deleteSuccess}}<p class="result-bar result-success">El banner fue eliminado correctamente.</p>{{/deleteSuccess}}
 
 
-<section class="content-table">
+{{#useTabs}}
+<section class="content-tabs">
+    <ul class="tabs-bar no-list">
+        {{#tabs}}
+        <li {{#isSelected}}class="tab-selected"{{/isSelected}} data-tab="{{key}}">
+            {{value}}
+        </li>
+        {{/tabs}}
+    </ul>
+    <div class="tabs-selector"></div>
+</section>
+{{/useTabs}}
+
+
+{{#lists}}
+<section class="content-table tabs-content {{#isSelected}}tabs-show{{/isSelected}}" data-tab="{{key}}">
     {{#hasList}}
     <div class="table-overflow">
         <table class="table-container table-list">
@@ -35,8 +55,9 @@
             </tbody>
         </table>
     </div>
-    {{>common/pagination}}
     {{/hasList}}
     {{^hasList}}<p class="table-none">No hay banners disponibles.</p>{{/hasList}}
 </section>
+{{/lists}}
+
 {{>footer/main}}

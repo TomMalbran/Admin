@@ -109,8 +109,10 @@
 
     <footer class="content-footer">
         <button class="btn btn-primary">Guardar</button>
-        <a href="{{url}}slides{{#isEdit}}/{{slideID}}{{/isEdit}}{{query}}" class="btn btn-cancel">Cancelar</a>
+        <a href="{{url}}slides{{#isEdit}}/{{slideID}}{{/isEdit}}{{query}}{{#useTabs}}#{{type}}{{/useTabs}}" class="btn btn-cancel">Cancelar</a>
     </footer>
+
     <input type="hidden" name="slideID" value="{{slideID}}" />
+    <input type="hidden" name="type" value="{{type}}" />
 </form>
 {{>footer/main}}

@@ -12,6 +12,7 @@ use Admin\Schema\Schema;
 use Admin\Schema\Query;
 use Admin\Log\ActionLog;
 use Admin\Utils\Arrays;
+use Admin\Utils\Numbers;
 
 /**
  * The Slide View
@@ -117,7 +118,7 @@ class Slide {
     public static function getActive(string $type = ""): Response {
         self::load();
         $query = Query::create("status", "=", Status::Active);
-        $query->add("type", "=", empty($type) ? self::$mainType : $type);
+        $query->add("type", "=", !empty($type) ? $type : self::$mainType);
 
         $list  = self::$schema->getAll($query);
         $total = count($list);
@@ -126,7 +127,7 @@ class Slide {
             "list"       => $list,
             "amount"     => $total,
             "totalWidth" => $total * 100,
-            "slideWidth" => 100 / $total,
+            "slideWidth" => Numbers::divide(100, $total),
         ]);
     }
 

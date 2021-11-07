@@ -127,7 +127,7 @@ class Slide {
             "list"       => $list,
             "amount"     => $total,
             "totalWidth" => $total * 100,
-            "slideWidth" => Numbers::divide(100, $total),
+            "slideWidth" => Numbers::divide(100, $total, 4),
         ]);
     }
 

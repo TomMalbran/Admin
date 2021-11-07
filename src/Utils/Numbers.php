@@ -59,9 +59,9 @@ class Numbers {
      * @param integer $number
      * @param integer $total
      * @param integer $decimals Optional.
-     * @return integer
+     * @return float
      */
-    public static function percent(int $number, int $total, int $decimals = 0): int {
+    public static function percent(int $number, int $total, int $decimals = 0): float {
         return $total == 0 ? 0 : self::round($number * 100 / $total, $decimals);
     }
 
@@ -70,9 +70,9 @@ class Numbers {
      * @param integer $numerator
      * @param integer $divisor
      * @param integer $decimals  Optional.
-     * @return integer
+     * @return float
      */
-    public static function divide(int $numerator, int $divisor, int $decimals = 0): int {
+    public static function divide(int $numerator, int $divisor, int $decimals = 0): float {
         return $divisor == 0 ? 0 : self::round($numerator / $divisor, $decimals);
     }
 
@@ -115,12 +115,12 @@ class Numbers {
      * Rounds the given number to the given decimals
      * @param float   $number
      * @param integer $decimals
-     * @return integer
+     * @return float
      */
-    public static function round(float $number, int $decimals): int {
+    public static function round(float $number, int $decimals): float {
         if (is_numeric($number)) {
             $padding = pow(10, $decimals);
-            return ceil($number * $padding) / $padding;
+            return round($number * $padding) / $padding;
         }
         return 0;
     }

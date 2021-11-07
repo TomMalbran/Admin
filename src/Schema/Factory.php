@@ -8,7 +8,6 @@ use Admin\Schema\Schema;
 use Admin\Schema\Structure;
 use Admin\Schema\Subrequest;
 use Admin\Schema\Migration;
-use Admin\Utils\Arrays;
 
 /**
  * The Schema Factory
@@ -37,11 +36,7 @@ class Factory {
         self::$db     = new Database($config);
 
         foreach ($adminData as $key => $data) {
-            if (!empty($internalData[$key])) {
-                self::$data[$key] = Arrays::extend($internalData[$key], $data);
-            } else {
-                self::$data[$key] = $data;
-            }
+            self::$data[$key] = $data;
         }
         foreach ($internalData as $key => $data) {
             if ($key == "slides" && !Admin::hasSlides()) {

@@ -34,8 +34,8 @@ class Router {
         if (self::$loaded) {
             return;
         }
-        $adminData    = Admin::loadData(Admin::RouteData, "admin");
         $internalData = Admin::loadData(Admin::RouteData, "internal");
+        $adminData    = Admin::loadData(Admin::RouteData, "admin");
 
         self::$loaded    = true;
         self::$namespace = Admin::Namespace;
@@ -43,6 +43,16 @@ class Router {
         self::$modules   = $internalData["modules"];
         self::$routes    = $internalData["routes"];
         self::$redirects = $internalData["redirects"];
+
+        if (!Admin::hasSlides()) {
+            self::removeRoute("/slides");
+        }
+        if (!Admin::hasPersonalize()) {
+            self::removeRoute("/personalize");
+        }
+        if (!Admin::hasContact()) {
+            self::removeRoute("/contacts");
+        }
 
         if (!empty($adminData["defaults"])) {
             self::$defaults = Arrays::extend(self::$defaults, $adminData["defaults"]);
@@ -58,13 +68,27 @@ class Router {
         }
     }
 
+    /**
+     * Removes a Route if it is not used
+     * @param string $route
+     * @return void
+     */
+    private static function removeRoute(string $route): void {
+        unset(self::$modules[$route]);
+        foreach (self::$routes as $path => $accessLevel) {
+            if (Strings::startsWith($path, $route)) {
+                unset(self::$routes[$path]);
+            }
+        }
+    }
+
 
 
     /**
      * Parses the url
      * @param string  $route
      * @param integer $accessLevel
-     * @return string
+     * @return mixed
      */
     public static function get(string $route, int $accessLevel) {
         self::load();
@@ -138,7 +162,7 @@ class Router {
      * @param string ...$routeParts
      * @return boolean
      */
-    public static function has(string ...$routeParts) {
+    public static function has(string ...$routeParts): bool {
         $parts = Arrays::toArray($routeParts);
         $route = implode("/", $parts);
         $route = $route[0] !== "/" ? "/$route" : $route;

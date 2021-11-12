@@ -113,6 +113,9 @@ class Contact {
         if ($options->hasCompany && $options->reqCompany && !$request->has("company")) {
             $errors->add("company");
         }
+        if ($options->hasSubject && $options->reqSubject && !$request->has("subject")) {
+            $errors->add("subject");
+        }
         if (!Mailer::isCaptchaValid($request)) {
             $errors->add("recaptcha");
         }
@@ -138,6 +141,7 @@ class Contact {
         $message .= $request->has("company") ? "<p>Empresa: {$request->company}</p>" : "";
         $message .= "<p>Email: {$request->email}.</p>";
         $message .= $request->has("phone") ? "<p>Teléfono: {$request->phone}</p>" : "";
+        $message .= $request->has("subject") ? "<p>Asunto: {$request->subject}</p>" : "";
         $message .= "<p>Mensaje:<br/>" . Strings::toHtml($request->message) . "</p>";
 
         return Mailer::sendContact($subject, $message);

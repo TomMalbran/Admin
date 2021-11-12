@@ -25,9 +25,10 @@
         "fields" : {
             "CONTACT_ID" : { "type" : "id",    "name" : "contactID" },
             "name"       : { "type" : "string"                      },
-            "company"    : { "type" : "string"                      },
             "email"      : { "type" : "string"                      },
+            "company"    : { "type" : "string"                      },
             "phone"      : { "type" : "string"                      },
+            "reason"     : { "type" : "string"                      },
             "message"    : { "type" : "text"                        }
         },
         "hasTimestamps" : true,

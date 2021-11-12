@@ -22,9 +22,19 @@ class Action {
         }
         $adminData    = Admin::loadData(Admin::ActionData, "admin");
         $internalData = Admin::loadData(Admin::ActionData, "internal");
+        $sections     = Admin::getSections();
 
         self::$loaded = true;
         self::$data   = Arrays::extend($internalData, $adminData);
+
+        foreach ($sections as $key => $section) {
+            if (!empty($section["actions"])) {
+                self::$data[$key] = [
+                    "name"   => $section["singular"],
+                    "action" => $section["actions"],
+                ];
+            }
+        }
     }
 
 

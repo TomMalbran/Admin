@@ -25,6 +25,7 @@ use Admin\Utils\Strings;
 class Admin {
 
     // The Data
+    const SectionData     = "sections";
     const RouteData       = "routes";
     const SchemaData      = "schemas";
     const KeyData         = "keys";
@@ -56,9 +57,10 @@ class Admin {
     const Namespace       = "App\\Controller\\";
 
     // Variables
-    private static $adminPath;
-    private static $internalPath;
-    private static $internalRoute;
+    private static $adminPath     = "";
+    private static $internalPath  = "";
+    private static $internalRoute = "";
+    private static $sections      = [];
 
 
     /**
@@ -80,12 +82,23 @@ class Admin {
         self::$internalPath  = dirname(__DIR__, 1);
         self::$internalRoute = Strings::replace(self::$internalPath, self::$adminPath, "");
 
+        if (self::dataExists(self::SectionData)) {
+            self::$sections = self::loadData(self::SectionData, "admin");
+        }
         if ($logErrors) {
             ErrorLog::init();
         }
     }
 
 
+
+    /**
+     * Returns the Section Options
+     * @return array
+     */
+    public static function getSections(): array {
+        return self::$sections;
+    }
 
     /**
      * Returns true if there are Slide Options

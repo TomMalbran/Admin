@@ -28,14 +28,25 @@ class Home {
      * @return array
      */
     private static function getActions(): array {
-        $items  = Admin::loadData(Admin::HomeData);
-        $result = [];
+        $items    = Admin::loadData(Admin::HomeData);
+        $sections = Admin::getSections();
+        $result   = [];
+
         foreach ($items as $item) {
             $result[] = [
                 "actionUrl"  => $item["url"],
                 "actionIcon" => $item["icon"],
                 "actionName" => $item["name"],
             ];
+        }
+        foreach ($sections as $section) {
+            if (!empty($section["home"])) {
+                $result[] = [
+                    "actionUrl"  => $section["url"],
+                    "actionIcon" => $section["icon"],
+                    "actionName" => $section["home"],
+                ];
+            }
         }
         return $result;
     }

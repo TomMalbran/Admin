@@ -36,6 +36,7 @@ class Router {
         }
         $internalData = Admin::loadData(Admin::RouteData, "internal");
         $adminData    = Admin::loadData(Admin::RouteData, "admin");
+        $sections     = Admin::getSections();
 
         self::$loaded    = true;
         self::$namespace = Admin::Namespace;
@@ -65,6 +66,16 @@ class Router {
         }
         if (!empty($adminData["redirects"])) {
             self::$redirects = Arrays::extend(self::$redirects, $adminData["redirects"]);
+        }
+
+        foreach ($sections as $section) {
+            if (!empty($section["routes"])) {
+                self::$modules["/{$section["url"]}"] = $section["module"];
+                foreach ($section["routes"] as $route => $accessLevel) {
+                    $path = "/{$section["url"]}/$route";
+                    self::$routes[$path] = $accessLevel;
+                }
+            }
         }
     }
 

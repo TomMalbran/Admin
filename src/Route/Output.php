@@ -125,8 +125,10 @@ class Output {
      * @return array
      */
     private static function getMenuItems(): array {
-        $items  = Admin::loadData(Admin::MenuData);
-        $result = [];
+        $items    = Admin::loadData(Admin::MenuData);
+        $sections = Admin::getSections();
+        $result   = [];
+
         foreach ($items as $item) {
             $subItems = [];
             if (!empty($item["items"])) {
@@ -145,6 +147,17 @@ class Output {
                 "menuName"   => $item["name"],
                 "hasSubmenu" => !empty($subItems),
                 "subItems"   => $subItems,
+            ];
+        }
+
+        foreach ($sections as $section) {
+            $result[] = [
+                "menuKey"    => $section["url"],
+                "menuUrl"    => $section["url"],
+                "menuIcon"   => $section["icon"],
+                "menuName"   => $section["name"],
+                "hasSubmenu" => false,
+                "subItems"   => [],
             ];
         }
         return $result;

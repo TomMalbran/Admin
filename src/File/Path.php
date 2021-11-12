@@ -20,9 +20,9 @@ class Path {
     const Temp   = "temp";
 
     private static $loaded   = false;
-    private static $data     = [];
-    private static $basePath = null;
-    private static $relPath  = null;
+    private static $basePath = "";
+    private static $relPath  = "";
+    private static $paths    = [];
 
 
     /**
@@ -34,9 +34,19 @@ class Path {
             return;
         }
         self::$loaded   = true;
-        self::$data     = Admin::loadData(Admin::PathData);
         self::$basePath = Admin::getFilesPath();
         self::$relPath  = Admin::getFilesRelPath();
+        self::$paths    = Admin::loadData(Admin::PathData);
+
+        $sections = Admin::getSections();
+        foreach ($sections as $section) {
+            if (!empty($section["path"])) {
+                self::$paths[] = $section["path"];
+            }
+        }
+        if (Admin::hasSlides()) {
+            self::$paths[] = "banners";
+        }
     }
 
     /**
@@ -59,8 +69,8 @@ class Path {
      */
     public static function getDirectories(): array {
         self::load();
-        if (!empty(self::$data)) {
-            return self::$data;
+        if (!empty(self::$paths)) {
+            return self::$paths;
         }
         return [];
     }

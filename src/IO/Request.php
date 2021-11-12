@@ -702,7 +702,7 @@ class Request implements ArrayAccess {
     }
 
     /**
-     * Returns true if the file at the given key is a valid image
+     * Returns true if the file at the given key is a valid Image
      * @param string $key
      * @return boolean
      */
@@ -711,6 +711,15 @@ class Request implements ArrayAccess {
             return Image::isValidType($_FILES[$key]["tmp_name"]);
         }
         return FileType::isImage($this->get($key));
+    }
+
+    /**
+     * Returns true if the file at the given key is a valid Video
+     * @param string $key
+     * @return boolean
+     */
+    public function isValidVideo(string $key): bool {
+        return FileType::isVideo($this->get($key));
     }
 
     /**
@@ -740,6 +749,26 @@ class Request implements ArrayAccess {
         }
         if ($this->has($key)) {
             if (!$this->isValidImage($key)) {
+                $error = "{$key}Type";
+            } elseif (!$this->fileExists($key)) {
+                $error = "{$key}Exists";
+            }
+        }
+    }
+
+    /**
+     * Validates a Video
+     * @param string  $key
+     * @param Errors  $errors
+     * @param boolean $isRequired Optional.
+     * @return void
+     */
+    public function validateVideo(string $key, Errors $errors, bool $isRequired = true): void {
+        if ($isRequired && !$this->has($key)) {
+            $errors->add("{$key}Empty");
+        }
+        if ($this->has($key)) {
+            if (!$this->isValidVideo($key)) {
                 $error = "{$key}Type";
             } elseif (!$this->fileExists($key)) {
                 $error = "{$key}Exists";

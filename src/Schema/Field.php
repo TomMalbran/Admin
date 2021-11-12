@@ -297,6 +297,7 @@ class Field {
             break;
         case self::Status:
             $result[$key]           = $number;
+            $result["isActive"]     = $number == Status::Active;
             $result["{$key}Name"]   = Status::getName($number);
             break;
         case self::FemStatus:

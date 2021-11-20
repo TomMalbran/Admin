@@ -302,6 +302,7 @@ class Field {
             break;
         case self::FemStatus:
             $result[$key]           = $number;
+            $result["isActive"]     = $number == Status::Active;
             $result["{$key}Name"]   = Status::getFemName($number);
             break;
         default:

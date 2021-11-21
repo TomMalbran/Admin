@@ -185,7 +185,7 @@ class Arrays {
      * @return array
      */
     public static function createMap(array $array, string $key, $value = null): array {
-        $result  = [];
+        $result = [];
         foreach ($array as $row) {
             $result[$row[$key]] = !empty($value) ? self::getValue($row, $value) : $row;
         }
@@ -193,7 +193,7 @@ class Arrays {
     }
 
     /**
-     * Creates an sub array using the given array
+     * Creates an array using the given array
      * @param array           $array
      * @param string|string[] $value Optional.
      * @return array
@@ -202,6 +202,27 @@ class Arrays {
         $result = [];
         foreach ($array as $row) {
             $result[] = !empty($value) ? self::getValue($row, $value) : $row;
+        }
+        return $result;
+    }
+
+    /**
+     * Creates a reduced array/map using the given array/map
+     * @param array           $array
+     * @param string|string[] ...$keys
+     * @return array
+     */
+    public static function reduceArray(array $array, ...$keys): array {
+        $result = [];
+        foreach ($array as $index => $row) {
+            $result[$index] = [];
+            foreach ($keys as $key) {
+                if (self::isArray($key)) {
+                    $result[$index][$key[1]] = $row[$key[0]];
+                } else {
+                    $result[$index][$key] = $row[$key];
+                }
+            }
         }
         return $result;
     }

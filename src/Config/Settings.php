@@ -128,6 +128,8 @@ class Settings {
                 if (!empty($value) && FileType::isImage($value)) {
                     $result[$section]["{$variable}Url"]   = Path::getUrl(Path::Source, $value);
                     $result[$section]["{$variable}Large"] = Path::getUrl(Path::Large,  $value);
+                } elseif (!empty($value) && FileType::isVideo($value)) {
+                    $result[$section]["{$variable}Url"]   = Path::getUrl(Path::Source, $value);
                 } elseif (!Numbers::isNumber($value)) {
                     $result[$section]["{$variable}Html"] = Strings::toHtml($value);
                 }
@@ -136,7 +138,7 @@ class Settings {
             }
         }
 
-        if (!empty($section)) {
+        if (!empty($section) && !empty($result[$section])) {
             return $result[$section];
         }
         return $result;

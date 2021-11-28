@@ -26,5 +26,15 @@
         {{#typeError}}<div class="result-error">El archivo debe ser de una imagen.</div>{{/typeError}}
         {{#existsError}}<div class="result-error">El archivo indicado no existe.</div>{{/existsError}}
         {{/isImage}}
+
+        {{#isVideo}}
+        <div class="file-container">
+            <input type="text" id="personalize-{{key}}" name="{{key}}" value="{{value}}" class="file-input {{#hasError}}error-input{{/hasError}}" />
+            <a href="{{url}}media?type=video" data-field="personalize-{{key}}" class="btn btn-primary media file-box">Seleccionar Video</a>
+        </div>
+        {{#emptyError}}<div class="result-error">Debe incluir un video.</div>{{/emptyError}}
+        {{#typeError}}<div class="result-error">El archivo debe ser de un video.</div>{{/typeError}}
+        {{#existsError}}<div class="result-error">El archivo indicado no existe.</div>{{/existsError}}
+        {{/isVideo}}
     </dd>
 </li>

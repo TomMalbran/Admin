@@ -67,6 +67,7 @@ class Personalize {
                     "isNumber"   => $option["type"] == "number",
                     "isTextarea" => $option["type"] == "textarea",
                     "isImage"    => $option["type"] == "image",
+                    "isVideo"    => $option["type"] == "video",
                     "value"      => !empty($settings[$key]) ? $settings[$key] : "",
                 ] + $option;
                 if (!empty($errors[$key])) {
@@ -121,15 +122,27 @@ class Personalize {
                 $key = $option["key"];
                 if ($option["isRequired"] && !$request->has($key)) {
                     $errors->add($key, "empty");
-                } elseif ($option["type"] == "image") {
-                    if (!$request->isValidImage($key)) {
-                        $errors->add($key, "type");
-                    } elseif (!$request->fileExists($key)) {
-                        $errors->add($key, "exists");
-                    }
-                } elseif ($option["type"] == "number") {
-                    if (!$request->isNumeric($key)) {
-                        $errors->add($key, "number");
+                } else {
+                    switch ($option["type"]) {
+                    case "image":
+                        if (!$request->isValidImage($key)) {
+                            $errors->add($key, "type");
+                        } elseif (!$request->fileExists($key)) {
+                            $errors->add($key, "exists");
+                        }
+                        break;
+                    case "video":
+                        if (!$request->isValidVideo($key)) {
+                            $errors->add($key, "type");
+                        } elseif (!$request->fileExists($key)) {
+                            $errors->add($key, "exists");
+                        }
+                        break;
+                    case "number":
+                        if (!$request->isNumeric($key)) {
+                            $errors->add($key, "number");
+                        }
+                        break;
                     }
                 }
             }

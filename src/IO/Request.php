@@ -790,9 +790,9 @@ class Request implements ArrayAccess {
         }
         if ($this->has($key)) {
             if (!empty($extensions) && !$this->hasExtension($key, $extensions)) {
-                $error = "{$key}Type";
+                $errors->add("{$key}Type");
             } elseif (!$this->fileExists($key)) {
-                $error = "{$key}Exists";
+                $errors->add("{$key}Exists");
             }
         }
     }
@@ -804,7 +804,7 @@ class Request implements ArrayAccess {
      */
     public function addFilter($filters) {
         if (!empty($filters)) {
-            $filters = Utils::toArray($filters);
+            $filters = Arrays::toArray($filters);
             foreach ($filters as $filter) {
                 $this->filters[] = $filter;
             }
@@ -847,7 +847,7 @@ class Request implements ArrayAccess {
      * @param mixed $value
      * @return void
      */
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value): void {
         $this->set($key, $value);
     }
 
@@ -856,7 +856,7 @@ class Request implements ArrayAccess {
      * @param mixed $key
      * @return boolean
      */
-    public function offsetExists($key) {
+    public function offsetExists($key): bool {
         return array_key_exists($key, $this->request);
     }
 
@@ -865,7 +865,7 @@ class Request implements ArrayAccess {
      * @param mixed $key
      * @return void
      */
-    public function offsetUnset($key) {
+    public function offsetUnset($key): void {
         unset($this->request[$key]);
     }
 }

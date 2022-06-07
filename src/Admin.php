@@ -6,7 +6,6 @@ use Admin\IO\Response;
 use Admin\Route\Router;
 use Admin\Route\Output;
 use Admin\Auth\Auth;
-use Admin\Auth\Access;
 use Admin\Auth\Credential;
 use Admin\Config\Config;
 use Admin\Config\Settings;
@@ -18,6 +17,7 @@ use Admin\Schema\Database;
 use Admin\Utils\JSON;
 use Admin\Utils\Server;
 use Admin\Utils\Strings;
+use Exception;
 
 /**
  * The Admin
@@ -216,7 +216,7 @@ class Admin {
      * Returns true if the Data File exists
      * @param string $file
      * @param string $type Optional.
-     * @return array
+     * @return boolean
      */
     public static function dataExists(string $file, string $type = "admin"): bool {
         $path = self::getPath(self::DataDir . "/$file.json", $type);
@@ -228,7 +228,7 @@ class Admin {
      * @param string  $file
      * @param string  $type    Optional.
      * @param boolean $asArray Optional.
-     * @return mixed
+     * @return object|array
      */
     public static function loadData(string $file, string $type = "admin", bool $asArray = true) {
         $path = self::getPath(self::DataDir . "/$file.json", $type);
@@ -245,7 +245,7 @@ class Admin {
      * @param string $type     Optional.
      * @return void
      */
-    public function saveData(string $file, $contents, string $type = "admin"): void {
+    public static function saveData(string $file, $contents, string $type = "admin"): void {
         $path = self::getPath(self::DataDir . "/$file.json", $type);
         JSON::writeFile($path, $contents);
     }

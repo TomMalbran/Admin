@@ -19,9 +19,8 @@ use Admin\Provider\Mailer;
  */
 class Contact {
 
-    private static $loaded  = false;
-    private static $schema  = null;
-    private static $options = null;
+    private static $loaded = false;
+    private static $schema = null;
 
 
     /**

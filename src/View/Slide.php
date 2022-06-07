@@ -8,7 +8,6 @@ use Admin\IO\Response;
 use Admin\IO\Errors;
 use Admin\IO\Status;
 use Admin\Schema\Factory;
-use Admin\Schema\Schema;
 use Admin\Schema\Query;
 use Admin\Log\ActionLog;
 use Admin\Utils\Arrays;
@@ -256,7 +255,7 @@ class Slide {
         $success = false;
         $slide   = self::$schema->getOne($slideID);
         if ($request->has("confirmed") && !$slide->isEmpty()) {
-            $query = Query::create("type", "=", $sldie->type);
+            $query = Query::create("type", "=", $slide->type);
             self::$schema->deleteWithOrder($slideID, $query);
             ActionLog::add("Slide", "Delete", $slideID);
             $success = true;

@@ -2,7 +2,6 @@
 namespace Admin\IO;
 
 use Admin\IO\Request;
-use Admin\IO\Response;
 use Admin\IO\Errors;
 use Admin\IO\Url;
 
@@ -22,8 +21,6 @@ class Navigation {
 
     private $pages      = [];
     private $totalPages = 0;
-    private $prevPage   = 0;
-    private $nextPage   = 0;
 
     private $filters    = [];
     private $extras     = [];

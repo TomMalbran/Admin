@@ -4,6 +4,7 @@ namespace Admin\Utils;
 use Admin\File\File;
 use Admin\Utils\Arrays;
 use Admin\Utils\Strings;
+
 use stdClass;
 
 /**
@@ -105,11 +106,11 @@ class JSON {
 
     /**
      * Writes a JSON File
-     * @param string          $file
+     * @param string          $path
      * @param string|string[] $contents
      * @return void
      */
-    public static function writeFile(string $file, $contents): void {
+    public static function writeFile(string $path, $contents): void {
         $value = Arrays::toArray($contents);
         file_put_contents($path, self::encode($value, true));
     }

@@ -608,7 +608,7 @@ class Database {
         }
         $sql .= "  PRIMARY KEY (" . Strings::join($primary, ", ") . ")";
         foreach ($keys as $key) {
-            $sql .= ",\n  KEY `$field->key` (`$field->key`)";
+            $sql .= ",\n  KEY `$key` (`$key`)";
         }
         $sql .= "\n) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
@@ -732,7 +732,7 @@ class Database {
             $fp,
             "# ========================================================= $crlf" .
             "# $crlf" .
-            "# Database dump of tables in `{$this->getName()}` $crlf" .
+            "# Database dump of tables in `{$this->database}` $crlf" .
             "# " . date("d M Y, H:i:s") . $crlf .
             "# $crlf" .
             "# ========================================================= $crlf" .

@@ -1,7 +1,8 @@
 <?php
-namespace Admin\Schema;
+namespace Admin\Log;
 
 use Admin\Admin;
+use Admin\Utils\Arrays;
 
 /**
  * The Action Data

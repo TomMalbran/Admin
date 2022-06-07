@@ -1,7 +1,6 @@
 <?php
 namespace Admin\Schema;
 
-use Admin\Schema\Field;
 use Admin\Utils\Arrays;
 
 /**
@@ -10,7 +9,6 @@ use Admin\Utils\Arrays;
 class Subrequest {
 
     private $schema;
-    private $structure;
 
     private $name     = "";
     private $idKey    = "";
@@ -35,7 +33,6 @@ class Subrequest {
      */
     public function __construct(Schema $schema, Structure $structure, array $data) {
         $this->schema    = $schema;
-        $this->structure = $structure;
 
         $this->name      = $data["name"];
         $this->idKey     = !empty($data["idKey"])   ? $data["idKey"]   : $structure->idKey;

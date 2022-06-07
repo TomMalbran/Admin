@@ -65,7 +65,7 @@ class Path {
 
     /**
      * Returns and loads the Directories
-     * @return string
+     * @return array
      */
     public static function getDirectories(): array {
         self::load();

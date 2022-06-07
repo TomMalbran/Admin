@@ -145,13 +145,13 @@ class Encoding {
             $buf = "";
 
             for ($i = 0; $i < $max; $i++) {
-                $c1 = $text{$i};
+                $c1 = $text[$i];
 
                 // Should be converted to UTF8, if it's not UTF8 already
-                if ($c1>="\xc0") {
-                    $c2 = $i+1 >= $max? "\x00" : $text{$i+1};
-                    $c3 = $i+2 >= $max? "\x00" : $text{$i+2};
-                    $c4 = $i+3 >= $max? "\x00" : $text{$i+3};
+                if ($c1 >= "\xc0") {
+                    $c2 = $i + 1 >= $max ? "\x00" : $text[$i + 1];
+                    $c3 = $i + 2 >= $max ? "\x00" : $text[$i + 2];
+                    $c4 = $i + 3 >= $max ? "\x00" : $text[$i + 3];
 
                     // looks like 2 bytes UTF8
                     if ($c1 >= "\xc0" & $c1 <= "\xdf") {
@@ -229,7 +229,11 @@ class Encoding {
             return $text;
         }
         if (is_string($text)) {
-            return utf8_decode(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), self::toUTF8($text)));
+            return utf8_decode(str_replace(
+                array_keys(self::$utf8ToWin1252),
+                array_values(self::$utf8ToWin1252),
+                self::toUTF8($text)
+            ));
         }
         return $text;
     }
@@ -268,9 +272,17 @@ class Encoding {
         $last = "";
         while ($last <> $text) {
             $last = $text;
-            $text = self::toUTF8(utf8_decode(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), $text)));
+            $text = self::toUTF8(utf8_decode(str_replace(
+                array_keys(self::$utf8ToWin1252),
+                array_values(self::$utf8ToWin1252),
+                $text
+            )));
         }
-        $text = self::toUTF8(utf8_decode(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), $text)));
+        $text = self::toUTF8(utf8_decode(str_replace(
+            array_keys(self::$utf8ToWin1252),
+            array_values(self::$utf8ToWin1252),
+            $text
+        )));
         return $text;
     }
 
@@ -283,8 +295,11 @@ class Encoding {
         // If you received an UTF-8 string that was converted from Windows-1252 as it was ISO8859-1
         // (ignoring Windows-1252 chars from 80 to 9F) use this function to fix it.
         // See: http://en.wikipedia.org/wiki/Windows-1252
-
-        return str_replace(array_keys(self::$brokenUtf8ToUtf8), array_values(self::$brokenUtf8ToUtf8), $text);
+        return str_replace(
+            array_keys(self::$brokenUtf8ToUtf8),
+            array_values(self::$brokenUtf8ToUtf8),
+            $text
+        );
     }
 
     /**

@@ -14,12 +14,12 @@ use Admin\Utils\Strings;
  */
 class Router {
 
+    const Namespace     = "App\\Controller\\";
     const DefaultAction = "getAll";
     const OneAction     = "getOne";
     const Param         = "{0}";
 
     private static $loaded    = false;
-    private static $namespace = "";
     private static $defaults  = [];
     private static $modules   = [];
     private static $routes    = [];
@@ -39,7 +39,6 @@ class Router {
         $sections     = Admin::getSections();
 
         self::$loaded    = true;
-        self::$namespace = Admin::Namespace;
         self::$defaults  = $internalData["defaults"];
         self::$modules   = $internalData["modules"];
         self::$routes    = $internalData["routes"];
@@ -234,7 +233,7 @@ class Router {
         if (Strings::startsWith($route->module, "\\")) {
             return call_user_func_array("{$route->module}::{$route->method}", $route->params);
         }
-        $instance = Container::bind(self::$namespace . $route->module);
+        $instance = Container::bind(self::Namespace . $route->module);
         return call_user_func_array([ $instance, $route->method ], $route->params);
     }
 }

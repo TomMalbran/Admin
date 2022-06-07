@@ -53,9 +53,6 @@ class Admin {
     const PartialsDir     = "partials";
     const MigrationsDir   = "data/migrations";
 
-    // Config
-    const Namespace       = "App\\Controller\\";
-
     // Variables
     private static $adminPath     = "";
     private static $internalPath  = "";

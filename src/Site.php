@@ -91,10 +91,10 @@ class Site {
     /**
      * Prints the Template
      * @param string $template
-     * @param array  $data
+     * @param array  $data     Optional.
      * @return void
      */
-    public static function print(string $template, array $data) {
+    public static function print(string $template, array $data = []) {
         $path    = Admin::getPath(Admin::PublicDir, "site");
         $content = array_merge([
             "title"     => Config::get("name"),

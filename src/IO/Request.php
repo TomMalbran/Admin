@@ -336,42 +336,6 @@ class Request implements ArrayAccess {
     }
 
     /**
-     * Returns true if the given domain is valid
-     * @param string $key
-     * @return boolean
-     */
-    public function isValidDomain(string $key): bool {
-        return Utils::isValidDomain($this->toDomain($key));
-    }
-
-    /**
-     * Returns true if the given name is valid
-     * @param string $key
-     * @return boolean
-     */
-    public function isValidName(string $key): bool {
-        return Utils::isValidName($this->get($key));
-    }
-
-    /**
-     * Returns true if the given CUIT is valid
-     * @param string $key
-     * @return boolean
-     */
-    public function isValidCUIT(string $key): bool {
-        return Utils::isValidCUIT($this->get($key));
-    }
-
-    /**
-     * Returns true if the given DNI is valid
-     * @param string $key
-     * @return boolean
-     */
-    public function isValidDNI(string $key): bool {
-        return Utils::isValidDNI($this->get($key));
-    }
-
-    /**
      * Returns true if the given Position is valid
      * @param string $key
      * @return boolean
@@ -539,33 +503,6 @@ class Request implements ArrayAccess {
      */
     public function toCSV(string $key): string {
         return CSV::encode($this->get($key));
-    }
-
-    /**
-     * Removes spaces and dashes in the CUIT
-     * @param string $key
-     * @return string
-     */
-    public function cuitToNumber(string $key): string {
-        return Utils::cuitToNumber($this->get($key));
-    }
-
-    /**
-     * Removes spaces and dashes in the DNI
-     * @param string $key
-     * @return string
-     */
-    public function dniToNumber(string $key): string {
-        return Utils::dniToNumber($this->get($key));
-    }
-
-    /**
-     * Parsea a Domain to try and return something like "domain.com"
-     * @param string $key
-     * @return string
-     */
-    public function toDomain(string $key): string {
-        return Utils::parseDomain($this->get($key));
     }
 
 

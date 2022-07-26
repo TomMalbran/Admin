@@ -99,8 +99,8 @@ class Site {
         $content = array_merge([
             "title"     => Config::get("name"),
             "url"       => Config::getUrl(),
-            "filesUrl"  => Path::getUrl(Path::Source),
             "libUrl"    => Config::getLibUrl(),
+            "filesUrl"  => Path::getUrl(Path::Source),
             "styles"    => Server::isLocalHost() ? "main.css" : "build.min.css",
             "recaptcha" => Config::get("recaptchaKey"),
             "year"      => date("Y"),

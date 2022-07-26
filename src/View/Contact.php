@@ -19,30 +19,25 @@ use Admin\Provider\Mailer;
  */
 class Contact {
 
-    private static $loaded = false;
-    private static $schema = null;
 
 
     /**
-     * Loads the Contacts Schema
-     * @return Schema
      */
-    public static function getSchema(): Schema {
-        if (!self::$loaded) {
-            self::$loaded = false;
-            self::$schema = Factory::getSchema("contacts");
         }
-        return self::$schema;
     }
 
     /**
      * Returns the Contact Options
      * @param boolean $asArray Optional.
      * @return mixed
+     * Returns the Contacts Schema
+     * @return Schema
      */
     private static function getOptions(bool $asArray = true) {
         $data = Admin::loadData(Admin::ContactData, "admin", $asArray);
         return $asArray ? $data["options"] : $data->options;
+    private static function schema(): Schema {
+        return Factory::getSchema("contacts");
     }
 
     /**
@@ -65,9 +60,8 @@ class Contact {
         $query      = Query::createOrderBy("createdTime", false);
         $query->limit($navigation->from, $navigation->to);
 
-        $schema = self::getSchema();
-        $list   = $schema->getAll($query);
-        $total  = $schema->getTotal();
+        $list  = self::schema()->getAll($query);
+        $total = self::schema()->getTotal();
         $navigation->setData($list, $total);
 
         return self::getView()->navigation("main", $navigation);
@@ -80,8 +74,8 @@ class Contact {
      * @return Response
      */
     public static function getOne(int $contactID, Request $request): Response {
-        $contact = self::getSchema()->getOne($contactID);
         return self::getView()->create("view", $request, [], $contact);
+        $contact = self::schema()->getOne($contactID);
     }
 
 
@@ -93,7 +87,6 @@ class Contact {
      */
     public static function create(Request $request): Response {
         $options = self::getOptions(false);
-        $schema  = self::getSchema();
         $errors  = new Errors();
 
         if (!$request->has("name")) {
@@ -123,7 +116,7 @@ class Contact {
             return Response::errors($errors);
         }
 
-        $schema->create($request);
+        self::schema()->create($request);
         self::send($request);
         return Response::success("contact");
     }
@@ -154,7 +147,7 @@ class Contact {
      */
     public static function delete(int $contactID, Request $request): Response {
         $success = false;
-        if ($request->has("confirmed") && self::getSchema()->delete($contactID)) {
+        if ($request->has("confirmed") && self::schema()->delete($contactID)) {
             ActionLog::add("Contact", "Delete", $contactID);
             $success = true;
         }

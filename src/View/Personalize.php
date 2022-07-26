@@ -117,7 +117,6 @@ class Personalize {
         $errors = new Errors();
 
         foreach (self::$sections as $section) {
-            $isFirst = true;
             foreach ($section["options"] as $option) {
                 $key = $option["key"];
                 if ($option["isRequired"] && !$request->has($key)) {

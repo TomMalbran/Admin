@@ -18,6 +18,7 @@ class Factory {
     private static $db         = null;
     private static $data       = [];
     private static $structures = [];
+    private static $schemas    = [];
 
 
     /**
@@ -63,9 +64,12 @@ class Factory {
         if (empty(self::$data[$key])) {
             return null;
         }
-        $structure  = self::getStructure($key);
-        $subrequest = self::getSubrequest($key);
-        return new Schema(self::$db, $structure, $subrequest);
+        if (empty(self::$schemas[$key])) {
+            $structure  = self::getStructure($key);
+            $subrequest = self::getSubrequest($key);
+            self::$schemas[$key] = new Schema(self::$db, $structure, $subrequest);
+        }
+        return self::$schemas[$key];
     }
 
     /**

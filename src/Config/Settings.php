@@ -19,20 +19,12 @@ use Admin\Utils\Strings;
  */
 class Settings {
 
-    private static $loaded = false;
-    private static $schema = null;
-
-
     /**
      * Loads the Settings Schemas
      * @return Schema
      */
-    public static function getSchema(): Schema {
-        if (!self::$loaded) {
-            self::$loaded = true;
-            self::$schema = Factory::getSchema("settings");
-        }
-        return self::$schema;
+    private static function schema(): Schema {
+        return Factory::getSchema("settings");
     }
 
 
@@ -46,7 +38,7 @@ class Settings {
     public static function get(string $section, string $variable) {
         $query = Query::create("section", "=", $section);
         $query->add("variable", "=", $variable);
-        $model = self::getSchema()->getOne($query);
+        $model = self::schema()->getOne($query);
         if (!$model->isEmpty()) {
             return SettingType::parseValue($model);
         }
@@ -76,7 +68,7 @@ class Settings {
      */
     private static function getSettings(string $section = null): array {
         $query = Query::createIf("section", "=", $section);
-        return self::getSchema()->getAll($query);
+        return self::schema()->getAll($query);
     }
 
     /**
@@ -193,7 +185,7 @@ class Settings {
         }
 
         if (!empty($batch)) {
-            self::$schema->batch($batch);
+            self::schema()->batch($batch);
         }
     }
 

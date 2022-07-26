@@ -14,8 +14,6 @@ use Admin\Utils\Strings;
  */
 class ErrorLog {
 
-    private static $loaded       = false;
-    private static $schema       = null;
     private static $internalPath = "";
     private static $adminPath    = "";
     private static $maxLog       = 1000;
@@ -32,15 +30,11 @@ class ErrorLog {
     }
 
     /**
-     * Loads the Error Schema
+     * Returns the Errors Schema
      * @return Schema
      */
-    public static function getSchema(): Schema {
-        if (!self::$loaded) {
-            self::$loaded = false;
-            self::$schema = Factory::getSchema("logErrors");
-        }
-        return self::$schema;
+    private static function schema(): Schema {
+        return Factory::getSchema("logErrors");
     }
 
 
@@ -51,7 +45,7 @@ class ErrorLog {
      * @return Model
      */
     public static function getOne(int $errorID): Model {
-        return self::getSchema()->getOne($errorID);
+        return self::schema()->getOne($errorID);
     }
 
     /**
@@ -60,7 +54,7 @@ class ErrorLog {
      * @return boolean
      */
     public static function exists(int $errorID): bool {
-        return self::getSchema()->exists($errorID);
+        return self::schema()->exists($errorID);
     }
 
 
@@ -87,7 +81,7 @@ class ErrorLog {
      */
     public static function filter(Request $filters, Request $sort): array {
         $query = self::getFilterQuery($filters);
-        return self::getSchema()->getAll($query, $sort);
+        return self::schema()->getAll($query, $sort);
     }
 
     /**
@@ -97,7 +91,7 @@ class ErrorLog {
      */
     public static function getTotal(Request $filters): int {
         $query = self::getFilterQuery($filters);
-        return self::getSchema()->getTotal($query);
+        return self::schema()->getTotal($query);
     }
 
     /**
@@ -106,7 +100,7 @@ class ErrorLog {
      * @return boolean
      */
     public static function markResolved(int $errorID): bool {
-        $schema = self::getSchema();
+        $schema = self::schema();
         if ($schema->exists($errorID)) {
             $schema->edit($errorID, [
                 "isResolved" => 1,
@@ -128,7 +122,7 @@ class ErrorLog {
      */
     public static function handler(int $code, string $description, string $file = "", int $line = 0): bool {
         [ $error, $level ] = self::mapErrorCode($code);
-        $schema      = self::getSchema();
+        $schema      = self::schema();
         $description = Strings::replace($description, [ "'", "`" ], "");
 
         if (Strings::contains($file, self::$internalPath)) {

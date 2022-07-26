@@ -107,6 +107,7 @@ class Structure {
         $idKey        = "";
         $primaryCount = 0;
         $reqMasterkey = false;
+
         foreach ($data["fields"] as $key => $value) {
             if ($value["type"] == Field::ID) {
                 $data["fields"][$key]["isPrimary"] = true;

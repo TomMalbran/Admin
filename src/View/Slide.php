@@ -8,6 +8,7 @@ use Admin\IO\Response;
 use Admin\IO\Errors;
 use Admin\IO\Status;
 use Admin\Schema\Factory;
+use Admin\Schema\Schema;
 use Admin\Schema\Query;
 use Admin\Log\ActionLog;
 use Admin\Utils\Arrays;
@@ -19,7 +20,6 @@ use Admin\Utils\Numbers;
 class Slide {
 
     private static $loaded   = false;
-    private static $schema   = null;
     private static $options  = null;
     private static $useTabs  = false;
     private static $mainType = "";
@@ -29,16 +29,25 @@ class Slide {
      * Loads the Data
      * @return void
      */
-    public static function load() {
+    private static function load() {
         if (self::$loaded) {
             return;
         }
         self::$loaded   = true;
-        self::$schema   = Factory::getSchema("slides");
         self::$options  = Admin::loadData(Admin::SlideData, "admin", true);
         self::$useTabs  = Arrays::length(self::$options) > 1;
         self::$mainType = Arrays::getFirstKey(self::$options);
     }
+
+    /**
+     * Returns the Slides Schema
+     * @return Schema
+     */
+    private static function schema(): Schema {
+        return Factory::getSchema("slides");
+    }
+
+
 
     /**
      * Creates a list of tabs
@@ -85,7 +94,7 @@ class Slide {
      */
     public static function getAll(Request $request): Response {
         self::load();
-        $slides = self::$schema->getAll();
+        $slides = self::schema()->getAll();
         $tabs   = self::getTabs(self::$mainType);
         $lists  = [];
 
@@ -119,7 +128,7 @@ class Slide {
         $query = Query::create("status", "=", Status::Active);
         $query->add("type", "=", !empty($type) ? $type : self::$mainType);
 
-        $list  = self::$schema->getAll($query);
+        $list  = self::schema()->getAll($query);
         $total = count($list);
 
         return Response::json([
@@ -138,7 +147,7 @@ class Slide {
      */
     public static function getOne(int $slideID, Request $request): Response {
         self::load();
-        $slide = self::$schema->getOne($slideID);
+        $slide = self::schema()->getOne($slideID);
         return self::getView()->create("view", $request, [], $slide);
     }
 
@@ -165,7 +174,7 @@ class Slide {
      */
     public static function edit(int $slideID, Request $request): Response {
         self::load();
-        $slide = self::$schema->getOne($slideID);
+        $slide = self::schema()->getOne($slideID);
         return self::getView()->create("edit", $request, [
             "isEdit"   => true,
             "type"     => $slide->type,
@@ -189,7 +198,7 @@ class Slide {
         $options = self::getOptions($type, true);
         $errors  = new Errors();
 
-        if ($isEdit && !self::$schema->exists($slideID)) {
+        if ($isEdit && !self::schema()->exists($slideID)) {
             $errors->add("exists");
         } else {
             if (!$request->has("name")) {
@@ -235,10 +244,10 @@ class Slide {
 
         $query = Query::create("type", "=", $type);
         if (!$isEdit) {
-            $slideID = self::$schema->createWithOrder($request, null, $query);
+            $slideID = self::schema()->createWithOrder($request, null, $query);
             ActionLog::add("Slide", "Create", $slideID);
         } else {
-            self::$schema->editWithOrder($slideID, $request, null, $query);
+            self::schema()->editWithOrder($slideID, $request, null, $query);
             ActionLog::add("Slide", "Edit", $slideID);
         }
         return self::getView()->edit($request, $isEdit, $slideID);
@@ -253,10 +262,10 @@ class Slide {
     public static function delete(int $slideID, Request $request): Response {
         self::load();
         $success = false;
-        $slide   = self::$schema->getOne($slideID);
+        $slide   = self::schema()->getOne($slideID);
         if ($request->has("confirmed") && !$slide->isEmpty()) {
             $query = Query::create("type", "=", $slide->type);
-            self::$schema->deleteWithOrder($slideID, $query);
+            self::schema()->deleteWithOrder($slideID, $query);
             ActionLog::add("Slide", "Delete", $slideID);
             $success = true;
         }

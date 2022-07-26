@@ -11,20 +11,12 @@ use Admin\Utils\Strings;
  */
 class Reset {
 
-    private static $loaded = false;
-    private static $schema = null;
-
-
     /**
-     * Loads the Reset Schema
+     * Returns the Reset Schema
      * @return Schema
      */
-    public static function getSchema(): Schema {
-        if (!self::$loaded) {
-            self::$loaded = false;
-            self::$schema = Factory::getSchema("resets");
-        }
-        return self::$schema;
+    private static function schema(): Schema {
+        return Factory::getSchema("resets");
     }
 
 
@@ -36,7 +28,7 @@ class Reset {
      */
     public static function getCredentialID(string $code): int {
         $query = Query::create("code", "=", $code);
-        return self::getSchema()->getValue($query, "CREDENTIAL_ID");
+        return self::schema()->getValue($query, "CREDENTIAL_ID");
     }
 
     /**
@@ -46,7 +38,7 @@ class Reset {
      */
     public static function codeExists(string $code): bool {
         $query = Query::create("code", "=", trim($code));
-        return self::getSchema()->exists($query);
+        return self::schema()->exists($query);
     }
 
 
@@ -58,7 +50,7 @@ class Reset {
      */
     public static function create(int $credentialID): string {
         $code = Strings::randomCode(6, "ud");
-        self::getSchema()->replace([
+        self::schema()->replace([
             "CREDENTIAL_ID" => $credentialID,
             "code"          => $code,
             "time"          => time(),
@@ -73,7 +65,7 @@ class Reset {
      */
     public static function delete(int $credentialID): bool {
         $query = Query::create("CREDENTIAL_ID", "=", $credentialID);
-        return self::getSchema()->remove($query);
+        return self::schema()->remove($query);
     }
 
     /**
@@ -82,6 +74,6 @@ class Reset {
      */
     public static function deleteOld(): bool {
         $query = Query::create("time", "<", time() - 900);
-        return self::getSchema()->remove($query);
+        return self::schema()->remove($query);
     }
 }

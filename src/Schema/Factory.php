@@ -3,6 +3,7 @@ namespace Admin\Schema;
 
 use Admin\Admin;
 use Admin\Config\Config;
+use Admin\View\Contact;
 use Admin\Schema\Database;
 use Admin\Schema\Schema;
 use Admin\Schema\Structure;
@@ -43,8 +44,11 @@ class Factory {
             if ($key == "slides" && !Admin::hasSlides()) {
                 continue;
             }
-            if ($key == "contacts" && !Admin::hasContact()) {
-                continue;
+            if ($key == "contacts") {
+                if (!Admin::hasContact()) {
+                    continue;
+                }
+                $data["fields"] = Contact::getFields($data["fields"]);
             }
             if (empty($adminData[$key])) {
                 self::$data[$key] = $data;

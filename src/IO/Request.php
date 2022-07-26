@@ -10,6 +10,7 @@ use Admin\File\Image;
 use Admin\Utils\Arrays;
 use Admin\Utils\DateTime;
 use Admin\Utils\Numbers;
+use Admin\Utils\Strings;
 use Admin\Utils\CSV;
 use Admin\Utils\JSON;
 use Admin\Utils\Utils;
@@ -482,7 +483,7 @@ class Request implements ArrayAccess {
     }
 
     /**
-     * Converts the request data on the given key to binary
+     * Returns the requested data as a binary
      * @param string  $key
      * @param integer $default Optional.
      * @return integer
@@ -492,7 +493,7 @@ class Request implements ArrayAccess {
     }
 
     /**
-     * Returns the given number as an integer using the given decimals
+     * Returns the requested number as an integer using the given decimals
      * @param string  $key
      * @param integer $decimals
      * @return integer
@@ -502,7 +503,7 @@ class Request implements ArrayAccess {
     }
 
     /**
-     * Returns the given price in Cents
+     * Returns the requested price in cents
      * @param string  $key
      * @param integer $index Optional.
      * @return integer
@@ -513,7 +514,17 @@ class Request implements ArrayAccess {
     }
 
     /**
-     * Returns the given array encoded as JSON
+     * Returns the requested string as html
+     * @param string $key
+     * @param string $default Optional.
+     * @return string
+     */
+    public function toHtml(string $key, string $default = ""): string {
+        return Strings::toHtml($this->getString($key, $default));
+    }
+
+    /**
+     * Returns the requested array encoded as JSON
      * @param string $key
      * @return string
      */
@@ -522,7 +533,7 @@ class Request implements ArrayAccess {
     }
 
     /**
-     * Returns the given array encoded as JSON
+     * Returns the requested array encoded as CSV
      * @param string $key
      * @return string
      */

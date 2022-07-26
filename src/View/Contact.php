@@ -9,8 +9,10 @@ use Admin\IO\Errors;
 use Admin\IO\Navigation;
 use Admin\Schema\Factory;
 use Admin\Schema\Schema;
+use Admin\Schema\Field;
 use Admin\Schema\Query;
 use Admin\Log\ActionLog;
+use Admin\Utils\Arrays;
 use Admin\Utils\Strings;
 use Admin\Provider\Mailer;
 
@@ -19,23 +21,35 @@ use Admin\Provider\Mailer;
  */
 class Contact {
 
-
-
     /**
+     * Returns the Contacts Data
+     * @return mixed
      */
-        }
+    private static function getData() {
+        return Admin::loadData(Admin::ContactData, "admin", false);
     }
 
     /**
-     * Returns the Contact Options
-     * @param boolean $asArray Optional.
-     * @return mixed
+     * Returns the Contacts Schema Fields
+     * @param array $fields
+     * @return array
+     */
+    public static function getFields(array $fields) {
+        $data = Contact::getData();
+        foreach ($data->fields as $key => $field) {
+            $fields[$key] = [
+                "type" => !empty($field->type) ? $field->type : Field::String,
+            ];
+        }
+        return $fields;
+    }
+
+
+
+    /**
      * Returns the Contacts Schema
      * @return Schema
      */
-    private static function getOptions(bool $asArray = true) {
-        $data = Admin::loadData(Admin::ContactData, "admin", $asArray);
-        return $asArray ? $data["options"] : $data->options;
     private static function schema(): Schema {
         return Factory::getSchema("contacts");
     }
@@ -74,8 +88,19 @@ class Contact {
      * @return Response
      */
     public static function getOne(int $contactID, Request $request): Response {
-        return self::getView()->create("view", $request, [], $contact);
+        $data    = self::getData();
         $contact = self::schema()->getOne($contactID);
+        $fields  = [];
+
+        foreach ($data->fields as $key => $field) {
+            $fields[] = [
+                "name"  => $field->name,
+                "value" => $contact->get($key),
+            ];
+        }
+        return self::getView()->create("view", $request, [
+            "fields" => $fields,
+        ], $contact);
     }
 
 
@@ -86,8 +111,8 @@ class Contact {
      * @return Response
      */
     public static function create(Request $request): Response {
-        $options = self::getOptions(false);
-        $errors  = new Errors();
+        $data   = self::getData();
+        $errors = new Errors();
 
         if (!$request->has("name")) {
             $errors->add("name");
@@ -95,20 +120,16 @@ class Contact {
         if (!$request->has("email") || !$request->isValidEmail("email")) {
             $errors->add("email");
         }
-        if (!$request->has("message")) {
-            $errors->add("message");
+
+        foreach ($data->fields as $key => $field) {
+            if ($field->isRequired && !$request->has($key)) {
+                $errors->add($key);
+            } elseif (!empty($field->options) && !Arrays::contains($field->options, $request->get($key))) {
+                $errors->add($key);
+            }
         }
 
-        if ($options->hasPhone && $options->reqPhone && !$request->has("phone")) {
-            $errors->add("phone");
-        }
-        if ($options->hasCompany && $options->reqCompany && !$request->has("company")) {
-            $errors->add("company");
-        }
-        if ($options->hasSubject && $options->reqSubject && !$request->has("subject")) {
-            $errors->add("subject");
-        }
-        if (!Mailer::isCaptchaValid($request)) {
+        if ($data->hasCaptcha && !Mailer::isCaptchaValid($request)) {
             $errors->add("recaptcha");
         }
 
@@ -127,14 +148,19 @@ class Contact {
      * @return boolean
      */
     private static function send(Request $request) {
+        $data     = self::getData();
+
         $subject  = "Contacto en {{name}}";
         $message  = "<p>Han enviado un mensaje con los datos:</p>";
         $message .= "<p>Nombre y Apellido: {$request->name}</p>";
-        $message .= $request->has("company") ? "<p>Empresa: {$request->company}</p>" : "";
-        $message .= "<p>Email: {$request->email}.</p>";
-        $message .= $request->has("phone") ? "<p>Teléfono: {$request->phone}</p>" : "";
-        $message .= $request->has("subject") ? "<p>Asunto: {$request->subject}</p>" : "";
-        $message .= "<p>Mensaje:<br/>" . Strings::toHtml($request->message) . "</p>";
+        $message .= "<p>Email: {$request->email}</p>";
+
+        foreach ($data->fields as $key => $field) {
+            if ($request->has($key)) {
+                $value    = $request->toHtml($key);
+                $message .= "<p>{$field->name}: {$value}</p>";
+            }
+        }
 
         return Mailer::sendContact($subject, $message);
     }

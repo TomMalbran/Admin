@@ -10,32 +10,20 @@
             <dt><label>Nombre</label></dt>
             <dd>{{name}}</dd>
         </li>
-        {{#company}}
-        <li>
-            <dt><label>Empresa</label></dt>
-            <dd>{{company}}</dd>
-        </li>
-        {{/company}}
         <li>
             <dt><label>Email</label></dt>
             <dd>{{email}}</dd>
         </li>
-        {{#phone}}
+
+        {{#fields}}
+        {{#value}}
         <li>
-            <dt><label>Teléfono</label></dt>
-            <dd>{{phone}}</dd>
+            <dt><label>{{name}}</label></dt>
+            <dd>{{value}}</dd>
         </li>
-        {{/phone}}
-        {{#subject}}
-        <li>
-            <dt><label>Asunto</label></dt>
-            <dd>{{subject}}</dd>
-        </li>
-        {{/subject}}
-        <li>
-            <dt><label>Mensaje</label></dt>
-            <dd>{{{messageHtml}}}</dd>
-        </li>
+        {{/value}}
+        {{/fields}}
+
         <li>
             <dt><label>Enviado el</label></dt>
             <dd>{{createdTimeFull}}</dd>

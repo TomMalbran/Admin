@@ -5,6 +5,7 @@ use Admin\Admin;
 use Admin\IO\Response;
 use Admin\Auth\Auth;
 use Admin\Config\Config;
+use Admin\File\File;
 use Admin\Provider\Mustache;
 use Admin\Utils\JSON;
 
@@ -98,6 +99,7 @@ class Output {
             "hasSlides"       => Admin::hasSlides(),
             "hasPersonalize"  => Admin::hasPersonalize(),
             "hasContact"      => Admin::hasContact(),
+            "hasStyles"       => File::exists(Config::getPublicUrl("styles/main.css")),
             "menuItems"       => $forBody ? self::getMenuItems() : [],
             "isMenuSel"       => function ($val) use ($response) {
                 return $val == $response->mainMenu ? "menu-item-selected" : "";

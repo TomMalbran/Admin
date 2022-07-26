@@ -6,7 +6,7 @@
         <meta name="theme-color" content="#282644">
         <title>{{siteName}}</title>
         <link rel="stylesheet" type="text/css" href="{{internalUrl}}styles/build.min.css" />
-        <link rel="stylesheet" type="text/css" href="{{publicUrl}}styles/main.css" />
+        {{#hasStyles}}<link rel="stylesheet" type="text/css" href="{{publicUrl}}styles/main.css" />{{/hasStyles}}
     </head>
     <body>
         <noscript>

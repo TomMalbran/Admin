@@ -47,12 +47,12 @@ class Settings {
 
     /**
      * Returns a single Setting as an Integer
+     * @param string $section
      * @param string $variable
-     * @param string $section  Optional.
      * @return integer
      */
-    public static function getInt(string $variable, string $section = "general"): int {
-        $result = self::get($variable, $section);
+    public static function getInt(string $section, string $variable): int {
+        $result = self::get($section, $variable);
         if ($result !== null) {
             return (int)$result;
         }
@@ -159,6 +159,21 @@ class Settings {
 
 
     /**
+     * Sets the given Settings
+     * @param string $section
+     * @param string $variable
+     * @param mixed  $value
+     * @return void
+     */
+    public static function set(string $section, string $variable, $value): void {
+        $query = Query::create("section", "=", $section);
+        $query->add("variable", "=", $variable);
+        self::schema()->edit($query, [
+            "value" => $value,
+        ]);
+    }
+
+    /**
      * Saves the given Settings if those are already on the DB
      * @param array $data
      * @return void
@@ -207,13 +222,10 @@ class Settings {
 
     /**
      * Migrates the Settings
-     * @param Database $db
      * @return void
      */
-    public static function migrate(Database $db): void {
-        if (!$db->hasTable("settings")) {
-            return;
-        }
+    public static function migrate(): void {
+        $db           = Factory::getDatabase();
         $adminData    = Admin::loadData(Admin::SettingsData, "admin");
         $internalData = Admin::loadData(Admin::SettingsData, "internal");
         $settings     = Arrays::extend($internalData, $adminData);

@@ -2,8 +2,8 @@
 namespace Admin\Schema;
 
 use Admin\Admin;
-use Admin\Config\CoreSetting;
-use Admin\Schema\Database;
+use Admin\Config\Settings;
+use Admin\Schema\Factory;
 use Admin\Schema\Structure;
 use Admin\File\File;
 use Admin\Utils\Arrays;
@@ -14,15 +14,19 @@ use Admin\Utils\Strings;
  */
 class Migration {
 
+    private static $db = null;
+
+
     /**
      * Migrates the Tables
-     * @param Database $db
-     * @param array    $schemas
-     * @param boolean  $canDelete Optional.
+     * @param boolean $canDelete Optional.
      * @return void
      */
-    public static function migrate(Database $db, array $schemas, bool $canDelete = false): void {
-        $tableNames  = $db->getTables(null, false);
+    public static function migrate(bool $canDelete = false): void {
+        self::$db = Factory::getDatabase();
+
+        $schemas     = Factory::getSchemas();
+        $tableNames  = self::$db->getTables(null, false);
         $schemaNames = [];
 
         // Create or update the Tables
@@ -31,26 +35,25 @@ class Migration {
             $schemaNames[] = $structure->table;
 
             if (!Arrays::contains($tableNames, $structure->table)) {
-                self::createTable($db, $structure);
+                self::createTable($structure);
             } else {
-                self::updateTable($db, $structure, $canDelete);
+                self::updateTable($structure, $canDelete);
             }
         }
 
         // Delete the Tables or show which to delete
-        self::deleteTables($db, $tableNames, $schemaNames, $canDelete);
+        self::deleteTables($tableNames, $schemaNames, $canDelete);
 
         // Run extra migrations created in files
-        self::extraMigrations($db);
+        self::extraMigrations();
     }
 
     /**
      * Creates a New Table
-     * @param Database  $db
      * @param Structure $structure
      * @return void
      */
-    private static function createTable(Database $db, Structure $structure): void {
+    private static function createTable(Structure $structure): void {
         $fields  = [];
         $primary = [];
         $keys    = [];
@@ -65,25 +68,24 @@ class Migration {
             }
         }
 
-        $sql = $db->createTable($structure->table, $fields, $primary, $keys);
+        $sql = self::$db->createTable($structure->table, $fields, $primary, $keys);
         print("<br>Created table <b>$structure->table</b> ... <br>");
         print(Strings::toHtml($sql) . "<br><br>");
     }
 
     /**
      * Delete the Tables or show which to delete
-     * @param Database $db
-     * @param array    $tableNames
-     * @param array    $schemaNames
-     * @param boolean  $canDelete
+     * @param array   $tableNames
+     * @param array   $schemaNames
+     * @param boolean $canDelete
      * @return void
      */
-    private static function deleteTables(Database $db, array $tableNames, array $schemaNames, bool $canDelete): void {
+    private static function deleteTables(array $tableNames, array $schemaNames, bool $canDelete): void {
         $prebr = "<br>";
         foreach ($tableNames as $tableName) {
             if (!Arrays::contains($schemaNames, $tableName)) {
                 if ($canDelete) {
-                    $db->deleteTable($tableName);
+                    self::$db->deleteTable($tableName);
                     print("{$prebr}Deleted table <i>$tableName</i><br>");
                 } else {
                     print("{$prebr}Delete table <i>$tableName</i> (manually)<br>");
@@ -95,15 +97,14 @@ class Migration {
 
     /**
      * Updates the Table
-     * @param Database  $db
      * @param Structure $structure
      * @param boolean   $canDelete
      * @return void
      */
-    private static function updateTable(Database $db, Structure $structure, bool $canDelete): void {
-        $primaryKeys = $db->getPrimaryKeys($structure->table);
-        $tableKeys   = $db->getTableKeys($structure->table);
-        $tableFields = $db->getTableFields($structure->table);
+    private static function updateTable(Structure $structure, bool $canDelete): void {
+        $primaryKeys = self::$db->getPrimaryKeys($structure->table);
+        $tableKeys   = self::$db->getTableKeys($structure->table);
+        $tableFields = self::$db->getTableFields($structure->table);
         $update      = false;
         $adds        = [];
         $drops       = [];
@@ -223,27 +224,27 @@ class Migration {
         // Update the Table
         print("<br>Updated table <b>$structure->table</b> ... <br>");
         foreach ($adds as $add) {
-            $sql = $db->addColumn($structure->table, $add["key"], $add["type"], $add["after"]);
+            $sql = self::$db->addColumn($structure->table, $add["key"], $add["type"], $add["after"]);
             print("$sql<br>");
         }
         foreach ($renames as $rename) {
-            $sql = $db->renameColumn($structure->table, $rename["key"], $rename["new"], $rename["type"]);
+            $sql = self::$db->renameColumn($structure->table, $rename["key"], $rename["new"], $rename["type"]);
             print("$sql<br>");
         }
         foreach ($modifies as $modify) {
-            $sql = $db->updateColumn($structure->table, $modify["key"], $modify["type"]);
+            $sql = self::$db->updateColumn($structure->table, $modify["key"], $modify["type"]);
             print("$sql<br>");
         }
         foreach ($drops as $drop) {
-            $sql = $db->deleteColumn($structure->table, $drop, $canDelete);
+            $sql = self::$db->deleteColumn($structure->table, $drop, $canDelete);
             print($sql . (!$canDelete ? " (manually)" : "") . "<br>");
         }
         foreach ($keys as $key) {
-            $sql = $db->createIndex($structure->table, $key);
+            $sql = self::$db->createIndex($structure->table, $key);
             print("$sql<br>");
         }
         if ($addPrimary) {
-            $sql = $db->updatePrimary($structure->table, $primary);
+            $sql = self::$db->updatePrimary($structure->table, $primary);
             print("$sql<br>");
         }
         print("<br>");
@@ -253,11 +254,10 @@ class Migration {
 
     /**
      * Runs extra Migrations
-     * @param Database $db
      * @return void
      */
-    private static function extraMigrations(Database $db) {
-        $migration = CoreSetting::get($db, CoreSetting::Migration);
+    private static function extraMigrations() {
+        $migration = Settings::getInt("lastMigration", "core");
         $path      = Admin::getPath(Admin::MigrationsDir);
 
         if (!File::exists($path)) {
@@ -285,10 +285,10 @@ class Migration {
         foreach ($names as $name) {
             if ($name >= $first) {
                 include_once("$path/$name.php");
-                call_user_func("migration$name", $db);
+                call_user_func("migration$name", self::$db);
             }
         }
 
-        CoreSetting::set($db, CoreSetting::Migration, $last);
+        Settings::set("core", "lastMigration", $last);
     }
 }

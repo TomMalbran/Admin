@@ -7,7 +7,6 @@ use Admin\Auth\Access;
 use Admin\File\Path;
 use Admin\Schema\Factory;
 use Admin\Schema\Schema;
-use Admin\Schema\Database;
 use Admin\Schema\Model;
 use Admin\Schema\Query;
 use Admin\Utils\Arrays;
@@ -555,24 +554,22 @@ class Credential {
 
     /**
      * Seeds the Owner
-     * @param Database $db
-     * @param string   $firstName
-     * @param string   $lastName
-     * @param string   $email
-     * @param string   $password
+     * @param string $firstName
+     * @param string $lastName
+     * @param string $email
+     * @param string $password
      * @return void
      */
     public static function seedOwner(
-        Database $db,
         string $firstName,
         string $lastName,
         string $email,
         string $password
     ): void {
         $query = Query::create("email", "=", $email);
-        if (!$db->exists("credentials", $query)) {
+        if (!self::schema()->exists($query)) {
             $hash = self::createHash($password);
-            $db->insert("credentials", [
+            self::schema()->create([
                 "firstName"     => $firstName,
                 "lastName"      => $lastName,
                 "email"         => $email,
@@ -584,7 +581,6 @@ class Credential {
                 "reqPassChange" => 0,
                 "lastLogin"     => time(),
                 "currentLogin"  => time(),
-                "createdTime"   => time(),
             ]);
             print("<br>Owner <i>$firstName</i> created<br>");
         } else {

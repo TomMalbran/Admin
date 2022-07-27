@@ -12,7 +12,7 @@ use Admin\Config\Settings;
 use Admin\Log\ErrorLog;
 use Admin\File\File;
 use Admin\File\Path;
-use Admin\Schema\Factory;
+use Admin\Schema\Migration;
 use Admin\Schema\Database;
 use Admin\Utils\JSON;
 use Admin\Utils\Server;
@@ -321,12 +321,11 @@ class Admin {
      */
     public static function migrate(): void {
         $request   = new Request();
-        $db        = new Database(Config::get("db"));
         $canDelete = $request->has("delete");
 
-        Factory::migrate($db, $canDelete);
-        Settings::migrate($db);
+        Migration::migrate($canDelete);
+        Settings::migrate();
         Path::ensurePaths();
-        Credential::seedOwner($db, "Tomas", "Malbran", "tomas@raqdedicados.com", "Cel627570");
+        Credential::seedOwner("Tomas", "Malbran", "tomas@raqdedicados.com", "Cel627570");
     }
 }

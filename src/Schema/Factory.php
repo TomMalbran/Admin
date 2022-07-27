@@ -68,6 +68,15 @@ class Factory {
     }
 
     /**
+     * Gets the Schemas
+     * @return array
+     */
+    public static function getSchemas(): array {
+        self::load();
+        return self::$data;
+    }
+
+    /**
      * Gets the Schema
      * @param string $key
      * @return Schema
@@ -116,19 +125,5 @@ class Factory {
             }
         }
         return $result;
-    }
-
-
-
-    /**
-     * Performs a Migration on the Schema
-     * @param Database $db        Optional.
-     * @param boolean  $canDelete Optional.
-     * @return void
-     */
-    public static function migrate(Database $db = null, bool $canDelete = false): void {
-        self::load();
-        $database = $db !== null ? $db : self::$db;
-        Migration::migrate($database, self::$data, $canDelete);
     }
 }

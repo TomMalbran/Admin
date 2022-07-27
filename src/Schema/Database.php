@@ -18,28 +18,22 @@ class Database {
     public $username;
     public $password;
     public $database;
-    public $email;
-    public $persist;
 
 
     /**
      * Creates a new Database instance
-     * @param mixed   $config  Object[
-     *    host      Usually localhost
-     *    username  Database username
-     *    password  Database password
-     *    database  Database name
-     *    email     Dump email
+     * @param mixed $config Object[
+     *    host     Usually localhost
+     *    username Database username
+     *    password Database password
+     *    database Database name
      * ].
-     * @param boolean $persist True to persist the connection. Defaults to false.
      */
-    public function __construct($config, bool $persist = false) {
+    public function __construct($config) {
         $this->host     = $config->host;
         $this->username = $config->username;
         $this->password = $config->password;
         $this->database = $config->database;
-        $this->email    = !empty($config->email) ? $config->email : "";
-        $this->persist  = $persist;
 
         $this->connect();
     }
@@ -48,7 +42,7 @@ class Database {
      * Closes the connection
      */
     public function __destruct() {
-        if (!empty($this->mysqli) && !$this->persist) {
+        if (!empty($this->mysqli)) {
             $this->mysqli->close();
         }
     }

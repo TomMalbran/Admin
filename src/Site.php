@@ -29,7 +29,8 @@ class Site {
                 exit;
             }
         }
-        Admin::create(false, false);
+
+        Admin::create();
         Auth::setInternal();
     }
 

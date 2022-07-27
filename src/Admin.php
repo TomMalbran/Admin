@@ -9,15 +9,11 @@ use Admin\Auth\Auth;
 use Admin\Auth\Credential;
 use Admin\Config\Config;
 use Admin\Config\Settings;
-use Admin\Log\ErrorLog;
 use Admin\File\File;
 use Admin\File\Path;
 use Admin\Schema\Migration;
-use Admin\Schema\Database;
 use Admin\Utils\JSON;
-use Admin\Utils\Server;
 use Admin\Utils\Strings;
-use Exception;
 
 /**
  * The Admin
@@ -60,28 +56,15 @@ class Admin {
 
     /**
      * Sets the Basic data
-     * @param boolean $logErrors Optional.
-     * @param boolean $ensureUrl Optional.
      * @return void
      */
-    public static function create(bool $logErrors = false, bool $ensureUrl = false): void {
-        if ($ensureUrl) {
-            $url = Server::getProperUrl();
-            if (!empty($url)) {
-                header("Location: $url");
-                exit;
-            }
-        }
-
+    public static function create(): void {
         self::$adminPath     = dirname(__DIR__, 5);
         self::$internalPath  = dirname(__DIR__, 1);
         self::$internalRoute = Strings::replace(self::$internalPath, self::$adminPath, "");
 
         if (self::dataExists(self::SectionData)) {
             self::$sections = self::loadData(self::SectionData, "admin");
-        }
-        if ($logErrors) {
-            ErrorLog::init();
         }
     }
 
@@ -252,28 +235,28 @@ class Admin {
      * @return void
      */
     public static function execute() {
-        $params   = $_REQUEST;
-        $route    = Config::getRoute($_SERVER["REQUEST_URI"]);
-        $jwt      = !empty($params["jwt"]) ? $params["jwt"] : "";
-        $isAjax   = !empty($params["ajax"]);
-        $isReload = !empty($params["reload"]);
-        $isFrame  = !empty($params["iframe"]);
-
-        unset($params["token"]);
-        unset($params["jwt"]);
+        $params = $_REQUEST;
 
         // Run the migrations
         if (!empty($params["migrate"])) {
             self::migrate();
-
-        // For Credential
-        } else {
-            if (!empty($jwt)) {
-                Auth::validate($jwt);
-            }
-            $response = self::request($route, $params);
-            Output::print($response, $isAjax, $isReload, $isFrame);
+            return;
         }
+
+        // Login the Credential
+        if (!empty($params["jwt"])) {
+            Auth::validate($params["jwt"]);
+            unset($params["jwt"]);
+        }
+
+        // Execute the Request
+        $route    = Config::getRoute($_SERVER["REQUEST_URI"]);
+        $isAjax   = !empty($params["ajax"]);
+        $isReload = !empty($params["reload"]);
+        $isFrame  = !empty($params["iframe"]);
+        $response = self::request($route, $params);
+
+        Output::print($response, $isAjax, $isReload, $isFrame);
     }
 
     /**
@@ -303,7 +286,7 @@ class Admin {
      * Runs the Migrations for the Admin
      * @return void
      */
-    public static function migrate(): void {
+    private static function migrate(): void {
         $request   = new Request();
         $canDelete = $request->has("delete");
 

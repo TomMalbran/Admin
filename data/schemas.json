@@ -47,7 +47,6 @@
             "password"      : { "type" : "string"                                         },
             "salt"          : { "type" : "string"                                         },
             "status"        : { "type" : "number",  "length"   : 1,         "default" : 0 },
-            "reqPassChange" : { "type" : "boolean", "cantEdit" : true,      "default" : 0 },
             "currentLogin"  : { "type" : "date",    "cantEdit" : true,      "default" : 0 },
             "lastLogin"     : { "type" : "date",    "cantEdit" : true,      "default" : 0 }
         },

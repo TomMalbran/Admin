@@ -207,13 +207,12 @@ class Auth {
             return "";
         }
         return JWT::create(time(), [
-            "accessLevel"   => self::$accessLevel,
-            "credentialID"  => self::$credentialID,
-            "adminID"       => self::$adminID,
-            "email"         => self::$credential->email,
-            "name"          => self::$credential->credentialName,
-            "reqPassChange" => self::$credential->reqPassChange,
-            "loggedAsUser"  => !empty(self::$adminID),
+            "accessLevel"  => self::$accessLevel,
+            "credentialID" => self::$credentialID,
+            "adminID"      => self::$adminID,
+            "email"        => self::$credential->email,
+            "name"         => self::$credential->credentialName,
+            "loggedAsUser" => !empty(self::$adminID),
         ]);
     }
 

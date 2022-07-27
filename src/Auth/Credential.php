@@ -322,8 +322,6 @@ class Credential {
         return self::schema()->getColumn($query, "email");
     }
 
-
-
     /**
      * Returns true if the given password is correct for the given Credential ID
      * @param Model  $credential
@@ -335,24 +333,6 @@ class Credential {
         return $hash["password"] == $credential->password;
     }
 
-    /**
-     * Returns true if the given Credential requires a password change
-     * @param integer $credentialID
-     * @param string  $email        Optional.
-     * @return boolean
-     */
-    public static function reqPassChange(int $credentialID, string $email = null): bool {
-        if (empty($credentialID) && empty($email)) {
-            return false;
-        }
-        $query = new Query();
-        $query->startOr();
-        $query->addIf("CREDENTIAL_ID", "=", $credentialID);
-        $query->addIf("email",         "=", $email);
-        $query->endOr();
-        return self::schema()->getValue($query, "reqPassChange") == 1;
-    }
-
 
 
     /**
@@ -360,11 +340,10 @@ class Credential {
      * @param Request $request
      * @param integer $status
      * @param integer $level
-     * @param boolean $reqPassChange Optional.
      * @return integer
      */
-    public static function create(Request $request, int $status, int $level, bool $reqPassChange = null): int {
-        $fields = self::getFields($request, $status, $level, $reqPassChange);
+    public static function create(Request $request, int $status, int $level): int {
+        $fields = self::getFields($request, $status, $level);
         return self::schema()->create($request, $fields + [
             "lastLogin"    => time(),
             "currentLogin" => time(),
@@ -375,13 +354,12 @@ class Credential {
      * Edits the given Credential
      * @param integer $credentialID
      * @param Request $request
-     * @param integer $status        Optional.
-     * @param integer $level         Optional.
-     * @param boolean $reqPassChange Optional.
+     * @param integer $status       Optional.
+     * @param integer $level        Optional.
      * @return boolean
      */
-    public static function edit(int $credentialID, Request $request, int $status = null, int $level = null, bool $reqPassChange = null): bool {
-        $fields = self::getFields($request, $status, $level, $reqPassChange);
+    public static function edit(int $credentialID, Request $request, int $status = null, int $level = null): bool {
+        $fields = self::getFields($request, $status, $level);
         return self::schema()->edit($credentialID, $fields);
     }
 
@@ -407,12 +385,11 @@ class Credential {
     /**
      * Parses the data and returns the fields
      * @param Request $request
-     * @param integer $status        Optional.
-     * @param integer $level         Optional.
-     * @param boolean $reqPassChange Optional.
+     * @param integer $status  Optional.
+     * @param integer $level   Optional.
      * @return array
      */
-    private static function getFields(Request $request, int $status = null, int $level = null, bool $reqPassChange = null): array {
+    private static function getFields(Request $request, int $status = null, int $level = null): array {
         $result = [
             "firstName" => $request->firstName,
             "lastName"  => $request->lastName,
@@ -429,9 +406,6 @@ class Credential {
         }
         if ($level !== null) {
             $result["level"] = $level;
-        }
-        if ($reqPassChange !== null) {
-            $result["reqPassChange"] = $reqPassChange ? 1 : 0;
         }
         return $result;
     }
@@ -465,18 +439,6 @@ class Credential {
             "salt"     => $hash["salt"],
         ]);
         return $hash;
-    }
-
-    /**
-     * Sets the require password change for the given Credential
-     * @param integer $credentialID
-     * @param boolean $require
-     * @return boolean
-     */
-    public static function setReqPassChange(int $credentialID, bool $require): bool {
-        return self::schema()->edit($credentialID, [
-            "reqPassChange" => $require ? 1 : 0,
-        ]);
     }
 
     /**
@@ -570,17 +532,16 @@ class Credential {
         if (!self::schema()->exists($query)) {
             $hash = self::createHash($password);
             self::schema()->create([
-                "firstName"     => $firstName,
-                "lastName"      => $lastName,
-                "email"         => $email,
-                "phone"         => "",
-                "password"      => $hash["password"],
-                "salt"          => $hash["salt"],
-                "level"         => Access::Admin,
-                "status"        => Status::Active,
-                "reqPassChange" => 0,
-                "lastLogin"     => time(),
-                "currentLogin"  => time(),
+                "firstName"    => $firstName,
+                "lastName"     => $lastName,
+                "email"        => $email,
+                "phone"        => "",
+                "password"     => $hash["password"],
+                "salt"         => $hash["salt"],
+                "level"        => Access::Admin,
+                "status"       => Status::Active,
+                "lastLogin"    => time(),
+                "currentLogin" => time(),
             ]);
             print("<br>Owner <i>$firstName</i> created<br>");
         } else {

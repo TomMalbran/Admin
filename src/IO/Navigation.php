@@ -185,17 +185,13 @@ class Navigation {
      * @return array
      */
     public function create(): array {
-        $onlyDeleted = !empty($this->filters["onlyDeleted"]);
-        $search      = !empty($this->filters["search"]) ? $this->filters["search"] : "";
-        $prevPage    = max(1, $this->page - 1);
-        $nextPage    = min($this->totalPages, $this->page + 1);
+        $search   = !empty($this->filters["search"]) ? $this->filters["search"] : "";
+        $prevPage = max(1, $this->page - 1);
+        $nextPage = min($this->totalPages, $this->page + 1);
 
-        $classes     = [ "table-container", "table-list" ];
+        $classes  = [ "table-container", "table-list" ];
         if (!empty($this->pages)) {
             $classes[] = "table-pagination";
-        }
-        if ($onlyDeleted) {
-            $classes[] = "table-error";
         }
 
         return [
@@ -213,12 +209,9 @@ class Navigation {
             "nextQuery"    => $this->getFilter("page", $nextPage),
             "lastQuery"    => $this->getFilter("page", $this->totalPages),
             "filterQuery"  => $this->getQuery()->remove("page")->toString(),
-            "activeQuery"  => $this->getQuery()->remove("onlyDeleted")->toString(),
-            "deletedQuery" => $this->getFilter("onlyDeleted", 1),
             "fromTimeDate" => !empty($this->fromTime) ? date("d-m-Y", $this->fromTime) : $this->request->from,
             "toTimeDate"   => !empty($this->toTime)   ? date("d-m-Y", $this->toTime)   : $this->request->to,
             "search"       => $search,
-            "onlyDeleted"  => $onlyDeleted,
         ] + $this->extras;
     }
 }

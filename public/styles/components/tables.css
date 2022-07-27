@@ -48,9 +48,6 @@ tfoot tr:first-child th {
 .table-wrap th {
     white-space: normal;
 }
-.table-error th {
-    background-color: var(--red-color);
-}
 
 .table-container td {
     text-align: left;

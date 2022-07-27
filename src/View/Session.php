@@ -85,8 +85,6 @@ class Session {
             $credential = Auth::getLoginCredential($request->email);
             if (!Auth::canLogin($credential)) {
                 $errors->add("credentials");
-            } elseif (Auth::isLoginDisabled($credential)) {
-                $errors->add("disabled");
             } elseif (!Credential::isPasswordCorrect($credential, $request->password)) {
                 $errors->add("credentials");
             }

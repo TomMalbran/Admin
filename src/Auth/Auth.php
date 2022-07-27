@@ -5,7 +5,6 @@ use Admin\IO\Status;
 use Admin\Auth\Access;
 use Admin\Auth\Credential;
 use Admin\Auth\Reset;
-use Admin\Config\Config;
 use Admin\File\Path;
 use Admin\File\File;
 use Admin\Log\ActionLog;
@@ -109,15 +108,6 @@ class Auth {
             !empty($credential->password) &&
             $credential->status == Status::Active
         );
-    }
-
-    /**
-     * Returns true if the login is disabled for the given Credential
-     * @param Model $credential
-     * @return boolean
-     */
-    public static function isLoginDisabled(Model $credential): bool {
-        return $credential->level < Access::Admin && Config::get("authDisabled");
     }
 
 

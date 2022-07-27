@@ -1,8 +1,6 @@
 <?php
 namespace Admin\Provider;
 
-use Admin\Config\Config;
-
 use Firebase\JWT\JWT as FirebaseJWT;
 use Exception;
 use stdClass;
@@ -14,7 +12,7 @@ class JWT {
 
     private static $loaded    = false;
     private static $encrypt   = [ "HS256" ];
-    private static $secretKey = "";
+    private static $secretKey = "Sdw1s9x8@";
     private static $longTerm  = 10 * 365 * 24;
     private static $shortTerm = 2;
 
@@ -28,9 +26,7 @@ class JWT {
             return;
         }
         FirebaseJWT::$leeway = 1000;
-        self::$loaded    = true;
-        self::$secretKey = Config::get("authKey");
-        self::$shortTerm = Config::get("authHours");
+        self::$loaded = true;
     }
 
 

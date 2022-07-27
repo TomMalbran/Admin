@@ -1,6 +1,9 @@
 {
     "name": "Admin",
     "scripts": {
+        "update": {
+            "type": "composer"
+        },
         "icons": {
             "font": "icoadmin",
             "input": "misc/icoadmin",

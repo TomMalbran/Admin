@@ -9,12 +9,17 @@
             "command": "runner info"
         },
         {
-            "label": "02. Generate the Icons",
+            "label": "02. Update Composer",
+            "type": "shell",
+            "command": "runner update"
+        },
+        {
+            "label": "03. Generate the Icons",
             "type": "shell",
             "command": "runner icons"
         },
         {
-            "label": "03. Minify the CSS",
+            "label": "04. Minify the CSS",
             "type": "shell",
             "command": "runner minify"
         }

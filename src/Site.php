@@ -30,7 +30,7 @@ class Site {
             }
         }
         Admin::create(false, false);
-        Auth::validateInternal();
+        Auth::setInternal();
     }
 
     /**

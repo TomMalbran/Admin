@@ -29,7 +29,6 @@ class Admin {
     const RouteData       = "routes";
     const SchemaData      = "schemas";
     const PathData        = "paths";
-    const TokenData       = "tokens";
     const SettingsData    = "settings";
     const ActionData      = "actions";
     const MenuData        = "menu";
@@ -255,8 +254,7 @@ class Admin {
     public static function execute() {
         $params   = $_REQUEST;
         $route    = Config::getRoute($_SERVER["REQUEST_URI"]);
-        $token    = !empty($params["token"]) ? $params["token"] : "";
-        $jwt      = !empty($params["jwt"])   ? $params["jwt"]   : "";
+        $jwt      = !empty($params["jwt"]) ? $params["jwt"] : "";
         $isAjax   = !empty($params["ajax"]);
         $isReload = !empty($params["reload"]);
         $isFrame  = !empty($params["iframe"]);
@@ -268,23 +266,10 @@ class Admin {
         if (!empty($params["migrate"])) {
             self::migrate();
 
-        // For API
-        } elseif (!empty($token)) {
-            Auth::validateAPI($token);
-            try {
-                $response = self::request($route, $params);
-                if (!empty($response->data)) {
-                    print(json_encode($response->data));
-                }
-            } catch (Exception $e) {
-                http_response_code(400);
-                die($e->getMessage());
-            }
-
         // For Credential
         } else {
             if (!empty($jwt)) {
-                Auth::validateCredential($jwt);
+                Auth::validate($jwt);
             }
             $response = self::request($route, $params);
             Output::print($response, $isAjax, $isReload, $isFrame);

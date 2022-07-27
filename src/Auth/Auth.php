@@ -4,7 +4,6 @@ namespace Admin\Auth;
 use Admin\IO\Status;
 use Admin\Auth\Access;
 use Admin\Auth\Credential;
-use Admin\Auth\Token;
 use Admin\Auth\Reset;
 use Admin\Config\Config;
 use Admin\File\Path;
@@ -12,7 +11,6 @@ use Admin\File\File;
 use Admin\Log\ActionLog;
 use Admin\Provider\JWT;
 use Admin\Schema\Model;
-use Admin\Utils\Arrays;
 use Admin\Utils\Strings;
 
 /**
@@ -24,15 +22,14 @@ class Auth {
     private static $credential   = null;
     private static $credentialID = 0;
     private static $adminID      = 0;
-    private static $apiID        = 0;
 
 
     /**
-     * Validates the Credential
+     * Validates the Credential Token
      * @param string $token
      * @return boolean
      */
-    public static function validateCredential(string $token): bool {
+    public static function validate(string $token): bool {
         Reset::deleteOld();
         if (!JWT::isValid($token)) {
             return false;
@@ -61,25 +58,10 @@ class Auth {
     }
 
     /**
-     * Validates and Sets the auth as API
-     * @param string $token
+     * Sets the auth as API
      * @return boolean
      */
-    public static function validateAPI(string $token): bool {
-        if (Token::isValid($token)) {
-            self::$apiID       = Token::getOne($token)->id;
-            self::$accessLevel = Access::API;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Validates and Sets the auth as API Internal
-     * @return boolean
-     */
-    public static function validateInternal(): bool {
-        self::$apiID       = "internal";
+    public static function setInternal(): bool {
         self::$accessLevel = Access::API;
         return true;
     }
@@ -113,7 +95,6 @@ class Auth {
         self::$credential   = null;
         self::$credentialID = 0;
         self::$adminID      = 0;
-        self::$apiID        = 0;
     }
 
     /**
@@ -123,8 +104,10 @@ class Auth {
      */
     public static function canLogin(Model $credential): bool {
         return (
-            !$credential->isEmpty() && !$credential->isDeleted &&
-            !empty($credential->password) && $credential->status == Status::Active
+            !$credential->isEmpty() &&
+            !$credential->isDeleted &&
+            !empty($credential->password) &&
+            $credential->status == Status::Active
         );
     }
 
@@ -285,7 +268,7 @@ class Auth {
      * @return boolean
      */
     public static function isLoggedIn(): bool {
-        return !empty(self::$credentialID) || !empty(self::$apiID);
+        return !empty(self::$credentialID) || self::$accessLevel == Access::API;
     }
 
     /**

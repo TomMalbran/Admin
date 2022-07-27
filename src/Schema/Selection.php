@@ -36,20 +36,16 @@ class Selection {
 
     /**
      * Adds the Fields to the Selects
-     * @param boolean $decrypted Optional.
      * @return void
      */
-    public function addFields(bool $decrypted = false): void {
-        $masterKey = $this->structure->masterKey;
-        $mainKey   = $this->structure->table;
+    public function addFields(): void {
+        $mainKey = $this->structure->table;
 
         if (!empty($this->structure->idKey) && !empty($this->structure->idName)) {
             $this->selects[] = "$mainKey.{$this->structure->idKey} AS id";
         }
         foreach ($this->structure->fields as $field) {
-            if ($decrypted && $field->type == Field::Encrypt) {
-                $this->selects[] = "CAST(AES_DECRYPT($mainKey.$field->key, '$masterKey') AS CHAR(255)) {$field->key}Decrypt";
-            } elseif ($field->hasName) {
+            if ($field->hasName) {
                 $this->selects[] = "$mainKey.$field->key AS $field->name";
             } else {
                 $this->selects[] = "$mainKey.$field->key";

@@ -64,7 +64,7 @@ class Modification {
         $result = [];
         foreach ($this->structure->fields as $field) {
             if ($field->canEdit) {
-                $value = $field->fromRequest($request, $this->structure->masterKey);
+                $value = $field->fromRequest($request);
 
                 if ($field->noEmpty) {
                     if (!empty($value)) {

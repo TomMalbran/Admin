@@ -28,7 +28,6 @@ class Admin {
     const SectionData     = "sections";
     const RouteData       = "routes";
     const SchemaData      = "schemas";
-    const KeyData         = "keys";
     const PathData        = "paths";
     const TokenData       = "tokens";
     const SettingsData    = "settings";

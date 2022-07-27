@@ -27,7 +27,6 @@ class Field {
     const JSON      = "json";
     const CSV       = "csv";
     const Text      = "text";
-    const Encrypt   = "encrypt";
     const File      = "file";
     const Image     = "image";
     const Status    = "status";
@@ -153,10 +152,6 @@ class Field {
         case self::Text:
             $result = "text NOT NULL";
             break;
-        case self::Encrypt:
-            $length = $this->length ?: 255;
-            $result = "varbinary($length) NOT NULL";
-            break;
         case self::Status:
         case self::FemStatus:
             $result = "tinyint(1) unsigned NOT NULL";
@@ -172,10 +167,9 @@ class Field {
     /**
      * Returns the Field Value from the given Request
      * @param Request $request
-     * @param string  $masterKey Optional.
      * @return mixed
      */
-    public function fromRequest(Request $request, string $masterKey = "") {
+    public function fromRequest(Request $request) {
         $result = null;
 
         switch ($this->type) {
@@ -213,12 +207,6 @@ class Field {
         case self::JSON:
         case self::CSV:
             $result = $request->toJSON($this->name);
-            break;
-        case self::Encrypt:
-            if (!empty($masterKey)) {
-                $value  = $request->get($this->name);
-                $result = Query::encrypt($value, $masterKey);
-            }
             break;
         case self::Status:
         case self::FemStatus:
@@ -278,9 +266,6 @@ class Field {
         case self::Text:
             $result[$key]           = $text;
             $result["{$key}Html"]   = Strings::toHtml($text);
-            break;
-        case self::Encrypt:
-            $result[$key]           = !empty($data["{$key}Decrypt"]) ? $data["{$key}Decrypt"] : "";
             break;
         case self::File:
             $result[$key]           = $text;

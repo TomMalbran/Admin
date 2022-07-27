@@ -40,27 +40,17 @@ class Schema {
         return $this->structure->fields;
     }
 
-    /**
-     * Encrypts the given Value
-     * @param string $value
-     * @return array
-     */
-    public function encrypt(string $value): array {
-        return Query::encrypt($value, $this->structure->masterKey);
-    }
-
 
 
     /**
      * Returns the Model with the given Where
      * @param Query|integer $query
      * @param boolean       $withDeleted Optional.
-     * @param boolean       $decrypted   Optional.
      * @return Model
      */
-    public function getOne($query, bool $withDeleted = true, bool $decrypted = false): Model {
+    public function getOne($query, bool $withDeleted = true): Model {
         $query   = $this->generateQueryID($query, $withDeleted)->limit(1);
-        $request = $this->request($query, $decrypted);
+        $request = $this->request($query);
         return $this->getModel($request);
     }
 
@@ -103,39 +93,36 @@ class Schema {
 
     /**
      * Returns an array of Schemas
-     * @param Query   $query     Optional.
-     * @param Request $sort      Optional.
-     * @param boolean $decrypted Optional.
+     * @param Query   $query Optional.
+     * @param Request $sort  Optional.
      * @return array
      */
-    public function getAll(Query $query = null, Request $sort = null, bool $decrypted = false): array {
+    public function getAll(Query $query = null, Request $sort = null): array {
         $query   = $this->generateQuerySort($query, $sort);
-        $request = $this->request($query, $decrypted);
+        $request = $this->request($query);
         return $request;
     }
 
     /**
      * Returns a map of Schemas
-     * @param Query   $query     Optional.
-     * @param Request $sort      Optional.
-     * @param boolean $decrypted Optional.
+     * @param Query   $query Optional.
+     * @param Request $sort  Optional.
      * @return array
      */
-    public function getMap(Query $query = null, Request $sort = null, bool $decrypted = false): array {
+    public function getMap(Query $query = null, Request $sort = null): array {
         $query   = $this->generateQuerySort($query, $sort);
-        $request = $this->request($query, $decrypted);
+        $request = $this->request($query);
         return Arrays::createMap($request, $this->structure->idName);
     }
 
     /**
      * Requests data to the database
-     * @param Query   $query     Optional.
-     * @param boolean $decrypted Optional.
+     * @param Query $query Optional.
      * @return array
      */
-    private function request(Query $query = null, bool $decrypted = false): array {
+    private function request(Query $query = null): array {
         $selection = new Selection($this->db, $this->structure);
-        $selection->addFields($decrypted);
+        $selection->addFields();
         $selection->addJoins();
         $selection->addCounts();
         $selection->request($query);
@@ -154,14 +141,13 @@ class Schema {
      * Selects the given column from a single table and returns the entire column
      * @param Query   $query
      * @param array   $selects
-     * @param boolean $decrypted Optional.
-     * @param boolean $withSubs  Optional.
+     * @param boolean $withSubs Optional.
      * @return array
      */
-    public function getColumns(Query $query, array $selects, bool $decrypted = false, bool $withSubs = false): array {
+    public function getColumns(Query $query, array $selects, bool $withSubs = false): array {
         $query     = $this->generateQuery($query);
         $selection = new Selection($this->db, $this->structure);
-        $selection->addFields($decrypted);
+        $selection->addFields();
         $selection->addSelects(array_values($selects));
         $selection->addJoins();
         $selection->request($query);

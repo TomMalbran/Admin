@@ -102,7 +102,7 @@ class Factory {
     public static function getStructure(string $key): Structure {
         self::load();
         if (empty(self::$structures[$key])) {
-            self::$structures[$key] = new Structure($key, self::$data[$key]);
+            self::$structures[$key] = new Structure(self::$data[$key]);
         }
         return self::$structures[$key];
     }

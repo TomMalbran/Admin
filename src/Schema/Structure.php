@@ -1,7 +1,6 @@
 <?php
 namespace Admin\Schema;
 
-use Admin\Schema\KeyChain;
 use Admin\Schema\Field;
 use Admin\Schema\Join;
 use Admin\Schema\Count;
@@ -11,8 +10,6 @@ use Admin\Utils\Strings;
  * The Database Structure
  */
 class Structure {
-
-    public $masterKey     = "";
 
     public $table         = "";
     public $idKey         = "";
@@ -34,10 +31,9 @@ class Structure {
 
     /**
      * Creates a new Structure instance
-     * @param string $schemaKey
-     * @param array  $data
+     * @param array $data
      */
-    public function __construct(string $schemaKey, array $data) {
+    public function __construct(array $data) {
         $this->table         = $data["table"];
         $this->hasStatus     = !empty($data["hasStatus"])     && $data["hasStatus"];
         $this->hasFemStatus  = !empty($data["hasFemStatus"])  && $data["hasFemStatus"];
@@ -106,7 +102,6 @@ class Structure {
         // Parse the Fields
         $idKey        = "";
         $primaryCount = 0;
-        $reqMasterkey = false;
 
         foreach ($data["fields"] as $key => $value) {
             if ($value["type"] == Field::ID) {
@@ -118,9 +113,6 @@ class Structure {
             }
             if (empty($idKey) && !empty($value["isPrimary"])) {
                 $idKey = $key;
-            }
-            if ($value["type"] == Field::Encrypt) {
-                $reqMasterkey = true;
             }
         }
         if ($primaryCount > 1) {
@@ -152,11 +144,6 @@ class Structure {
             foreach ($data["counts"] as $key => $value) {
                 $this->counts[] = new Count($key, $value);
             }
-        }
-
-        // Set the Masterkey
-        if ($reqMasterkey) {
-            $this->masterKey = KeyChain::getOne($schemaKey);
         }
     }
 

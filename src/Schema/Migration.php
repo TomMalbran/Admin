@@ -30,8 +30,8 @@ class Migration {
         $schemaNames = [];
 
         // Create or update the Tables
-        foreach ($schemas as $schemaKey => $schemaData) {
-            $structure     = new Structure($schemaKey, $schemaData);
+        foreach ($schemas as $schemaData) {
+            $structure     = new Structure($schemaData);
             $schemaNames[] = $structure->table;
 
             if (!Arrays::contains($tableNames, $structure->table)) {

@@ -591,16 +591,6 @@ class Query {
     }
 
     /**
-     * Method generates an AES Encrypt function call
-     * @param string $value
-     * @param string $key
-     * @return array
-     */
-    public static function encrypt(string $value, string $key): array {
-        return self::func("AES_ENCRYPT(?, ?)", [ $value, $key ]);
-    }
-
-    /**
      * Method generates an REPLACE function call
      * @param string $column
      * @param string $value

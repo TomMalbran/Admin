@@ -2,7 +2,6 @@
 namespace Admin\View;
 
 use Admin\Admin;
-use Admin\Config\Config;
 use Admin\IO\View;
 use Admin\IO\Request;
 use Admin\IO\Response;
@@ -14,7 +13,7 @@ use Admin\File\Media as FileMedia;
 use Admin\File\MediaType;
 use Admin\Schema\Field;
 use Admin\Schema\Query;
-use Admin\Schema\Database;
+use Admin\Schema\Factory;
 use Admin\Utils\Strings;
 
 /**
@@ -31,8 +30,7 @@ class Media {
      * @return void
      */
     private static function update(string $oldPath, string $oldName, string $newPath = "", string $newName = ""): void {
-        $config     = Config::get("db");
-        $db         = new Database($config);
+        $db         = Factory::getDatabase();
         $schemas    = Admin::loadData(Admin::SchemaData, "admin");
 
         $oldRelPath = File::removeFirstSlash(File::getPath($oldPath, $oldName));

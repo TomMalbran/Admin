@@ -59,6 +59,15 @@ class Factory {
 
 
     /**
+     * Gets the Database
+     * @return Database
+     */
+    public static function getDatabase(): Database {
+        self::load();
+        return self::$db;
+    }
+
+    /**
      * Gets the Schema
      * @param string $key
      * @return Schema

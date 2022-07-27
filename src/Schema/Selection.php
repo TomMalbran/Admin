@@ -92,12 +92,11 @@ class Selection {
                 $this->tables[] = $join->table;
             }
 
-            $table      = "{dbPrefix}{$join->table}";
             $onTable    = $join->onTable ?: $mainKey;
             $leftKey    = $join->leftKey;
             $rightKey   = $join->rightKey;
             $and        = $join->and;
-            $expression = "LEFT JOIN $table AS $joinKey ON ($joinKey.$leftKey = $onTable.$rightKey $and)";
+            $expression = "LEFT JOIN `{$join->table}` AS $joinKey ON ($joinKey.$leftKey = $onTable.$rightKey $and)";
 
             $this->joins[]          = $expression;
             $this->keys[$join->key] = $joinKey;
@@ -119,13 +118,12 @@ class Selection {
             $joinKey    = chr($this->index++);
             $key        = $count->key;
             $what       = $count->isSum ? "SUM($count->mult * $count->value)" : "COUNT(*)";
-            $table      = "{dbPrefix}{$count->table}";
-            $groupKey   = "$table.{$count->key}";
+            $groupKey   = "{$count->table}.{$count->key}";
             $asKey      = $count->asKey;
             $onTable    = $count->onTable ?: $this->structure->table;
             $leftKey    = $count->leftKey;
             $where      = $count->noDeleted ? "WHERE isDeleted = 0" : "";
-            $select     = "SELECT $groupKey, $what AS $asKey FROM $table $where GROUP BY $groupKey";
+            $select     = "SELECT $groupKey, $what AS $asKey FROM `{$count->table}` $where GROUP BY $groupKey";
             $expression = "LEFT JOIN ($select) AS $joinKey ON ($joinKey.$leftKey = $onTable.$key)";
 
             $this->joins[]             = $expression;
@@ -139,17 +137,16 @@ class Selection {
     /**
      * Does a Request to the Query
      * @param Query $query
-     * @param array $extras Optional.
      * @return array
      */
-    public function request(Query $query, array $extras = []): array {
+    public function request(Query $query): array {
         $this->setTableKeys($query);
 
         $mainKey    = $this->structure->table;
         $selects    = Strings::join($this->selects, ", ");
         $joins      = Strings::join($this->joins, " ");
         $where      = $query->get();
-        $expression = "SELECT $selects FROM {dbPrefix}$mainKey AS $mainKey $joins $where";
+        $expression = "SELECT $selects FROM `$mainKey` AS $mainKey $joins $where";
 
         $this->request = $this->db->query($expression, $query);
         return $this->request;

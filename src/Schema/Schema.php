@@ -96,7 +96,7 @@ class Schema {
      * @return array
      */
     public function getQuery(string $expression, array $params = []): array {
-        $expression = Strings::replace($expression, "{table}", "{dbPrefix}{$this->structure->table}");
+        $expression = Strings::replace($expression, "{table}", $this->structure->table);
         $request    = $this->db->query($expression, $params);
         return $request;
     }
@@ -241,7 +241,7 @@ class Schema {
      * @return array
      */
     public function getStats(Query $query, string $select): array {
-        $select  = Strings::replace($select, "{table}", "{dbPrefix}{$this->structure->table}");
+        $select  = Strings::replace($select, "{table}", $this->structure->table);
         $request = $this->db->query("$select " . $query->get(), $query);
 
         if (!empty($request[0])) {

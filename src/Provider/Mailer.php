@@ -10,8 +10,6 @@ use Admin\Utils\Arrays;
 use Admin\Utils\JSON;
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\OAuth;
-use League\OAuth2\Client\Provider\Google;
 
 /**
  * The Mailer Provider
@@ -23,8 +21,6 @@ class Mailer {
     private static $url      = "";
     private static $name     = "";
     private static $smtp     = null;
-    private static $google   = null;
-    private static $emails   = [];
 
 
     /**
@@ -40,8 +36,6 @@ class Mailer {
         self::$url      = Config::get("url");
         self::$name     = Config::get("name");
         self::$smtp     = Config::get("smtp");
-        self::$google   = Config::get("google");
-        self::$emails   = Config::getArray("smtpActiveEmails");
     }
 
 
@@ -59,9 +53,6 @@ class Mailer {
         if (self::$smtp->sendDisabled) {
             return false;
         }
-        if (!empty(self::$emails) && !Arrays::contains(self::$emails, $to)) {
-            return false;
-        }
 
         $mail = new PHPMailer();
 
@@ -77,31 +68,14 @@ class Mailer {
         $mail->SMTPAuth    = true;
         $mail->SMTPAutoTLS = false;
 
-        if (self::$smtp->useOauth) {
-            $mail->SMTPAuth = true;
-            $mail->AuthType = "XOAUTH2";
+        $mail->Username    = self::$smtp->email;
+        $mail->Password    = self::$smtp->password;
 
-            $provider = new Google([
-                "clientId"     => self::$google->client,
-                "clientSecret" => self::$google->secret,
-            ]);
-            $mail->setOAuth(new OAuth([
-                "provider"     => $provider,
-                "clientId"     => self::$google->client,
-                "clientSecret" => self::$google->secret,
-                "refreshToken" => self::$smtp->refreshToken,
-                "userName"     => self::$smtp->email,
-            ]));
-        } else {
-            $mail->Username = self::$smtp->email;
-            $mail->Password = self::$smtp->password;
-        }
-
-        $mail->CharSet  = "UTF-8";
-        $mail->From     = self::$smtp->email;
-        $mail->FromName = self::$name;
-        $mail->Subject  = $subject;
-        $mail->Body     = $body;
+        $mail->CharSet     = "UTF-8";
+        $mail->From        = self::$smtp->email;
+        $mail->FromName    = self::$name;
+        $mail->Subject     = $subject;
+        $mail->Body        = $body;
 
         $mail->addAddress($to);
         if (!empty($attachment)) {
@@ -129,6 +103,7 @@ class Mailer {
      */
     public static function sendTo(string $sendTo, string $subject, string $message, string $attachment = ""): bool {
         self::load();
+
         $sendTo  = Arrays::toArray($sendTo);
         $subject = Mustache::render($subject, [
             "url"  => self::$url,
@@ -143,7 +118,7 @@ class Mailer {
         ]);
 
         foreach ($sendTo as $email) {
-            $success = self::send($email, $subject, $message, $attachment);
+            $success = self::send($email, $subject, $body, $attachment);
         }
         return $success;
     }
@@ -178,56 +153,6 @@ class Mailer {
         $message .= "<p>Si no ha sido usted, puede simplemente eliminar este mail.</p>";
 
         return self::sendTo($sendTo, $subject, $message);
-    }
-
-    /**
-     * Sends the Backup to the Backup account
-     * @param string $sendTo
-     * @param string $attachment
-     * @return boolean
-     */
-    public static function sendBackup(string $sendTo, string $attachment): bool {
-        $subject = Config::get("name") . ": Database Backup";
-        $message = "Backup de la base de datos al dia: " . date("d M Y, H:i:s");
-
-        return self::send($sendTo, $subject, $message, $attachment, false);
-    }
-
-
-
-    /**
-     * Returns the Google Auth Url
-     * @param string $redirectUri
-     * @return string
-     */
-    public static function getAuthUrl(string $redirectUri): string {
-        self::load();
-        $options  = [ "scope" => [ "https://mail.google.com/" ]];
-        $provider = new Google([
-            "clientId"     => self::$google->client,
-            "clientSecret" => self::$google->secret,
-            "redirectUri"  => self::$url . $redirectUri,
-            "accessType"   => "offline",
-        ]);
-        return $provider->getAuthorizationUrl($options);
-    }
-
-    /**
-     * Returns the Google Refresh Token
-     * @param string $redirectUri
-     * @param string $code
-     * @return string
-     */
-    public static function getAuthToken(string $redirectUri, string $code): string {
-        self::load();
-        $provider = new Google([
-            "clientId"     => self::$google->client,
-            "clientSecret" => self::$google->secret,
-            "redirectUri"  => self::$url . $redirectUri,
-            "accessType"   => "offline",
-        ]);
-        $token = $provider->getAccessToken("authorization_code", [ "code" => $code ]);
-        return $token->getRefreshToken();
     }
 
 

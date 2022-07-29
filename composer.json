@@ -17,9 +17,6 @@
         "unsplash/unsplash": "^2.4",
         "phpmailer/phpmailer": "^6.1"
     },
-    "suggest" : {
-        "league/oauth2-google": "Used for Mailing with Gmail"
-    },
     "autoload": {
         "psr-4": {
             "Admin\\": "src"

@@ -112,7 +112,6 @@ class Mailer {
         $body    = Mustache::render(self::$template, [
             "url"     => self::$url,
             "name"    => self::$name,
-            "files"   => Path::getUrl("email"),
             "logo"    => self::$smtp->logo ?: "",
             "message" => $message,
         ]);

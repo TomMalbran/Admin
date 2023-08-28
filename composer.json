@@ -8,14 +8,13 @@
         }
     ],
     "require": {
-        "php": "^7.1 || ^8.0",
+        "php": "^8.0",
         "ext-mysqli": "*",
         "ext-curl": "*",
-        "firebase/php-jwt": "^5.2",
-        "vlucas/phpdotenv": "^4.0",
-        "mustache/mustache": "^2.13",
-        "unsplash/unsplash": "^2.4",
-        "phpmailer/phpmailer": "^6.1"
+        "firebase/php-jwt": "^6.8",
+        "mustache/mustache": "^2.14",
+        "unsplash/unsplash": "^3.2",
+        "phpmailer/phpmailer": "^6.8"
     },
     "autoload": {
         "psr-4": {

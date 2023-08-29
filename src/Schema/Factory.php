@@ -7,29 +7,35 @@ use Admin\View\Contact;
 use Admin\Schema\Database;
 use Admin\Schema\Schema;
 use Admin\Schema\Structure;
-use Admin\Schema\Subrequest;
-use Admin\Schema\Migration;
+use Admin\Schema\SubRequest;
 
 /**
  * The Schema Factory
  */
 class Factory {
 
-    private static $loaded     = false;
-    private static $db         = null;
-    private static $data       = [];
-    private static $structures = [];
-    private static $schemas    = [];
+    private static bool      $loaded     = false;
+    private static ?Database $db         = null;
+
+    /** @var mixed[] */
+    private static array     $data       = [];
+
+    /** @var Structure[] */
+    private static array     $structures = [];
+
+    /** @var Schema[] */
+    private static array     $schemas    = [];
 
 
     /**
      * Loads the Schemas Data
-     * @return void
+     * @return boolean
      */
-    private static function load(): void {
+    private static function load(): bool {
         if (self::$loaded) {
-            return;
+            return false;
         }
+
         $config       = Config::get("db");
         $adminData    = Admin::loadData(Admin::SchemaData, "admin");
         $internalData = Admin::loadData(Admin::SchemaData, "internal");
@@ -54,6 +60,7 @@ class Factory {
                 self::$data[$key] = $data;
             }
         }
+        return true;
     }
 
 
@@ -69,7 +76,7 @@ class Factory {
 
     /**
      * Gets the Schemas
-     * @return array
+     * @return mixed[]
      */
     public static function getSchemas(): array {
         self::load();
@@ -86,10 +93,11 @@ class Factory {
         if (empty(self::$data[$key])) {
             return null;
         }
+
         if (empty(self::$schemas[$key])) {
             $structure  = self::getStructure($key);
-            $subrequest = self::getSubrequest($key);
-            self::$schemas[$key] = new Schema(self::$db, $structure, $subrequest);
+            $subRequest = self::getSubRequest($key);
+            self::$schemas[$key] = new Schema(self::$db, $structure, $subRequest);
         }
         return self::$schemas[$key];
     }
@@ -110,9 +118,9 @@ class Factory {
     /**
      * Creates and Returns the Subrequests for the given Key
      * @param string $key
-     * @return array
+     * @return SubRequest[]
      */
-    public static function getSubrequest(string $key): array {
+    public static function getSubRequest(string $key): array {
         $data   = self::$data[$key];
         $result = [];
 
@@ -121,7 +129,7 @@ class Factory {
                 $structure    = self::getStructure($key);
                 $subStructure = self::getStructure($subKey);
                 $subSchema    = new Schema(self::$db, $subStructure);
-                $result[]     = new Subrequest($subSchema, $structure, $subData);
+                $result[]     = new SubRequest($subSchema, $structure, $subData);
             }
         }
         return $result;

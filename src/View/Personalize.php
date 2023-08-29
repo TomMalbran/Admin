@@ -14,23 +14,27 @@ use Admin\Log\ActionLog;
  */
 class Personalize {
 
-    private static $loaded   = false;
-    private static $sections = [];
-    private static $useTabs  = false;
+    private static bool $loaded  = false;
+    private static bool $useTabs = false;
+
+    /** @var mixed[] */
+    private static array $sections = [];
 
 
     /**
      * Loads the Data
-     * @return void
+     * @return boolean
      */
-    public static function load() {
+    public static function load(): bool {
         if (self::$loaded) {
-            return;
+            return false;
         }
+
         $data = Admin::loadData(Admin::PersonalizeData);
         self::$loaded   = true;
         self::$sections = $data["sections"];
         self::$useTabs  = $data["useTabs"];
+        return true;
     }
 
     /**
@@ -45,9 +49,9 @@ class Personalize {
 
     /**
      * Returns the Option Items
-     * @param array $settings
-     * @param array $errors   Optional.
-     * @return array
+     * @param array{} $settings
+     * @param array{} $errors   Optional.
+     * @return array{}
      */
     private static function getOptions(array $settings, array $errors = []): array {
         self::load();
@@ -112,7 +116,7 @@ class Personalize {
      * @param Request $request
      * @return Response
      */
-    public static function save(Request $request) {
+    public static function save(Request $request): Response {
         self::load();
         $errors = new Errors();
 

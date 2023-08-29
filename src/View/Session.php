@@ -30,13 +30,13 @@ class Session {
 
     /**
      * Returns a View
-     * @param string  $template
-     * @param Request $request
-     * @param array   $result   Optional.
-     * @param Errors  $errors   Optional.
+     * @param string      $template
+     * @param Request     $request
+     * @param array{}     $result   Optional.
+     * @param Errors|null $errors   Optional.
      * @return Response
      */
-    private static function showView(string $template, Request $request, array $result = [], Errors $errors = null): Response {
+    private static function showView(string $template, Request $request, array $result = [], ?Errors $errors = null): Response {
         $isAjax   = $request->has("ajax");
         $isReload = $request->has("reload");
 

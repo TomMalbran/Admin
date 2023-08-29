@@ -19,24 +19,26 @@ use Admin\Utils\Numbers;
  */
 class Slide {
 
-    private static $loaded   = false;
-    private static $options  = null;
-    private static $useTabs  = false;
-    private static $mainType = "";
+    private static bool   $loaded   = false;
+    private static mixed  $options  = null;
+    private static bool   $useTabs  = false;
+    private static string $mainType = "";
 
 
     /**
      * Loads the Data
-     * @return void
+     * @return boolean
      */
-    private static function load() {
+    private static function load(): bool {
         if (self::$loaded) {
-            return;
+            return false;
         }
+
         self::$loaded   = true;
         self::$options  = Admin::loadData(Admin::SlideData, "admin", true);
         self::$useTabs  = Arrays::length(self::$options) > 1;
         self::$mainType = Arrays::getFirstKey(self::$options);
+        return true;
     }
 
     /**
@@ -52,7 +54,7 @@ class Slide {
     /**
      * Creates a list of tabs
      * @param string $selected
-     * @return array
+     * @return mixed[]
      */
     private static function getTabs(string $selected): array {
         $result = [];
@@ -72,7 +74,7 @@ class Slide {
      * @param boolean $asObject Optional.
      * @return mixed
      */
-    private static function getOptions(string $type, bool $asObject = false) {
+    private static function getOptions(string $type, bool $asObject = false): mixed {
         $result = self::$options[$type]["options"];
         return $asObject ? (object)$result : $result;
     }

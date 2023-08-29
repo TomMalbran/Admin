@@ -17,10 +17,10 @@ use Admin\Utils\Strings;
  */
 class Auth {
 
-    private static $accessLevel  = 0;
-    private static $credential   = null;
-    private static $credentialID = 0;
-    private static $adminID      = 0;
+    private static int    $accessLevel  = 0;
+    private static int    $credentialID = 0;
+    private static int    $adminID      = 0;
+    private static ?Model $credential   = null;
 
 
     /**
@@ -70,9 +70,9 @@ class Auth {
     /**
      * Logins the given Credential
      * @param Model $credential
-     * @return void
+     * @return boolean
      */
-    public static function login(Model $credential): void {
+    public static function login(Model $credential): bool {
         self::setCredential($credential, 0);
 
         Credential::updateLoginTime($credential->id);
@@ -81,19 +81,21 @@ class Auth {
         $path = Path::getTempPath($credential->id, false);
         File::emptyDir($path);
         Reset::delete($credential->id);
+        return true;
     }
 
     /**
      * Logouts the Current Credential
-     * @return void
+     * @return boolean
      */
-    public static function logout(): void {
+    public static function logout(): bool {
         ActionLog::endSession();
 
         self::$accessLevel  = Access::General;
         self::$credential   = null;
         self::$credentialID = 0;
         self::$adminID      = 0;
+        return true;
     }
 
     /**
@@ -189,13 +191,14 @@ class Auth {
      * Sets the Credential
      * @param Model   $credential
      * @param integer $adminID    Optional.
-     * @return void
+     * @return boolean
      */
-    public static function setCredential(Model $credential, int $adminID = 0): void {
+    public static function setCredential(Model $credential, int $adminID = 0): bool {
         self::$credential   = $credential;
         self::$credentialID = $credential->id;
         self::$accessLevel  = $credential->level;
         self::$adminID      = $adminID;
+        return true;
     }
 
     /**
@@ -220,9 +223,9 @@ class Auth {
 
     /**
      * Returns the Credential Model
-     * @return Model
+     * @return Model|null
      */
-    public static function getCredential() {
+    public static function getCredential(): ?Model {
         return self::$credential;
     }
 

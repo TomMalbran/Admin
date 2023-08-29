@@ -10,34 +10,35 @@ use Admin\IO\Url;
  */
 class Response {
 
-    public $isEmpty    = false;
-    public $isRedirect = false;
-    public $isJSON     = false;
-    public $isView     = false;
-    public $isAPI      = false;
+    public bool $isEmpty    = false;
+    public bool $isRedirect = false;
+    public bool $isJSON     = false;
+    public bool $isView     = false;
+    public bool $isAPI      = false;
 
-    private $info;
-    private $url;
-    private $storage;
+    private object $info;
+    private Url    $url;
 
+    /** @var mixed[] */
+    private array $storage;
 
 
     /**
      * Returns a Null Response
      * @return Response
      */
-    public static function empty() {
+    public static function empty(): Response {
         return new Response("empty");
     }
 
     /**
      * Returns a Redirect Response
-     * @param string  $url     Optional.
-     * @param Request $request Optional.
-     * @param string  $error   Optional.
+     * @param string       $url     Optional.
+     * @param Request|null $request Optional.
+     * @param string       $error   Optional.
      * @return Response
      */
-    public static function redirect(string $url = "", Request $request = null, string $error = ""): Response {
+    public static function redirect(string $url = "", ?Request $request = null, string $error = ""): Response {
         $response = new Response("redirect", [], $url);
         if (!empty($request)) {
             $response->withQuery($request);
@@ -61,15 +62,15 @@ class Response {
 
     /**
      * Returns a JSON Response
-     * @param array   $result  Optional.
-     * @param Request $request Optional.
-     * @param Errors  $errors  Optional.
+     * @param array{}|null $result  Optional.
+     * @param Request|null $request Optional.
+     * @param Errors|null  $errors  Optional.
      * @return Response
      */
     public static function json(
-        array   $result = null,
-        Request $request = null,
-        Errors  $errors = null
+        ?array   $result = null,
+        ?Request $request = null,
+        ?Errors  $errors = null
     ): Response {
         return new Response("JSON", [
             "result"  => $result,
@@ -80,21 +81,21 @@ class Response {
 
     /**
      * Returns the Template Response
-     * @param string  $template
-     * @param string  $mainMenu Optional.
-     * @param string  $subMenu  Optional.
-     * @param array   $result   Optional.
-     * @param Request $request  Optional.
-     * @param Errors  $errors   Optional.
+     * @param string       $template
+     * @param string       $mainMenu Optional.
+     * @param string       $subMenu  Optional.
+     * @param array{}|null $result   Optional.
+     * @param Request|null $request  Optional.
+     * @param Errors|null  $errors   Optional.
      * @return Response
      */
     public static function view(
-        string  $template,
-        string  $mainMenu = "",
-        string  $subMenu = "",
-        array   $result = null,
-        Request $request = null,
-        Errors  $errors = null
+        string   $template,
+        string   $mainMenu = "",
+        string   $subMenu = "",
+        ?array   $result = null,
+        ?Request $request = null,
+        ?Errors  $errors = null
     ): Response {
         return new Response("view", [
             "template" => $template,
@@ -124,10 +125,10 @@ class Response {
 
     /**
      * Returns the given data
-     * @param array $data Optional.
+     * @param array{}|null $data Optional.
      * @return Response
      */
-    public static function data(array $data = null): Response {
+    public static function data(?array $data = null): Response {
         return new Response("API", [
             "result" => [ "data" => $data ],
         ]);
@@ -135,11 +136,11 @@ class Response {
 
     /**
      * Returns an API Errors Response
-     * @param Errors $errors
-     * @param array  $data   Optional.
+     * @param Errors       $errors
+     * @param array{}|null $data   Optional.
      * @return Response
      */
-    public static function errors(Errors $errors, array $data = null): Response {
+    public static function errors(Errors $errors, ?array $data = null): Response {
         return new Response("API", [
             "errors" => $errors,
             "result" => [
@@ -151,11 +152,11 @@ class Response {
 
     /**
      * Returns an API Success Response
-     * @param string $success
-     * @param array  $data    Optional.
+     * @param string       $success
+     * @param array{}|null $data    Optional.
      * @return Response
      */
-    public static function success(string $success, array $data = null): Response {
+    public static function success(string $success, ?array $data = null): Response {
         return new Response("API", [
             "result" => [
                 "success" => $success,
@@ -168,9 +169,9 @@ class Response {
 
     /**
      * Creates a new Response instance
-     * @param string $type
-     * @param array  $info Optional.
-     * @param string $url  Optional.
+     * @param string  $type
+     * @param array{] $info Optional.
+     * @param string  $url  Optional.
      */
     public function __construct(string $type, array $info = [], string $url = "") {
         $this->{"is" . ucfirst($type)} = true;
@@ -203,7 +204,7 @@ class Response {
      * @param string $key
      * @return mixed
      */
-    public function get(string $key) {
+    public function get(string $key): mixed {
         if ($key == "url") {
             return $this->url->toString();
         }
@@ -263,7 +264,7 @@ class Response {
 
     /**
      * Adds the given object to the storage
-     * @param array $object
+     * @param array{} $object
      * @return Response
      */
     public function withObject(array $object): Response {
@@ -281,7 +282,7 @@ class Response {
      * @param mixed  $value
      * @return Response
      */
-    public function withParam(string $key, $value): Response {
+    public function withParam(string $key, mixed $value): Response {
         $this->url->set($key, $value);
         return $this;
     }
@@ -298,10 +299,10 @@ class Response {
 
     /**
      * Merges the given url with the current url
-     * @param Request $request Optional.
+     * @param Request|null $request Optional.
      * @return Response
      */
-    public function withQuery(Request $request = null): Response {
+    public function withQuery(?Request $request = null): Response {
         if (!empty($this->info->request)) {
             $query = $this->info->request->getQuery();
         } else {
@@ -316,7 +317,7 @@ class Response {
 
     /**
      * Sets the result
-     * @param array $result
+     * @param array{} $result
      * @return Response
      */
     public function withResult(array $result): Response {
@@ -340,10 +341,10 @@ class Response {
 
     /**
      * Sets the errors
-     * @param Errors $errors Optional.
+     * @param Errors|null $errors Optional.
      * @return Response
      */
-    public function withErrors(Errors $errors = null): Response {
+    public function withErrors(?Errors $errors = null): Response {
         if (!empty($errors)) {
             $this->info->errors = $errors;
         }
@@ -354,7 +355,7 @@ class Response {
 
     /**
      * Returns the given data as an Object
-     * @return array
+     * @return array{}
      */
     public function getData(): array {
         $data = [];
@@ -373,7 +374,7 @@ class Response {
     /**
      * Returns the given data as an Object
      * @param boolean $withSuffix Optional.
-     * @return array
+     * @return array{}
      */
     public function getErrors(bool $withSuffix = false): array {
         if (isset($this->info->errors)) {

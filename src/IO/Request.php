@@ -21,16 +21,21 @@ use ArrayAccess;
  */
 class Request implements ArrayAccess {
 
-    private $request;
-    private $files;
-    private $filters;
+    /** @var array{} */
+    private array $request;
+
+    /** @var array{} */
+    private array $files;
+
+    /** @var array{} */
+    private array $filters;
 
 
     /**
      * Creates a new Request instance
-     * @param array $request Optional.
+     * @param array{}|null $request Optional.
      */
-    public function __construct(array $request = null) {
+    public function __construct(?array $request = null) {
         $this->request = $request ?: $_REQUEST;
         $this->files   = $_FILES;
         $this->filters = [];
@@ -43,7 +48,7 @@ class Request implements ArrayAccess {
      * @param string $key
      * @return mixed
      */
-    public function __get(string $key) {
+    public function __get(string $key): mixed {
         return $this->get($key);
     }
 
@@ -53,7 +58,7 @@ class Request implements ArrayAccess {
      * @param mixed  $value
      * @return void
      */
-    public function __set(string $key, $value): void {
+    public function __set(string $key, mixed $value): void {
         $this->set($key, $value);
     }
 
@@ -79,21 +84,21 @@ class Request implements ArrayAccess {
 
     /**
      * Returns the request data at the given key or the default
-     * @param string $key
-     * @param mixed  $default Optional.
+     * @param string       $key
+     * @param mixed|string $default Optional.
      * @return mixed
      */
-    public function get(string $key, $default = "") {
+    public function get(string $key, mixed $default = ""): mixed {
         return isset($this->request[$key]) ? $this->request[$key] : $default;
     }
 
     /**
      * Returns the request data at the given key or the default
-     * @param string $key
-     * @param mixed  $default Optional.
+     * @param string       $key
+     * @param mixed|string $default Optional.
      * @return mixed
      */
-    public function getOr(string $key, $default) {
+    public function getOr(string $key, mixed $default): mixed {
         return !empty($this->request[$key]) ? $this->request[$key] : $default;
     }
 
@@ -140,7 +145,7 @@ class Request implements ArrayAccess {
     /**
      * Returns the request data at the given key as an array and removing the empty entries
      * @param string $key
-     * @return array
+     * @return mixed[]
      */
     public function getArray(string $key): array {
         return Arrays::removeEmpty($this->get($key, []));
@@ -148,12 +153,12 @@ class Request implements ArrayAccess {
 
     /**
      * Returns the request data at the given key from an array or the default
-     * @param string  $key
-     * @param integer $index
-     * @param mixed   $default Optional.
+     * @param string       $key
+     * @param integer      $index
+     * @param mixed|string $default Optional.
      * @return mixed
      */
-    public function getFromArray(string $key, int $index, $default = "") {
+    public function getFromArray(string $key, int $index, mixed $default = ""): mixed {
         if (isset($this->request[$key]) && isset($this->request[$key][$index])) {
             return $this->request[$key][$index];
         }
@@ -164,9 +169,9 @@ class Request implements ArrayAccess {
      * Returns the request data at the given key as JSON
      * @param string  $key
      * @param boolean $asArray Optional.
-     * @return object|array
+     * @return mixed
      */
-    public function getJSON(string $key, bool $asArray = false) {
+    public function getJSON(string $key, bool $asArray = false): mixed {
         return JSON::decode($this->get($key, "[]"), $asArray);
     }
 
@@ -174,49 +179,52 @@ class Request implements ArrayAccess {
 
     /**
      * Sets the given key on the request data with the given value
-     * @param string $key
-     * @param mixed  $value Optional.
-     * @return void
+     * @param string       $key
+     * @param mixed|string $value Optional.
+     * @return Request
      */
-    public function set(string $key, $value = ""): void {
+    public function set(string $key, mixed $value = ""): Request {
         $this->request[$key] = $value;
+        return $this;
     }
 
     /**
      * Sets the data of the give object
-     * @param array $object
-     * @return void
+     * @param mixed[] $object
+     * @return Request
      */
-    public function setObject(array $object): void {
+    public function setObject(array $object): Request {
         foreach ($object as $key => $value) {
             $this->request[$key] = $value;
         }
+        return $this;
     }
 
     /**
      * Removes the request data at the given key
      * @param string $key
-     * @return void
+     * @return Request
      */
-    public function remove(string $key): void {
+    public function remove(string $key): Request {
         if ($this->exists($key)) {
             unset($this->request[$key]);
         }
+        return $this;
     }
 
 
 
     /**
      * Returns true if the given key exists in the request data
-     * @param string|string[] $key   Optional.
-     * @param integer         $index Optional.
+     * @param string[]|string|null $key   Optional.
+     * @param integer|null         $index Optional.
      * @return boolean
      */
-    public function has($key = null, int $index = null): bool {
+    public function has(array|string $key = null, ?int $index = null): bool {
         if ($key === null) {
             return !empty($this->request);
         }
-        if (is_array($key)) {
+        if (Arrays::isArray($key)) {
             foreach ($key as $keyID) {
                 if (empty($this->request[$keyID])) {
                     return false;
@@ -232,11 +240,11 @@ class Request implements ArrayAccess {
 
     /**
      * Returns true if the given key is set in the request data
-     * @param string|string[] $key
+     * @param string[]|string $key
      * @return boolean
      */
-    public function exists($key): bool {
-        if (is_array($key)) {
+    public function exists(array|string $key): bool {
+        if (Arrays::isArray($key)) {
             foreach ($key as $keyID) {
                 if (!isset($this->request[$keyID])) {
                     return false;
@@ -283,35 +291,35 @@ class Request implements ArrayAccess {
 
     /**
      * Returns true if the given value is a number and greater and/or equal to cero
-     * @param string  $key
-     * @param integer $min  Optional.
-     * @param integer $max  Optional.
-     * @param integer $mult Optional.
+     * @param string       $key
+     * @param integer      $min  Optional.
+     * @param integer|null $max  Optional.
+     * @param integer|null $mult Optional.
      * @return boolean
      */
-    public function isNumeric(string $key, int $min = 1, int $max = null, int $mult = 1): bool {
+    public function isNumeric(string $key, int $min = 1, ?int $max = null, ?int $mult = 1): bool {
         return Numbers::isValid($this->getInt($key) * $mult, $min, $max);
     }
 
     /**
      * Returns true if the given price is valid
-     * @param string  $key
-     * @param integer $min Optional.
-     * @param integer $max Optional.
+     * @param string       $key
+     * @param integer      $min Optional.
+     * @param integer|null $max Optional.
      * @return boolean
      */
-    public function isValidPrice(string $key, int $min = 1, int $max = null): bool {
+    public function isValidPrice(string $key, int $min = 1, ?int $max = null): bool {
         return Numbers::isValidPrice($this->getInt($key), $min, $max);
     }
 
     /**
      * Returns true if the given value is alpha-numeric
-     * @param string  $key
-     * @param boolean $withDashes Optional.
-     * @param integer $length     Optional.
+     * @param string       $key
+     * @param boolean      $withDashes Optional.
+     * @param integer|null $length     Optional.
      * @return boolean
      */
-    public function isAlphaNum(string $key, bool $withDashes = false, int $length = null): bool {
+    public function isAlphaNum(string $key, bool $withDashes = false, ?int $length = null): bool {
         return Utils::isAlphaNum($this->get($key, ""), $withDashes, $length);
     }
 
@@ -367,11 +375,11 @@ class Request implements ArrayAccess {
 
     /**
      * Returns true if the given hour is Valid
-     * @param string   $key
-     * @param string[] $minutes Optional.
+     * @param string        $key
+     * @param string[]|null $minutes Optional.
      * @return boolean
      */
-    public function isValidHour(string $key, array $minutes = null): bool {
+    public function isValidHour(string $key, ?array $minutes = null): bool {
         return DateTime::isValidHour($this->get($key), $minutes);
     }
 
@@ -440,7 +448,7 @@ class Request implements ArrayAccess {
 
     /**
      * Returns the request as an array
-     * @return array
+     * @return array{}
      */
     public function toArray(): array {
         return $this->request;
@@ -468,11 +476,11 @@ class Request implements ArrayAccess {
 
     /**
      * Returns the requested price in cents
-     * @param string  $key
-     * @param integer $index Optional.
+     * @param string       $key
+     * @param integer|null $index Optional.
      * @return integer
      */
-    public function toCents(string $key, int $index = null): int {
+    public function toCents(string $key, ?int $index = null): int {
         $value = $index !== null ? $this->getFromArray($key, $index, 0) : $this->get($key);
         return Numbers::toCents((float)$value);
     }
@@ -574,7 +582,7 @@ class Request implements ArrayAccess {
     /**
      * Returns the Array keys from the given array
      * @param string $key
-     * @return array
+     * @return mixed[]
      */
     public function getKeys(string $key): array {
         return array_keys($this->get($key, []));
@@ -587,7 +595,7 @@ class Request implements ArrayAccess {
      * @param string $key
      * @return mixed
      */
-    public function getFile(string $key) {
+    public function getFile(string $key): mixed {
         return isset($this->files[$key]) ? $this->files[$key] : null;
     }
 
@@ -639,10 +647,10 @@ class Request implements ArrayAccess {
     /**
      * Returns true if the file at the given key has the given extension
      * @param string          $key
-     * @param string|string[] $extensions
+     * @param string[]|string $extensions
      * @return boolean
      */
-    public function hasExtension(string $key, $extensions): bool {
+    public function hasExtension(string $key, array|string $extensions): bool {
         if ($this->hasFile($key)) {
             return File::hasExtension($_FILES[$key]["name"], $extensions);
         }
@@ -689,19 +697,20 @@ class Request implements ArrayAccess {
      * @param string  $key
      * @param Errors  $errors
      * @param boolean $isRequired Optional.
-     * @return void
+     * @return Request
      */
-    public function validateImage(string $key, Errors $errors, bool $isRequired = true): void {
+    public function validateImage(string $key, Errors $errors, bool $isRequired = true): Request {
         if ($isRequired && !$this->has($key)) {
             $errors->add("{$key}Empty");
         }
         if ($this->has($key)) {
             if (!$this->isValidImage($key)) {
-                $error = "{$key}Type";
+                $errors->add("{$key}Type");
             } elseif (!$this->fileExists($key)) {
-                $error = "{$key}Exists";
+                $errors->add("{$key}Exists");
             }
         }
+        return $this;
     }
 
     /**
@@ -709,30 +718,31 @@ class Request implements ArrayAccess {
      * @param string  $key
      * @param Errors  $errors
      * @param boolean $isRequired Optional.
-     * @return void
+     * @return Request
      */
-    public function validateVideo(string $key, Errors $errors, bool $isRequired = true): void {
+    public function validateVideo(string $key, Errors $errors, bool $isRequired = true): Request {
         if ($isRequired && !$this->has($key)) {
             $errors->add("{$key}Empty");
         }
         if ($this->has($key)) {
             if (!$this->isValidVideo($key)) {
-                $error = "{$key}Type";
+                $errors->add("{$key}Type");
             } elseif (!$this->fileExists($key)) {
-                $error = "{$key}Exists";
+                $errors->add("{$key}Exists");
             }
         }
+        return $this;
     }
 
     /**
      * Validates a File
-     * @param string          $key
-     * @param Errors          $errors
-     * @param string|string[] $extensions Optional.
-     * @param boolean         $isRequired Optional.
-     * @return void
+     * @param string               $key
+     * @param Errors               $errors
+     * @param string[]|string|null $extensions Optional.
+     * @param boolean              $isRequired Optional.
+     * @return Request
      */
-    public function validateFile(string $key, Errors $errors, $extensions = null, bool $isRequired = true): void {
+    public function validateFile(string $key, Errors $errors, array|string $extensions = null, bool $isRequired = true): Request {
         if ($isRequired && !$this->has($key)) {
             $errors->add("{$key}Empty");
         }
@@ -743,27 +753,29 @@ class Request implements ArrayAccess {
                 $errors->add("{$key}Exists");
             }
         }
+        return $this;
     }
 
     /**
      * Adds Filters to the Query
      * @param mixed $filters
-     * @return void
+     * @return Request
      */
-    public function addFilter($filters) {
+    public function addFilter(mixed $filters): Request {
         if (!empty($filters)) {
             $filters = Arrays::toArray($filters);
             foreach ($filters as $filter) {
                 $this->filters[] = $filter;
             }
         }
+        return $this;
     }
 
     /**
      * Creates a query for the urls
      * @return Url
      */
-    public function getQuery() {
+    public function getQuery(): Url {
         $url = new Url();
         if ($this->has("page")) {
             $url->set("page", $this->get("page"));
@@ -785,7 +797,7 @@ class Request implements ArrayAccess {
      * @param mixed $key
      * @return mixed
      */
-    public function offsetGet($key) {
+    public function offsetGet(mixed $key): mixed {
         return $this->get($key);
     }
 
@@ -795,7 +807,7 @@ class Request implements ArrayAccess {
      * @param mixed $value
      * @return void
      */
-    public function offsetSet($key, $value): void {
+    public function offsetSet(mixed $key, mixed $value): void {
         $this->set($key, $value);
     }
 
@@ -804,7 +816,7 @@ class Request implements ArrayAccess {
      * @param mixed $key
      * @return boolean
      */
-    public function offsetExists($key): bool {
+    public function offsetExists(mixed $key): bool {
         return array_key_exists($key, $this->request);
     }
 
@@ -813,7 +825,7 @@ class Request implements ArrayAccess {
      * @param mixed $key
      * @return void
      */
-    public function offsetUnset($key): void {
+    public function offsetUnset(mixed $key): void {
         unset($this->request[$key]);
     }
 }

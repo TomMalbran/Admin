@@ -3,6 +3,7 @@ namespace Admin\Schema;
 
 use Admin\Admin;
 use Admin\Config\Settings;
+use Admin\Schema\Database;
 use Admin\Schema\Factory;
 use Admin\Schema\Structure;
 use Admin\File\File;
@@ -14,46 +15,60 @@ use Admin\Utils\Strings;
  */
 class Migration {
 
-    private static $db = null;
+    private static ?Database $db = null;
 
 
     /**
      * Migrates the Tables
      * @param boolean $canDelete Optional.
-     * @return void
+     * @return boolean
      */
-    public static function migrate(bool $canDelete = false): void {
+    public static function migrate(bool $canDelete = false): bool {
         self::$db = Factory::getDatabase();
 
+        $migrated = self::migrateTables($canDelete);
+        $extras   = self::extraMigrations();
+
+        return $migrated || $extras;
+    }
+
+    /**
+     * Migrates the Tables
+     * @param boolean $canDelete
+     * @return boolean
+     */
+    private static function migrateTables(bool $canDelete): bool {
         $schemas     = Factory::getSchemas();
         $tableNames  = self::$db->getTables(null, false);
         $schemaNames = [];
+        $didMigrate  = false;
 
-        // Create or update the Tables
         foreach ($schemas as $schemaData) {
+            $didUpdate     = false;
             $structure     = new Structure($schemaData);
             $schemaNames[] = $structure->table;
 
             if (!Arrays::contains($tableNames, $structure->table)) {
-                self::createTable($structure);
+                $didUpdate = self::createTable($structure);
             } else {
-                self::updateTable($structure, $canDelete);
+                $didUpdate = self::updateTable($structure, $canDelete);
+            }
+            if ($didUpdate) {
+                $didMigrate = true;
             }
         }
 
         // Delete the Tables or show which to delete
-        self::deleteTables($tableNames, $schemaNames, $canDelete);
-
-        // Run extra migrations created in files
-        self::extraMigrations();
+        $didDelete = self::deleteTables($tableNames, $schemaNames, $canDelete);
+        return $didMigrate || $didDelete;
     }
 
     /**
      * Creates a New Table
      * @param Structure $structure
-     * @return void
+     * @return boolean
      */
-    private static function createTable(Structure $structure): void {
+    private static function createTable(Structure $structure): bool {
         $fields  = [];
         $primary = [];
         $keys    = [];
@@ -71,37 +86,42 @@ class Migration {
         $sql = self::$db->createTable($structure->table, $fields, $primary, $keys);
         print("<br>Created table <b>$structure->table</b> ... <br>");
         print(Strings::toHtml($sql) . "<br><br>");
+        return true;
     }
 
     /**
      * Delete the Tables or show which to delete
-     * @param array   $tableNames
-     * @param array   $schemaNames
-     * @param boolean $canDelete
-     * @return void
+     * @param string[] $tableNames
+     * @param string[] $schemaNames
+     * @param boolean  $canDelete
+     * @return boolean
      */
-    private static function deleteTables(array $tableNames, array $schemaNames, bool $canDelete): void {
-        $prebr = "<br>";
+    private static function deleteTables(array $tableNames, array $schemaNames, bool $canDelete): bool {
+        $deleted  = 0;
+        $break    = "<br>";
+
         foreach ($tableNames as $tableName) {
             if (!Arrays::contains($schemaNames, $tableName)) {
                 if ($canDelete) {
                     self::$db->deleteTable($tableName);
-                    print("{$prebr}Deleted table <i>$tableName</i><br>");
+                    print("{$break}Deleted table <i>$tableName</i><br>");
                 } else {
-                    print("{$prebr}Delete table <i>$tableName</i> (manually)<br>");
+                    print("{$break}Delete table <i>$tableName</i> (manually)<br>");
                 }
-                $prebr = "";
+                $deleted += 1;
+                $break    = "";
             }
         }
+        return $deleted > 0;
     }
 
     /**
      * Updates the Table
      * @param Structure $structure
      * @param boolean   $canDelete
-     * @return void
+     * @return boolean
      */
-    private static function updateTable(Structure $structure, bool $canDelete): void {
+    private static function updateTable(Structure $structure, bool $canDelete): bool {
         $primaryKeys = self::$db->getPrimaryKeys($structure->table);
         $tableKeys   = self::$db->getTableKeys($structure->table);
         $tableFields = self::$db->getTableFields($structure->table);
@@ -218,7 +238,7 @@ class Migration {
         // Nothing to change
         if (!$update) {
             print("No changes for <i>$structure->table</i><br>");
-            return;
+            return false;
         }
 
         // Update the Table
@@ -248,21 +268,22 @@ class Migration {
             print("$sql<br>");
         }
         print("<br>");
+        return true;
     }
 
 
 
     /**
      * Runs extra Migrations
-     * @return void
+     * @return boolean
      */
-    private static function extraMigrations() {
+    private static function extraMigrations(): bool {
         $migration = Settings::getInt("lastMigration", "core");
         $path      = Admin::getPath(Admin::MigrationsDir);
 
         if (!File::exists($path)) {
             print("<br>No <i>migrations</i> required<br>");
-            return;
+            return false;
         }
 
         $files = File::getFilesInDir($path);
@@ -278,7 +299,7 @@ class Migration {
         $last  = end($names);
         if (empty($names) || $first > $last) {
             print("<br>No <i>migrations</i> required<br>");
-            return;
+            return false;
         }
 
         print("<br>Running <b>migrations $first to $last</b><br>");
@@ -290,5 +311,6 @@ class Migration {
         }
 
         Settings::set("core", "lastMigration", $last);
+        return true;
     }
 }

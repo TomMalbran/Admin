@@ -5,17 +5,19 @@ use Admin\IO\Request;
 use Admin\Schema\Database;
 use Admin\Schema\Structure;
 use Admin\Schema\Query;
+use Admin\Utils\Arrays;
 
 /**
  * The Modification Wrapper
  */
 class Modification {
 
-    private $db;
-    private $structure;
+    private Database  $db;
+    private Structure $structure;
 
-    private $fields;
-    private $credentialID;
+    /** @var array{} */
+    private array $fields;
+    private int   $credentialID;
 
 
     /**
@@ -32,19 +34,19 @@ class Modification {
 
     /**
      * Adds all the Fields
-     * @param Request|array $fields
-     * @param array|integer $extra        Optional.
-     * @param integer       $credentialID Optional.
-     * @return void
+     * @param Request|array{}      $fields
+     * @param array{}|integer|null $extra        Optional.
+     * @param integer              $credentialID Optional.
+     * @return Modification
      */
-    public function addFields($fields, $extra = null, int $credentialID = 0): void {
+    public function addFields(Request|array $fields, array|int $extra = null, int $credentialID = 0): Modification {
         if ($fields instanceof Request) {
             $this->fields = $this->parseFields($fields);
         } else {
             $this->fields = $fields;
         }
         if (!empty($extra)) {
-            if (is_array($extra)) {
+            if (Arrays::isArray($extra)) {
                 $this->fields = array_merge($this->fields, $extra);
             } else {
                 $this->credentialID = $extra;
@@ -53,12 +55,13 @@ class Modification {
         if (!empty($credentialID)) {
             $this->credentialID = $credentialID;
         }
+        return $this;
     }
 
     /**
      * Parses the data and returns the fields
      * @param Request $request
-     * @return array
+     * @return array{}
      */
     private function parseFields(Request $request): array {
         $result = [];
@@ -80,9 +83,9 @@ class Modification {
 
     /**
      * Adds the Creation Fields
-     * @return void
+     * @return Modification
      */
-    public function addCreation(): void {
+    public function addCreation(): Modification {
         if ($this->structure->canDelete && empty($this->fields["isDeleted"])) {
             $this->fields["isDeleted"] = 0;
         }
@@ -92,19 +95,21 @@ class Modification {
         if ($this->structure->hasUsers && !empty($this->credentialID)) {
             $this->fields["createdUser"] = $this->credentialID;
         }
+        return $this;
     }
 
     /**
      * Adds the Modification Fields
-     * @return void
+     * @return Modification
      */
-    public function addModification(): void {
+    public function addModification(): Modification {
         if ($this->structure->canEdit && $this->structure->hasTimestamps) {
             $this->fields["modifiedTime"] = time();
         }
         if ($this->structure->canEdit && $this->structure->hasUsers && !empty($this->credentialID)) {
             $this->fields["modifiedUser"] = $this->credentialID;
         }
+        return $this;
     }
 
 

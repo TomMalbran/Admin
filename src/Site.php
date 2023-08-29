@@ -5,6 +5,7 @@ use Admin\Admin;
 use Admin\Config\Config;
 use Admin\Config\Settings;
 use Admin\Auth\Auth;
+use Admin\IO\Response;
 use Admin\File\File;
 use Admin\File\Path;
 use Admin\Provider\Mustache;
@@ -19,9 +20,9 @@ class Site {
     /**
      * Creates the Admin
      * @param boolean $ensureUrl Optional.
-     * @return void
+     * @return boolean
      */
-    public static function create(bool $ensureUrl = true): void {
+    public static function create(bool $ensureUrl = true): bool {
         if ($ensureUrl) {
             $url = Server::getProperUrl();
             if (!empty($url)) {
@@ -32,13 +33,14 @@ class Site {
 
         Admin::create();
         Auth::setInternal();
+        return true;
     }
 
     /**
      * Returns the Config
      * @return object
      */
-    public static function getConfig() {
+    public static function getConfig(): object {
         $url       = Config::getUrl();
         $baseUrl   = Config::getBaseUrl(true);
         $slugUrl   = Strings::stripStart($_SERVER["REQUEST_URI"], $baseUrl);
@@ -54,11 +56,11 @@ class Site {
 
     /**
      * Returns a Setting
-     * @param string $section
-     * @param string $variable Optional.
+     * @param string      $section
+     * @param string|null $variable Optional.
      * @return mixed
      */
-    public static function getSettings(string $section, string $variable = null) {
+    public static function getSettings(string $section, ?string $variable = null): mixed {
         if (empty($variable)) {
             return Settings::getAllParsed($section);
         }
@@ -67,11 +69,11 @@ class Site {
 
     /**
      * Returns just the data for the requested content
-     * @param string $url
-     * @param array  $params Optional.
-     * @return array
+     * @param string  $url
+     * @param array{} $params Optional.
+     * @return array{}
      */
-    public static function getData(string $url, array $params = []) {
+    public static function getData(string $url, array $params = []): array {
         $response = Admin::request($url, $params);
         if (!empty($response) && !empty($response->data)) {
             return $response->data;
@@ -81,21 +83,21 @@ class Site {
 
     /**
      * Returns the requested content
-     * @param string $url
-     * @param array  $params Optional.
-     * @return array
+     * @param string  $url
+     * @param array{} $params Optional.
+     * @return Response
      */
-    public static function request(string $url, array $params = []) {
+    public static function request(string $url, array $params = []): Response {
         return Admin::request($url, $params);
     }
 
     /**
      * Prints the Template
-     * @param string $template
-     * @param array  $data     Optional.
-     * @return void
+     * @param string  $template
+     * @param array{} $data     Optional.
+     * @return boolean
      */
-    public static function print(string $template, array $data = []) {
+    public static function print(string $template, array $data = []): bool {
         $path    = Admin::getPath(Admin::PublicDir, "site");
         $content = array_merge([
             "title"     => Config::get("name"),
@@ -108,9 +110,8 @@ class Site {
         ], $data);
 
         if (File::exists($path, Admin::TemplatesDir, "{$template}.html")) {
-            Mustache::print($template, $content, true);
-        } else {
-            Mustache::print("error", $content, true);
+            return Mustache::print($template, $content, true);
         }
+        return Mustache::print("error", $content, true);
     }
 }

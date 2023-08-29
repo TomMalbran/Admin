@@ -1,6 +1,8 @@
 <?php
 namespace Admin\Config;
 
+use Admin\Schema\Model;
+use Admin\Utils\Arrays;
 use Admin\Utils\JSON;
 
 /**
@@ -19,8 +21,8 @@ class SettingType {
      * @param mixed $value
      * @return integer
      */
-    public static function get($value): int {
-        if (is_array($value)) {
+    public static function get(mixed $value): int {
+        if (Arrays::isArray($value)) {
             return self::JSON;
         }
         if (gettype($value) == "boolean") {
@@ -31,10 +33,10 @@ class SettingType {
 
     /**
      * Parses a Settings Value
-     * @param Model|array $data
+     * @param Model|array{} $data
      * @return mixed
      */
-    public static function parseValue($data) {
+    public static function parseValue(Model|array $data): mixed {
         switch ($data["type"]) {
         case self::Binary:
             return !empty($data["value"]);

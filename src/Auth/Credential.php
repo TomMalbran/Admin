@@ -53,11 +53,11 @@ class Credential {
 
     /**
      * Returns true if there is an Credential with the given ID
-     * @param integer $crendentialID
+     * @param integer $credentialID
      * @return boolean
      */
-    public static function exists(int $crendentialID): bool {
-        return self::schema()->exists($crendentialID);
+    public static function exists(int $credentialID): bool {
+        return self::schema()->exists($credentialID);
     }
 
     /**
@@ -76,21 +76,21 @@ class Credential {
 
     /**
      * Returns all the Credentials
-     * @param Request $sort Optional.
-     * @return array
+     * @param Request|null $sort Optional.
+     * @return mixed[]
      */
-    public static function getAll(Request $sort = null): array {
+    public static function getAll(?Request $sort = null): array {
         return self::request(null, false, $sort);
     }
 
     /**
      * Requests data to the database
-     * @param Query   $query    Optional.
-     * @param boolean $complete Optional.
-     * @param Request $sort     Optional.
-     * @return array
+     * @param Query|null   $query    Optional.
+     * @param boolean      $complete Optional.
+     * @param Request|null $sort     Optional.
+     * @return mixed[]
      */
-    private static function request(Query $query = null, bool $complete = false, Request $sort = null): array {
+    private static function request(?Query $query = null, bool $complete = false, ?Request $sort = null): array {
         $request = self::schema()->getAll($query, $sort);
         $result  = [];
 
@@ -116,11 +116,11 @@ class Credential {
 
     /**
      * Requests a single row from the database
-     * @param Query   $query    Optional.
-     * @param boolean $complete Optional.
+     * @param Query|null $query    Optional.
+     * @param boolean    $complete Optional.
      * @return Model
      */
-    private static function requestOne(Query $query = null, bool $complete = false): Model {
+    private static function requestOne(?Query $query = null, bool $complete = false): Model {
         $request = self::request($query, $complete);
         return self::schema()->getModel($request);
     }
@@ -138,7 +138,7 @@ class Credential {
     /**
      * Returns a select of all the Credentials
      * @param integer $selectedID Optional.
-     * @return array
+     * @return mixed[]
      */
     public static function getSelect(int $selectedID = 0): array {
         $request = self::schema()->getMap();
@@ -184,13 +184,13 @@ class Credential {
 
     /**
      * Edits the given Credential
-     * @param integer $credentialID
-     * @param Request $request
-     * @param integer $status       Optional.
-     * @param integer $level        Optional.
+     * @param integer      $credentialID
+     * @param Request      $request
+     * @param integer|null $status       Optional.
+     * @param integer|null $level        Optional.
      * @return boolean
      */
-    public static function edit(int $credentialID, Request $request, int $status = null, int $level = null): bool {
+    public static function edit(int $credentialID, Request $request, ?int $status = null, ?int $level = null): bool {
         $fields = self::getFields($request, $status, $level);
         return self::schema()->edit($credentialID, $fields);
     }
@@ -206,12 +206,12 @@ class Credential {
 
     /**
      * Parses the data and returns the fields
-     * @param Request $request
-     * @param integer $status  Optional.
-     * @param integer $level   Optional.
-     * @return array
+     * @param Request      $request
+     * @param integer|null $status  Optional.
+     * @param integer|null $level   Optional.
+     * @return array{}
      */
-    private static function getFields(Request $request, int $status = null, int $level = null): array {
+    private static function getFields(Request $request, ?int $status = null, ?int $level = null): array {
         $result = [
             "firstName" => $request->firstName,
             "lastName"  => $request->lastName,
@@ -251,7 +251,7 @@ class Credential {
      * Sets the Credential Password
      * @param integer $credentialID
      * @param string  $password
-     * @return array
+     * @return array{}
      */
     public static function setPassword(int $credentialID, string $password): array {
         $hash = self::createHash($password);
@@ -280,7 +280,7 @@ class Credential {
      * Creates a Hash and Salt (if required) for the the given Password
      * @param string $pass
      * @param string $salt Optional.
-     * @return array
+     * @return array{}
      */
     public static function createHash(string $pass, string $salt = ""): array {
         $salt = !empty($salt) ? $salt : Strings::random(50);
@@ -290,11 +290,11 @@ class Credential {
 
     /**
      * Returns the Real Name for the given User
-     * @param Model|array $data
-     * @param string      $prefix Optional.
+     * @param Model|array{} $data
+     * @param string        $prefix Optional.
      * @return string
      */
-    public static function createName($data, string $prefix = ""): string {
+    public static function createName(Model|array $data, string $prefix = ""): string {
         $id        = Arrays::getValue($data, "credentialID", "", $prefix);
         $firstName = Arrays::getValue($data, "firstName",    "", $prefix);
         $lastName  = Arrays::getValue($data, "lastName",     "", $prefix);
@@ -317,9 +317,9 @@ class Credential {
      * @param string $lastName
      * @param string $email
      * @param string $password
-     * @return void
+     * @return boolean
      */
-    public static function seedOwner(string $firstName, string $lastName, string $email, string $password): void {
+    public static function seedOwner(string $firstName, string $lastName, string $email, string $password): bool {
         $query = Query::create("email", "=", $email);
         if (!self::schema()->exists($query)) {
             $hash = self::createHash($password);
@@ -335,8 +335,10 @@ class Credential {
                 "currentLogin" => time(),
             ]);
             print("<br>Owner <i>$firstName</i> created<br>");
-        } else {
-            print("<br>No <i>Owner</i> created<br>");
+            return true;
         }
+
+        print("<br>No <i>Owner</i> created<br>");
+        return false;
     }
 }

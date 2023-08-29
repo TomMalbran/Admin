@@ -14,48 +14,82 @@ use stdClass;
  */
 class Config {
 
-    private static $loaded = false;
-    private static $data   = null;
+    private static bool  $loaded = false;
+
+    /** @var array{} */
+    private static array $data;
+
 
 
     /**
      * Loads the Config Data
-     * @return void
+     * @return boolean
      */
-    private static function load(): void {
+    private static function load(): bool {
         if (self::$loaded) {
-            return;
+            return false;
         }
+
         $path    = Admin::getPath();
-        $data    = Dotenv::createImmutable($path)->load();
+        $data    = self::loadENV($path, ".env");
         $replace = [];
 
         if (File::exists($path, ".env.dev")) {
-            $config = Dotenv::createMutable($path, ".env.dev")->load();
+            $config = self::loadENV($path, ".env.dev");
             if (Server::isDevHost() || (!empty($config["URL"]) && Server::urlStartsWith($config["URL"]))) {
                 $replace = $config;
             }
         }
         if (empty($replace) && File::exists($path, ".env.stage")) {
-            $config = Dotenv::createMutable($path, ".env.stage")->load();
+            $config = self::loadENV($path, ".env.stage");
             if (Server::isStageHost() || (!empty($config["URL"]) && Server::urlStartsWith($config["URL"]))) {
                 $replace = $config;
             }
         }
         if (empty($replace) && !Server::isLocalHost() && File::exists($path, ".env.production")) {
-            $replace = Dotenv::createMutable($path, ".env.production")->load();
+            $replace = self::loadENV($path, ".env.production");
         }
 
         self::$loaded = true;
         self::$data   = array_merge($data, $replace);
+        return true;
+    }
 
-        foreach (self::$data as $key => $value) {
-            if ($value === "true") {
-                self::$data[$key] = true;
-            } elseif ($value === "false") {
-                self::$data[$key] = false;
+    /**
+     * Parses the Contents of the env files
+     * @param string $path
+     * @param string $fileName
+     * @return array{}
+     */
+    private static function loadENV(string $path, string $fileName): array {
+        $contents = File::read($path, $fileName);
+        $lines    = Strings::split($contents, "\n");
+        $result   = [];
+
+        foreach ($lines as $line) {
+            if (empty(trim($line))) {
+                continue;
             }
+            $parts = Strings::split($line, " = ");
+            if (count($parts) != 2) {
+                continue;
+            }
+
+            $key   = trim($parts[0]);
+            $value = trim($parts[1]);
+
+            if ($value === "true") {
+                $value = true;
+            } elseif ($value === "false") {
+                $value = false;
+            } elseif (Strings::startsWith($value, "\"")) {
+                $value = Strings::replace($value, "\"", "");
+            } else {
+                $value = (int)$value;
+            }
+            $result[$key] = $value;
         }
+        return $result;
     }
 
 
@@ -65,23 +99,23 @@ class Config {
      * @param string $property
      * @return mixed
      */
-    public static function get(string $property) {
+    public static function get(string $property): mixed {
         self::load();
 
         // Check if there is a property with the given value
-        $upperkey = Strings::camelCaseToUpperCase($property);
-        if (isset(self::$data[$upperkey])) {
-            return self::$data[$upperkey];
+        $upperKey = Strings::camelCaseToUpperCase($property);
+        if (isset(self::$data[$upperKey])) {
+            return self::$data[$upperKey];
         }
 
         // Try to get all the properties that start with the value as a prefix
         $found  = false;
         $result = new stdClass();
-        foreach (self::$data as $envkey => $value) {
-            $parts  = Strings::split($envkey, "_");
+        foreach (self::$data as $envKey => $value) {
+            $parts  = Strings::split($envKey, "_");
             $prefix = Strings::toLowerCase($parts[0]);
             if ($prefix == $property) {
-                $suffix = Strings::replace($envkey, "{$parts[0]}_", "");
+                $suffix = Strings::replace($envKey, "{$parts[0]}_", "");
                 $key    = Strings::upperCaseToCamelCase($suffix);
                 $found  = true;
                 $result->{$key} = $value;
@@ -98,9 +132,9 @@ class Config {
     /**
      * Returns a Config Property or null
      * @param string $property
-     * @return array
+     * @return string[]
      */
-    public static function getArray(string $property) {
+    public static function getArray(string $property): array {
         $value = Config::get($property);
         if (!empty($value)) {
             return Strings::split($value, ",");
@@ -167,7 +201,7 @@ class Config {
      * @param string ...$urlParts
      * @return string
      */
-    public static function getInternalUrl(string ...$urlParts) {
+    public static function getInternalUrl(string ...$urlParts): string {
         $route = Admin::getInternalRoute();
         $url   = self::getUrl($route, Admin::PublicDir, ...$urlParts);
         return File::addLastSlash($url);
@@ -177,7 +211,7 @@ class Config {
      * Return the internal lib Url adding the url parts at the end
      * @return string
      */
-    public static function getLibUrl() {
+    public static function getLibUrl(): string {
         $route = Admin::getInternalRoute();
         $url   = self::getUrl($route, Admin::LibDir);
         return File::addLastSlash($url);
@@ -188,7 +222,7 @@ class Config {
      * @param boolean $forSite Optional.
      * @return string
      */
-    public static function getBaseUrl($forSite = false): string {
+    public static function getBaseUrl(bool $forSite = false): string {
         $url = $forSite ? self::getUrl() : self::getAdminUrl();
         return parse_url($url, PHP_URL_PATH);
     }
@@ -211,7 +245,7 @@ class Config {
     }
 
     /**
-     * Returns the Version split into the diferent parts
+     * Returns the Version split into the different parts
      * @return object
      */
     public static function getVersion(): object {

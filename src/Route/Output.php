@@ -20,30 +20,38 @@ class Output {
      * @param boolean  $isAjax
      * @param boolean  $isReload
      * @param boolean  $isFrame
-     * @return void
+     * @return boolean
      */
-    public static function print(Response $response, bool $isAjax, bool $isReload, bool $isFrame) {
+    public static function print(Response $response, bool $isAjax, bool $isReload, bool $isFrame): bool {
         if ($response->isRedirect) {
             self::redirect($response, $isAjax, $isFrame);
-        } elseif ($response->isAPI) {
+            return true;
+        }
+        if ($response->isAPI) {
             echo JSON::encode($response->data + [
                 "adminJWT" => Auth::getToken(),
             ]);
-        } elseif ($response->isJSON) {
-            echo JSON::encode($response->data);
-        } elseif ($response->isView) {
-            self::view($response, $isAjax, $isReload, $isFrame);
+            return true;
         }
+        if ($response->isJSON) {
+            echo JSON::encode($response->data);
+            return true;
+        }
+        if ($response->isView) {
+            self::view($response, $isAjax, $isReload, $isFrame);
+            return true;
+        }
+        return false;
     }
 
     /**
-     * Redirects to the Response url, if necesary
+     * Redirects to the Response url, if necessary
      * @param Response $response
      * @param boolean  $isAjax
      * @param boolean  $isFrame
-     * @return void
+     * @return boolean
      */
-    private static function redirect(Response $response, bool $isAjax, bool $isFrame): void {
+    private static function redirect(Response $response, bool $isAjax, bool $isFrame): bool {
         $baseUrl = Config::getAdminUrl();
 
         $url = $baseUrl;
@@ -66,17 +74,18 @@ class Output {
         } else {
             header("Location: $url");
         }
+        return true;
     }
 
     /**
-     * Prints the the Response template, if necesary
+     * Prints the the Response template, if necessary
      * @param Response $response
      * @param boolean  $isAjax
      * @param boolean  $isReload
      * @param boolean  $isFrame
-     * @return void
+     * @return boolean
      */
-    private static function view(Response $response, bool $isAjax, bool $isReload, bool $isFrame): void {
+    private static function view(Response $response, bool $isAjax, bool $isReload, bool $isFrame): bool {
         $forBody    = $isReload || (!$isAjax && !$isFrame);
         $credential = Auth::getCredential();
         $data       = [
@@ -120,11 +129,12 @@ class Output {
         } else {
             Mustache::print("core/index", $data);
         }
+        return true;
     }
 
     /**
      * Returns the Menu Items
-     * @return array
+     * @return mixed[]
      */
     private static function getMenuItems(): array {
         $items    = Admin::loadData(Admin::MenuData);

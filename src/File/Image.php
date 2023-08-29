@@ -13,11 +13,14 @@ class Image {
     const Maximum = "maximum";
     const Thumb   = "thumb";
 
-    // The Image Types and Functions
-    private static $imageTypes = [ 1, 2, 3, 15, 16 ];
-    private static $transTypes = [ 1, 3 ];
-    private static $exifTypes  = [ 2 ];
-    private static $imageData  = [
+    /** @var int[] The image types */
+    private static array $imageTypes = [ 1, 2, 3, 15, 16 ];
+
+    /** @var int[] The transparent image type */
+    private static array $transTypes = [ 1, 3 ];
+
+    /** @var mixed[] */
+    private static array $imageData  = [
         1  => [ "imagecreatefromgif",  "imagegif",  "image/gif",  "gif" ],
         2  => [ "imagecreatefromjpeg", "imagejpeg", "image/jpeg", "jpg" ],
         3  => [ "imagecreatefrompng",  "imagepng",  "image/png",  "png" ],
@@ -52,23 +55,26 @@ class Image {
      * @return integer
      */
     public static function getType(string $file): int {
-        if (!empty($file) && file_exists($file) && !is_dir($file)) {
+        if (file_exists($file)) {
             return exif_imagetype($file);
         }
         return 0;
     }
 
     /**
-     * Returns the Size of the Image as [ width, height ]
+     * Returns the Size of the Image as [ width, height, type ]
      * @param string $file
-     * @return array
+     * @return int[]
      */
     public static function getSize(string $file): array {
-        if (!empty($file) && file_exists($file) && !is_dir($file)) {
-            $size = getimagesize($file);
-            return [ "width" => $size[0], "height" => $size[1] ];
+        if (!file_exists($file)) {
+            return [ 0, 0, 0 ];
         }
-        return [ "width" => 0, "height" => 0 ];
+        $size = getimagesize($file);
+        if ($size == false) {
+            return [ 0, 0, 0 ];
+        }
+        return $size;
     }
 
     /**
@@ -87,16 +93,28 @@ class Image {
         return 0;
     }
 
+    /**
+     * Returns the Width of the given Text
+     * @param string  $text
+     * @param string  $fontFile
+     * @param integer $fontSize
+     * @return integer
+     */
+    public static function getTextWidth(string $text, string $fontFile, int $fontSize): int {
+        $dimensions = imagettfbbox($fontSize, 0, $fontFile, $text);
+        return abs($dimensions[4] - $dimensions[0]);
+    }
+
 
 
     /**
      * Resamples the given image
-     * @param string  $src
-     * @param string  $dst
-     * @param integer $orientation Optional.
+     * @param string       $src
+     * @param string       $dst
+     * @param integer|null $orientation Optional.
      * @return boolean
      */
-    public static function resample(string $src, string $dst, int $orientation = null): bool {
+    public static function resample(string $src, string $dst, ?int $orientation = null): bool {
         if ($orientation == null) {
             $orientation = self::getOrientation($src);
         }
@@ -104,7 +122,7 @@ class Image {
             return false;
         }
 
-        [ $imgWidth, $imgHeight, $imgType ] = getimagesize($src);
+        [ $imgWidth, $imgHeight, $imgType ] = self::getSize($src);
         if (!self::hasType($imgType)) {
             return false;
         }
@@ -151,7 +169,7 @@ class Image {
         int    $height,
         string $action
     ): bool {
-        [ $imgWidth, $imgHeight, $imgType ] = getimagesize($src);
+        [ $imgWidth, $imgHeight, $imgType ] = self::getSize($src);
         if (!self::hasType($imgType)) {
             return false;
         }
@@ -165,9 +183,9 @@ class Image {
             $yCorner   = 0;
 
             if ($imgWidth > $imgHeight) {
-                $height = $imgHeight * $width / $imgWidth;
+                $height = round($imgHeight * $width / $imgWidth);
             } else {
-                $width  = $imgWidth * $height / $imgHeight;
+                $width  = round($imgWidth * $height / $imgHeight);
             }
             break;
 
@@ -181,9 +199,9 @@ class Image {
                 $oldHeight = $imgHeight;
 
                 if ($imgWidth > $imgHeight) {
-                    $height = $imgHeight * $width / $imgWidth;
+                    $height = round($imgHeight * $width / $imgWidth);
                 } else {
-                    $width  = $imgWidth * $height / $imgHeight;
+                    $width  = round($imgWidth * $height / $imgHeight);
                 }
             } else {
                 $width     = $imgWidth;
@@ -201,13 +219,13 @@ class Image {
             if ($yScale < $xScale) {
                 $oldWidth  = round($width  * $yScale);
                 $oldHeight = round($height * $yScale);
-                $xCorner   = ($imgWidth - $oldWidth) / 2;
+                $xCorner   = round(($imgWidth - $oldWidth) / 2);
                 $yCorner   = 0;
             } else {
                 $oldWidth  = round($width  * $xScale);
                 $oldHeight = round($height * $xScale);
                 $xCorner   = 0;
-                $yCorner   = ($imgHeight - $oldHeight) / 2;
+                $yCorner   = round(($imgHeight - $oldHeight) / 2);
             }
             break;
         }
@@ -247,7 +265,7 @@ class Image {
         int    $cropWidth,
         int    $cropHeight
     ): bool {
-        [ $imgWidth, $imgHeight, $imgType ] = getimagesize($src);
+        [ $imgWidth, $imgHeight, $imgType ] = self::getSize($src);
         if (!self::hasType($imgType)) {
             return false;
         }
@@ -279,7 +297,7 @@ class Image {
      * @param integer $imgType
      * @return string
      */
-    public static function getContentType(int $imgType) {
+    public static function getContentType(int $imgType): string {
         return self::$imageData[$imgType][2];
     }
 
@@ -288,7 +306,7 @@ class Image {
      * @param integer $imgType
      * @return string
      */
-    public static function getExtension(int $imgType) {
+    public static function getExtension(int $imgType): string {
         return self::$imageData[$imgType][3];
     }
 
@@ -298,7 +316,7 @@ class Image {
      * @param mixed   $image
      * @return mixed
      */
-    public static function createSrcImage(int $imgType, $image) {
+    public static function createSrcImage(int $imgType, mixed $image): mixed {
         return self::$imageData[$imgType][0]($image);
     }
 
@@ -309,7 +327,7 @@ class Image {
      * @param integer $height
      * @return mixed
      */
-    public static function createDstImage(int $imgType, int $width, int $height) {
+    public static function createDstImage(int $imgType, int $width, int $height): mixed {
         $result = imagecreatetruecolor($width, $height);
         if (Arrays::contains(self::$transTypes, $imgType)) {
             imagealphablending($result, false);
@@ -322,27 +340,27 @@ class Image {
 
     /**
      * Creates an Image based on the Type
-     * @param integer $imgType
-     * @param mixed   $image
-     * @param string  $fileName Optional.
-     * @param integer $quality  Optional.
-     * @return void
+     * @param integer     $imgType
+     * @param mixed       $image
+     * @param string|null $fileName Optional.
+     * @param integer     $quality  Optional.
+     * @return boolean
      */
-    public static function createImage(int $imgType, $image, string $fileName = null, int $quality = 90) {
+    public static function createImage(int $imgType, mixed $image, ?string $fileName = null, int $quality = 90): bool {
         if ($imgType == 2) {
             self::$imageData[$imgType][1]($image, $fileName, $quality);
         } else {
             self::$imageData[$imgType][1]($image, $fileName);
         }
-        imagedestroy($image);
+        return imagedestroy($image);
     }
 
     /**
      * Destroys the Image
      * @param mixed $image
-     * @return void
+     * @return boolean
      */
-    public function destroy($image) {
-        imagedestroy($image);
+    public static function destroy(mixed $image): bool {
+        return imagedestroy($image);
     }
 }

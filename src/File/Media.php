@@ -131,7 +131,7 @@ class Media {
 
     /**
      * Returns all the Images to resize
-     * @return array
+     * @return mixed[]
      */
     public static function getAllToResize(): array {
         $baseDirs = Path::getBaseDirs();

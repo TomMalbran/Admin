@@ -1,7 +1,8 @@
 <?php
 namespace Admin\Schema;
 
-use Admin\Schema\Field;
+use Admin\Schema\Database;
+use Admin\Schema\Structure;
 use Admin\Utils\Arrays;
 use Admin\Utils\Strings;
 
@@ -10,16 +11,25 @@ use Admin\Utils\Strings;
  */
 class Selection {
 
-    private $db;
-    private $structure;
+    private Database  $db;
+    private Structure $structure;
 
-    private $index   = 66;
-    private $tables  = [];
-    private $keys    = [];
+    private int $index = 66;
 
-    private $selects = [];
-    private $joins   = [];
-    private $request = [];
+    /** @var string[] */
+    private array $tables  = [];
+
+    /** @var string[] */
+    private array $keys    = [];
+
+    /** @var string[] */
+    private array $selects = [];
+
+    /** @var string[] */
+    private array $joins   = [];
+
+    /** @var array{}[] */
+    private array $request = [];
 
 
     /**
@@ -36,9 +46,9 @@ class Selection {
 
     /**
      * Adds the Fields to the Selects
-     * @return void
+     * @return Selection
      */
-    public function addFields(): void {
+    public function addFields(): Selection {
         $mainKey = $this->structure->table;
 
         if (!empty($this->structure->idKey) && !empty($this->structure->idName)) {
@@ -51,15 +61,16 @@ class Selection {
                 $this->selects[] = "$mainKey.$field->key";
             }
         }
+        return $this;
     }
 
     /**
      * Adds extra Selects
-     * @param string|string[] $selects
+     * @param string[]|string $selects
      * @param boolean         $addMainKey Optional.
-     * @return void
+     * @return Selection
      */
-    public function addSelects($selects, bool $addMainKey = false): void {
+    public function addSelects(array|string $selects, bool $addMainKey = false): Selection {
         $selects = Arrays::toArray($selects);
         foreach ($selects as $select) {
             if ($addMainKey) {
@@ -68,14 +79,15 @@ class Selection {
                 $this->selects[] = $select;
             }
         }
+        return $this;
     }
 
     /**
      * Adds the Joins
      * @param boolean $withSelects Optional.
-     * @return void
+     * @return Selection
      */
-    public function addJoins(bool $withSelects = true): void {
+    public function addJoins(bool $withSelects = true): Selection {
         $mainKey = $this->structure->table;
 
         foreach ($this->structure->joins as $join) {
@@ -103,13 +115,14 @@ class Selection {
                 }
             }
         }
+        return $this;
     }
 
     /**
      * Adds the Counts
-     * @return void
+     * @return Selection
      */
-    public function addCounts(): void {
+    public function addCounts(): Selection {
         foreach ($this->structure->counts as $count) {
             $joinKey    = chr($this->index++);
             $key        = $count->key;
@@ -126,6 +139,7 @@ class Selection {
             $this->selects[]           = "$joinKey.$asKey";
             $this->keys[$count->index] = $joinKey;
         }
+        return $this;
     }
 
 
@@ -133,7 +147,7 @@ class Selection {
     /**
      * Does a Request to the Query
      * @param Query $query
-     * @return array
+     * @return mixed[]
      */
     public function request(Query $query): array {
         $this->setTableKeys($query);
@@ -151,9 +165,9 @@ class Selection {
     /**
      * Sets the Table Keys to the condition
      * @param Query $query
-     * @return void
+     * @return Selection
      */
-    private function setTableKeys(Query $query): void {
+    private function setTableKeys(Query $query): Selection {
         $columns = $query->getColumns();
         $mainKey = $this->structure->table;
 
@@ -194,16 +208,17 @@ class Selection {
                 }
             }
         }
+        return $this;
     }
 
 
 
     /**
      * Generates the Result from the Request
-     * @param string|string[] $extras Optional.
-     * @return array
+     * @param string[]|string|null $extras Optional.
+     * @return mixed[]
      */
-    public function resolve($extras = null): array {
+    public function resolve(array|string $extras = null): array {
         $result = [];
 
         foreach ($this->request as $row) {

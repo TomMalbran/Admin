@@ -12,23 +12,26 @@ class Status {
     const Inactive = 1;
 
 
-    /**
-     * All the posible Values
-     */
-    public static $List = [
+    /** @var array{} */
+    public static array $List = [
         self::Active   => "Activo",
         self::Inactive => "Inactivo",
     ];
-    public static $FemList = [
+
+    /** @var array{} */
+    public static array $FemList = [
         self::Active   => "Activa",
         self::Inactive => "Inactiva",
     ];
 
-    public static $Names = [
+    /** @var array{} */
+    public static array $Names = [
         self::Active   => "<span class='result-success'>Activo</span>",
         self::Inactive => "<span class='result-error'>Inactivo</span>",
     ];
-    public static $FemNames = [
+
+    /** @var array{} */
+    public static array $FemNames = [
         self::Active   => "<span class='result-success'>Activa</span>",
         self::Inactive => "<span class='result-error'>Inactiva</span>",
     ];
@@ -46,10 +49,10 @@ class Status {
 
     /**
      * Returns the Status from a Value
-     * @param integer|string $value
+     * @param mixed $value
      * @return integer
      */
-    public function get($value): int {
+    public function get(mixed $value): int {
         if (!empty(self::$Names[$value])) {
             return (int)$value;
         }
@@ -59,7 +62,7 @@ class Status {
     /**
      * Creates a select for the templates
      * @param integer $selectedID Optional.
-     * @return array
+     * @return mixed[]
      */
     public static function getSelect(int $selectedID = 0): array {
         return Arrays::createSelectFromMap(self::$List, $selectedID);
@@ -68,7 +71,7 @@ class Status {
     /**
      * Creates a select for the templates
      * @param integer $selectedID Optional.
-     * @return array
+     * @return mixed[]
      */
     public static function getFemSelect(int $selectedID = 0): array {
         return Arrays::createSelectFromMap(self::$FemList, $selectedID);

@@ -11,12 +11,12 @@ class Utils {
 
     /**
      * Returns true if the given value is alpha-numeric
-     * @param string  $value
-     * @param boolean $withDashes Optional.
-     * @param integer $length     Optional.
+     * @param string       $value
+     * @param boolean      $withDashes Optional.
+     * @param integer|null $length     Optional.
      * @return boolean
      */
-    public static function isAlphaNum(string $value, bool $withDashes = false, int $length = null): bool {
+    public static function isAlphaNum(string $value, bool $withDashes = false, ?int $length = null): bool {
         if ($length !== null && strlen($value) != $length) {
             return false;
         }
@@ -101,7 +101,7 @@ class Utils {
             return "";
         }
 
-        $result = "https://www.youtube-nocookie.com/embed/${videoID}?version=3&modestbranding=1&rel=0&showinfo=0&color=white";
+        $result = "https://www.youtube-nocookie.com/embed/{$videoID}?version=3&modestbranding=1&rel=0&showinfo=0&color=white";
         if (!empty($list)) {
             $result .= "&list=$list";
         }

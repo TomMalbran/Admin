@@ -48,17 +48,19 @@ class Admin {
     const MigrationsDir   = "data/migrations";
 
     // Variables
-    private static $adminPath     = "";
-    private static $internalPath  = "";
-    private static $internalRoute = "";
-    private static $sections      = [];
+    private static string $adminPath     = "";
+    private static string $internalPath  = "";
+    private static string $internalRoute = "";
+
+    /** @var mixed[] */
+    private static array  $sections      = [];
 
 
     /**
      * Sets the Basic data
-     * @return void
+     * @return boolean
      */
-    public static function create(): void {
+    public static function create(): bool {
         self::$adminPath     = dirname(__DIR__, 5);
         self::$internalPath  = dirname(__DIR__, 1);
         self::$internalRoute = Strings::replace(self::$internalPath, self::$adminPath, "");
@@ -66,13 +68,22 @@ class Admin {
         if (self::dataExists(self::SectionData)) {
             self::$sections = self::loadData(self::SectionData, "admin");
         }
+        return true;
     }
 
 
 
     /**
      * Returns the Section Options
-     * @return array
+     * @return boolean
+     */
+    public static function hasDatabase(): bool {
+        return Config::has("db");
+    }
+
+    /**
+     * Returns the Section Options
+     * @return mixed[]
      */
     public static function getSections(): array {
         return self::$sections;
@@ -150,7 +161,7 @@ class Admin {
      * Returns the Internal Route
      * @return string
      */
-    public static function getInternalRoute() {
+    public static function getInternalRoute(): string {
         return self::$internalRoute;
     }
 
@@ -162,7 +173,7 @@ class Admin {
      * @param string $file
      * @return string
      */
-    public static function loadFile(string $dir, string $file) {
+    public static function loadFile(string $dir, string $file): string {
         $path   = self::getPath("$dir/$file", "admin");
         $result = "";
         if (File::exists($path)) {
@@ -180,7 +191,7 @@ class Admin {
      * @param string  $dir
      * @param string  $file
      * @param boolean $forSite Optional.
-     * @return array
+     * @return mixed[]
      */
     public static function loadJSON(string $dir, string $file, bool $forSite = false): array {
         $path = self::getPath("$dir/$file.json", $forSite ? "site" : "admin");
@@ -206,9 +217,9 @@ class Admin {
      * @param string  $file
      * @param string  $type    Optional.
      * @param boolean $asArray Optional.
-     * @return object|array
+     * @return object|array{}
      */
-    public static function loadData(string $file, string $type = "admin", bool $asArray = true) {
+    public static function loadData(string $file, string $type = "admin", bool $asArray = true): object|array {
         $path = self::getPath(self::DataDir . "/$file.json", $type);
         if (File::exists($path)) {
             return JSON::readFile($path, $asArray);
@@ -221,26 +232,26 @@ class Admin {
      * @param string $file
      * @param mixed  $contents
      * @param string $type     Optional.
-     * @return void
+     * @return boolean
      */
-    public static function saveData(string $file, $contents, string $type = "admin"): void {
+    public static function saveData(string $file, mixed $contents, string $type = "admin"): bool {
         $path = self::getPath(self::DataDir . "/$file.json", $type);
-        JSON::writeFile($path, $contents);
+        return JSON::writeFile($path, $contents);
     }
 
 
 
     /**
      * Executes the Admin
-     * @return void
+     * @return boolean
      */
-    public static function execute() {
+    public static function execute(): bool {
         $params = $_REQUEST;
 
         // Run the migrations
         if (!empty($params["migrate"])) {
             self::migrate();
-            return;
+            return false;
         }
 
         // Login the Credential
@@ -257,12 +268,13 @@ class Admin {
         $response = self::request($route, $params);
 
         Output::print($response, $isAjax, $isReload, $isFrame);
+        return true;
     }
 
     /**
      * Returns the requested content
-     * @param string $url
-     * @param array  $params Optional.
+     * @param string  $url
+     * @param array{} $params Optional.
      * @return Response
      */
     public static function request(string $url, array $params = []): Response {
@@ -284,9 +296,9 @@ class Admin {
 
     /**
      * Runs the Migrations for the Admin
-     * @return void
+     * @return boolean
      */
-    private static function migrate(): void {
+    private static function migrate(): bool {
         $request   = new Request();
         $canDelete = $request->has("delete");
 
@@ -294,5 +306,6 @@ class Admin {
         Settings::migrate();
         Path::ensurePaths();
         Credential::seedOwner("Tomas", "Malbran", "tomas@raqdedicados.com", "Cel627570");
+        return true;
     }
 }

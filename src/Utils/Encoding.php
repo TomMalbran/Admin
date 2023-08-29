@@ -6,7 +6,8 @@ namespace Admin\Utils;
  */
 class Encoding {
 
-    protected static $win1252ToUtf8 = [
+    /** @var array{} */
+    private static array $win1252ToUtf8 = [
         128 => "\xe2\x82\xac",
 
         130 => "\xe2\x80\x9a",
@@ -40,7 +41,8 @@ class Encoding {
         159 => "\xc5\xb8",
     ];
 
-    protected static $brokenUtf8ToUtf8 = [
+    /** @var array{} */
+    private static array $brokenUtf8ToUtf8 = [
         "\xc2\x80" => "\xe2\x82\xac",
 
         "\xc2\x82" => "\xe2\x80\x9a",
@@ -74,7 +76,8 @@ class Encoding {
         "\xc2\x9f" => "\xc5\xb8",
     ];
 
-    protected static $utf8ToWin1252 = [
+    /** @var array{} */
+    private static array $utf8ToWin1252 = [
        "\xe2\x82\xac" => "\x80",
 
        "\xe2\x80\x9a" => "\x82",
@@ -148,10 +151,10 @@ class Encoding {
                 $c1 = $text[$i];
 
                 // Should be converted to UTF8, if it's not UTF8 already
-                if ($c1 >= "\xc0") {
-                    $c2 = $i + 1 >= $max ? "\x00" : $text[$i + 1];
-                    $c3 = $i + 2 >= $max ? "\x00" : $text[$i + 2];
-                    $c4 = $i + 3 >= $max ? "\x00" : $text[$i + 3];
+                if ($c1>="\xc0") {
+                    $c2 = $i + 1 >= $max? "\x00" : $text[$i + 1];
+                    $c3 = $i + 2 >= $max? "\x00" : $text[$i + 2];
+                    $c4 = $i + 3 >= $max? "\x00" : $text[$i + 3];
 
                     // looks like 2 bytes UTF8
                     if ($c1 >= "\xc0" & $c1 <= "\xdf") {
@@ -205,7 +208,7 @@ class Encoding {
                         $cc2 = (($c1 & "\x3f") | "\x80");
                         $buf .= $cc1 . $cc2;
                     }
-                // it doesn't need convesion
+                // it doesn't need conversion
                 } else {
                     $buf .= $c1;
                 }
@@ -217,7 +220,7 @@ class Encoding {
 
 
     /**
-     * Cnonverts to Win-1252
+     * Converts to Win-1252
      * @param string $text
      * @return string
      */
@@ -229,17 +232,13 @@ class Encoding {
             return $text;
         }
         if (is_string($text)) {
-            return utf8_decode(str_replace(
-                array_keys(self::$utf8ToWin1252),
-                array_values(self::$utf8ToWin1252),
-                self::toUTF8($text)
-            ));
+            return utf8_decode(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), self::toUTF8($text)));
         }
         return $text;
     }
 
     /**
-     * Cnonverts to ISO-8859
+     * Converts to ISO-8859
      * @param string $text
      * @return string
      */
@@ -272,17 +271,9 @@ class Encoding {
         $last = "";
         while ($last <> $text) {
             $last = $text;
-            $text = self::toUTF8(utf8_decode(str_replace(
-                array_keys(self::$utf8ToWin1252),
-                array_values(self::$utf8ToWin1252),
-                $text
-            )));
+            $text = self::toUTF8(utf8_decode(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), $text)));
         }
-        $text = self::toUTF8(utf8_decode(str_replace(
-            array_keys(self::$utf8ToWin1252),
-            array_values(self::$utf8ToWin1252),
-            $text
-        )));
+        $text = self::toUTF8(utf8_decode(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), $text)));
         return $text;
     }
 
@@ -295,11 +286,8 @@ class Encoding {
         // If you received an UTF-8 string that was converted from Windows-1252 as it was ISO8859-1
         // (ignoring Windows-1252 chars from 80 to 9F) use this function to fix it.
         // See: http://en.wikipedia.org/wiki/Windows-1252
-        return str_replace(
-            array_keys(self::$brokenUtf8ToUtf8),
-            array_values(self::$brokenUtf8ToUtf8),
-            $text
-        );
+
+        return str_replace(array_keys(self::$brokenUtf8ToUtf8), array_values(self::$brokenUtf8ToUtf8), $text);
     }
 
     /**

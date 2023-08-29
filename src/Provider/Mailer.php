@@ -5,7 +5,6 @@ use Admin\Admin;
 use Admin\IO\Request;
 use Admin\Config\Config;
 use Admin\Provider\Mustache;
-use Admin\File\Path;
 use Admin\Utils\Arrays;
 use Admin\Utils\JSON;
 
@@ -16,26 +15,28 @@ use PHPMailer\PHPMailer\PHPMailer;
  */
 class Mailer {
 
-    private static $loaded   = false;
-    private static $template = null;
-    private static $url      = "";
-    private static $name     = "";
-    private static $smtp     = null;
+    private static bool   $loaded   = false;
+    private static string $template = "";
+    private static string $url      = "";
+    private static string $name     = "";
+    private static mixed  $smtp     = null;
 
 
     /**
      * Loads the Mailer Config
-     * @return void
+     * @return boolean
      */
-    private static function load(): void {
+    private static function load(): bool {
         if (self::$loaded) {
-            return;
+            return false;
         }
+
         self::$loaded   = true;
         self::$template = Admin::loadFile(Admin::DataDir, "email.html");
         self::$url      = Config::get("url");
         self::$name     = Config::get("name");
         self::$smtp     = Config::get("smtp");
+        return true;
     }
 
 
@@ -95,13 +96,13 @@ class Mailer {
 
     /**
      * Sends Emails in HTML
-     * @param string|string[] $sendTo
+     * @param string[]|string $sendTo
      * @param string          $subject
      * @param string          $message
      * @param string          $attachment Optional.
      * @return boolean
      */
-    public static function sendTo(string $sendTo, string $subject, string $message, string $attachment = ""): bool {
+    public static function sendTo(array|string $sendTo, string $subject, string $message, string $attachment = ""): bool {
         self::load();
 
         $sendTo  = Arrays::toArray($sendTo);
@@ -131,7 +132,7 @@ class Mailer {
      * @param string $attachment Optional.
      * @return boolean
      */
-    public static function sendContact(string $subject, string $message, string $attachment = "") {
+    public static function sendContact(string $subject, string $message, string $attachment = ""): bool {
         $sendTo = Config::get("smtpSendTo");
         return self::sendTo($sendTo, $subject, $message, $attachment);
     }
@@ -142,9 +143,9 @@ class Mailer {
      * @param string $resetCode
      * @return boolean
      */
-    public static function sendReset(string $sendTo, string $resetCode) {
+    public static function sendReset(string $sendTo, string $resetCode): bool {
         $url      = "{{url}}session/code?resetCode={$resetCode}";
-        $subject  = "Resetear contranseña en {{name}}";
+        $subject  = "Resetear contraseña en {{name}}";
         $message  = "<p>Ha recibido este email porque ha solicitado recuperar su contraseña.<br/>";
         $message .= "Si ha sido usted, por favor diríjase a la siguiente dirección para realizar el cambio:<br/>";
         $message .= "$url</p>";

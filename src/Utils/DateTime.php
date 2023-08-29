@@ -8,19 +8,21 @@ use Admin\Utils\Strings;
  */
 class DateTime {
 
-    public static $months     = [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ];
+    /** @var string[] */
+    public static array $months     = [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ];
 
-    public static $serverDiff = -180;
-    public static $timeDiff   = 0;
+    public static int $serverDiff = -180;
+    public static int $timeDiff   = 0;
 
 
     /**
      * Sets the Time Zone in minutes
      * @param integer $timezone
-     * @return void
+     * @return integer
      */
-    public static function setTimezone(int $timezone): void {
+    public static function setTimezone(int $timezone): int {
         self::$timeDiff = (self::$serverDiff - $timezone) * 60;
+        return self::$timeDiff;
     }
 
     /**
@@ -29,7 +31,7 @@ class DateTime {
      * @param integer $timezone
      * @return integer
      */
-    public static function toTimezone(int $value, int $timezone) {
+    public static function toTimezone(int $value, int $timezone): int {
         if (!empty($value) && !empty($timezone)) {
             $timeDiff = (self::$serverDiff - $timezone) * 60;
             return $value - $timeDiff;
@@ -187,11 +189,11 @@ class DateTime {
 
     /**
      * Returns true if the given hour is Valid
-     * @param string $string
-     * @param array  $minutes Optional.
+     * @param string         $string
+     * @param integer[]|null $minutes Optional.
      * @return boolean
      */
-    public static function isValidHour(string $string, array $minutes = null): bool {
+    public static function isValidHour(string $string, ?array $minutes = null): bool {
         $parts = Strings::split($string, ":");
         return (
             isset($parts[0]) && Numbers::isValid($parts[0], 0, 23) &&
@@ -307,12 +309,12 @@ class DateTime {
 
     /**
      * Formats the time using the given Time Zone
-     * @param integer $seconds
-     * @param string  $format
-     * @param integer $timezone Optional.
+     * @param integer      $seconds
+     * @param string       $format
+     * @param integer|null $timezone Optional.
      * @return string
      */
-    public static function format(int $seconds, string $format, int $timezone = null) {
+    public static function format(int $seconds, string $format, ?int $timezone = null): string {
         if (!empty($timezone)) {
             $seconds = self::toTimezone($seconds, $timezone);
         }
@@ -435,60 +437,60 @@ class DateTime {
 
     /**
      * Returns the difference between 2 dates in Months
-     * @param integer $time1
-     * @param integer $time2
-     * @param integer $min   Optional.
+     * @param integer      $time1
+     * @param integer      $time2
+     * @param integer|null $min   Optional.
      * @return integer
      */
-    public static function getMonthsDiff(int $time1, int $time2, int $min = null): int {
+    public static function getMonthsDiff(int $time1, int $time2, ?int $min = null): int {
         $diff = 12 * (date("Y", $time1) - date("Y", $time2)) + date("n", $time1) - date("n", $time2);
         return $min !== null ? max($diff, $min) : $diff;
     }
 
     /**
      * Returns the difference between 2 dates in Weeks
-     * @param integer $time1
-     * @param integer $time2
-     * @param integer $min   Optional.
+     * @param integer      $time1
+     * @param integer      $time2
+     * @param integer|null $min   Optional.
      * @return integer
      */
-    public static function getWeeksDiff(int $time1, int $time2, int $min = null): int {
+    public static function getWeeksDiff(int $time1, int $time2, ?int $min = null): int {
         $diff = floor(($time1 - $time2) / (7 * 24 * 3600));
         return $min !== null ? max($diff, $min) : $diff;
     }
 
     /**
      * Returns the difference between 2 dates in Days
-     * @param integer $time1
-     * @param integer $time2
-     * @param integer $min   Optional.
+     * @param integer      $time1
+     * @param integer      $time2
+     * @param integer|null $min   Optional.
      * @return integer
      */
-    public static function getDaysDiff(int $time1, int $time2, int $min = null): int {
+    public static function getDaysDiff(int $time1, int $time2, ?int $min = null): int {
         $diff = floor(($time1 - $time2) / (24 * 3600));
         return $min !== null ? max($diff, $min) : $diff;
     }
 
     /**
      * Returns the difference between 2 dates in Hours
-     * @param integer $time1
-     * @param integer $time2
-     * @param integer $min   Optional.
+     * @param integer      $time1
+     * @param integer      $time2
+     * @param integer|null $min   Optional.
      * @return integer
      */
-    public static function getHoursDiff(int $time1, int $time2, int $min = null): int {
+    public static function getHoursDiff(int $time1, int $time2, ?int $min = null): int {
         $diff = floor(($time1 - $time2) / 3600);
         return $min !== null ? max($diff, $min) : $diff;
     }
 
     /**
      * Returns the difference between 2 dates in Minutes
-     * @param integer $time1
-     * @param integer $time2
-     * @param integer $min   Optional.
+     * @param integer      $time1
+     * @param integer      $time2
+     * @param integer|null $min   Optional.
      * @return integer
      */
-    public static function getMinsDiff(int $time1, int $time2, int $min = null): int {
+    public static function getMinsDiff(int $time1, int $time2, ?int $min = null): int {
         $diff = floor(($time1 - $time2) / 60);
         return $min !== null ? max($diff, $min) : $diff;
     }
@@ -499,7 +501,7 @@ class DateTime {
      * Creates an Hour Select
      * @param string  $selected Optional.
      * @param boolean $withHalf Optional.
-     * @return array
+     * @return mixed[]
      */
     public static function getHourSelect(string $selected = "", bool $withHalf = false): array {
         $minutes = $withHalf ? [ "00", "30" ] : [ "00" ];

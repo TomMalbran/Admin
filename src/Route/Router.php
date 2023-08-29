@@ -19,20 +19,28 @@ class Router {
     const OneAction     = "getOne";
     const Param         = "{0}";
 
-    private static $loaded    = false;
-    private static $defaults  = [];
-    private static $modules   = [];
-    private static $routes    = [];
-    private static $redirects = [];
+    private static bool $loaded = false;
+
+    /** @var mixed[] */
+    private static array $defaults  = [];
+
+    /** @var mixed[] */
+    private static array $modules   = [];
+
+    /** @var mixed[] */
+    private static array $routes    = [];
+
+    /** @var mixed[] */
+    private static array $redirects = [];
 
 
     /**
      * Loads the Routes Data
-     * @return void
+     * @return boolean
      */
-    private static function load(): void {
+    private static function load(): bool {
         if (self::$loaded) {
-            return;
+            return false;
         }
         $internalData = Admin::loadData(Admin::RouteData, "internal");
         $adminData    = Admin::loadData(Admin::RouteData, "admin");
@@ -76,20 +84,22 @@ class Router {
                 }
             }
         }
+        return true;
     }
 
     /**
      * Removes a Route if it is not used
      * @param string $route
-     * @return void
+     * @return boolean
      */
-    private static function removeRoute(string $route): void {
+    private static function removeRoute(string $route): bool {
         unset(self::$modules[$route]);
         foreach (self::$routes as $path => $accessLevel) {
             if (Strings::startsWith($path, $route)) {
                 unset(self::$routes[$path]);
             }
         }
+        return true;
     }
 
 
@@ -100,11 +110,12 @@ class Router {
      * @param integer $accessLevel
      * @return mixed
      */
-    public static function get(string $route, int $accessLevel) {
+    public static function get(string $route, int $accessLevel): mixed {
         self::load();
         if (empty($route)) {
             return null;
         }
+
         $access = Access::getValue($accessLevel);
 
         if (empty($route) || $route == "/") {
@@ -182,21 +193,21 @@ class Router {
     /**
      * Returns the Access Level for the given Route, if it exists
      * @param string $route
-     * @return integer|null
+     * @return integer
      */
-    public static function getAccessLevel(string $route) {
+    public static function getAccessLevel(string $route): int {
         if (self::has($route)) {
             return Access::getID(self::$routes[$route]);
         }
-        return null;
+        return 0;
     }
 
     /**
      * Returns the Module for the given Route, if it exists
      * @param string $route
-     * @return string|null
+     * @return string
      */
-    public static function getModule(string $route) {
+    public static function getModule(string $route): string {
         if (self::has($route)) {
             $route = str_replace("/{0}", "", $route);
             $name  = substr($route, 0, strripos($route, "/"));
@@ -204,20 +215,20 @@ class Router {
                 return self::$modules[$name];
             }
         }
-        return null;
+        return "";
     }
 
     /**
      * Returns the Method for the given Route, if it exists
      * @param string $route
-     * @return string|null
+     * @return string
      */
-    public static function getMethod(string $route) {
+    public static function getMethod(string $route): string {
         if (self::has($route)) {
             $route = str_replace("/{0}", "", $route);
             return substr($route, strripos($route, "/") + 1);
         }
-        return null;
+        return "";
     }
 
 
@@ -228,11 +239,12 @@ class Router {
      * @param Request $request Optional.
      * @return Response
      */
-    public static function call($route, Request $request): Response {
+    public static function call(mixed $route, Request $request): Response {
         $route->params[] = $request;
         if (Strings::startsWith($route->module, "\\")) {
             return call_user_func_array("{$route->module}::{$route->method}", $route->params);
         }
+
         $instance = Container::bind(self::Namespace . $route->module);
         return call_user_func_array([ $instance, $route->method ], $route->params);
     }

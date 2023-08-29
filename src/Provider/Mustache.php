@@ -9,26 +9,24 @@ use Mustache_Autoloader;
 use Mustache_Engine;
 use Mustache_Loader_CascadingLoader;
 use Mustache_Loader_FilesystemLoader;
-use Mustache_Exception_UnknownTemplateException;
 
 /**
  * The Mustache Provider
  */
 class Mustache {
 
-    private static $loaded = false;
-
-    private static $simpleEngine = null;
-    private static $adminEngine  = null;
-    private static $siteEngine   = null;
+    private static bool             $loaded       = false;
+    private static ?Mustache_Engine $simpleEngine = null;
+    private static ?Mustache_Engine $adminEngine  = null;
+    private static ?Mustache_Engine $siteEngine   = null;
 
 
     /**
      * Creates the Mustache Provider
      * @param boolean $forSite Optional.
-     * @return void
+     * @return boolean
      */
-    public static function load(bool $forSite = false): void {
+    public static function load(bool $forSite = false): bool {
         if (!self::$loaded) {
             Mustache_Autoloader::register();
             self::$loaded       = true;
@@ -40,7 +38,7 @@ class Mustache {
         $config   = [ "extension" => ".html" ];
         $loaders  = [];
 
-        // Create the Admin Eengine
+        // Create the Admin Engine
         if (!$forSite && self::$adminEngine == null && File::exists($internal)) {
             // Main templates should be in public/templates
             $internalPath = File::getPath($internal, Admin::TemplatesDir);
@@ -85,6 +83,8 @@ class Mustache {
 
             self::$siteEngine = new Mustache_Engine($loaders);
         }
+
+        return true;
     }
 
 
@@ -92,7 +92,7 @@ class Mustache {
     /**
      * Renders the template using any of the Engines depending on the first parameter
      * @param string  $templateOrPath
-     * @param array   $data
+     * @param array{} $data
      * @param boolean $forSite        Optional.
      * @return string
      */
@@ -114,12 +114,13 @@ class Mustache {
     /**
      * Renders and prints the template using any of the Engines depending on the first parameter
      * @param string  $templateOrPath
-     * @param array   $data
+     * @param array{} $data
      * @param boolean $forSite        Optional.
-     * @return void
+     * @return boolean
      */
-    public static function print(string $templateOrPath, array $data, bool $forSite = false) {
+    public static function print(string $templateOrPath, array $data, bool $forSite = false): bool {
         self::load($forSite);
         echo self::render($templateOrPath, $data, $forSite);
+        return true;
     }
 }

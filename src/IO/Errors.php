@@ -8,14 +8,15 @@ use Admin\Utils\Arrays;
  */
 class Errors {
 
-    private $errors = [];
+    /** @var array{} */
+    private array $errors = [];
 
 
     /**
      * Creates a new Errors instance
-     * @param string|string[] $errors
+     * @param string[]|string|null $errors
      */
-    public function __construct($errors = null) {
+    public function __construct(array|string $errors = null) {
         if ($errors !== null) {
             $errors = Arrays::toArray($errors);
             foreach ($errors as $error) {
@@ -68,7 +69,7 @@ class Errors {
      * @param string  $message   Optional.
      * @return Errors
      */
-    public function addIf(bool $condition, string $error, string $message = "error") {
+    public function addIf(bool $condition, string $error, string $message = "error"): Errors {
         if ($condition) {
             $this->add($error, $message);
         }
@@ -99,10 +100,10 @@ class Errors {
 
     /**
      * Returns true if there are errors or if the given error exists
-     * @param string|string[] $error Optional.
+     * @param string[]|string|null $error Optional.
      * @return boolean
      */
-    public function has($error = null): bool {
+    public function has(array|string $error = null): bool {
         if ($error === null) {
             return !empty($this->errors);
         }
@@ -118,7 +119,7 @@ class Errors {
     /**
      * Returns the errors as an Object
      * @param boolean $withSuffix Optional.
-     * @return array
+     * @return array{}
      */
     public function get(bool $withSuffix = true): array {
         if (!$withSuffix) {
@@ -134,7 +135,7 @@ class Errors {
 
     /**
      * Returns the Errors as double object
-     * @return array
+     * @return array{}
      */
     public function getObject(): array {
         $result = [];

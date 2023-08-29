@@ -6,18 +6,19 @@ use Admin\Utils\Arrays;
 use Admin\Utils\Strings;
 
 use mysqli;
+use mysqli_stmt;
 
 /**
  * The mysqli Database Wrapper
  */
 class Database {
 
-    private $mysqli;
+    private mysqli $mysqli;
 
-    public $host;
-    public $username;
-    public $password;
-    public $database;
+    public string $host;
+    public string $username;
+    public string $password;
+    public string $database;
 
 
     /**
@@ -29,7 +30,7 @@ class Database {
      *    database Database name
      * ].
      */
-    public function __construct($config) {
+    public function __construct(mixed $config) {
         $this->host     = $config->host;
         $this->username = $config->username;
         $this->password = $config->password;
@@ -51,45 +52,58 @@ class Database {
 
     /**
      * Connects with the database
-     * @return void
+     * @return boolean
      */
-    public function connect(): void {
+    public function connect(): bool {
         $this->mysqli = new mysqli($this->host, $this->username, $this->password, $this->database);
-        if ($this->mysqli->connect_error) {
-            die("Connect Error ({$this->mysqli->connect_errno}) {$this->mysqli->connect_error}");
+        if (!$this->mysqli->connect_error) {
+            return true;
         }
+        die("Connect Error ({$this->mysqli->connect_errno}) {$this->mysqli->connect_error}");
+        return false;
     }
 
     /**
      * Closes the connection
-     * @return void
+     * @return boolean
      */
-    public function close(): void {
-        $this->mysqli->close();
+    public function close(): bool {
+        return $this->mysqli->close();
     }
 
 
 
     /**
      * Process the given query
-     * @param string $expression
-     * @param mixed  $params     Optional.
-     * @return array
+     * @param string        $expression
+     * @param Query|mixed[] $params     Optional.
+     * @return array{}[]
      */
-    public function query(string $expression, $params = []): array {
+    public function query(string $expression, Query|array $params = []): array {
         $binds     = $params instanceof Query ? $params->params : $params;
         $statement = $this->processQuery($expression, $binds);
         return $this->dynamicBindResults($statement);
     }
 
     /**
+     * Process the given expression using a Query
+     * @param string $expression
+     * @param Query  $query
+     * @return array{}[]
+     */
+    public function getData(string $expression, Query $query): array {
+        $expression .= $query->get(true);
+        return $this->query($expression, $query->params);
+    }
+
+    /**
      * Selects the given columns from a single table and returns the result as an array
      * @param string          $table
-     * @param string|string[] $columns Optional.
-     * @param Query           $query   Optional.
-     * @return array
+     * @param string[]|string $columns Optional.
+     * @param Query|null      $query   Optional.
+     * @return array{}[]
      */
-    public function getAll(string $table, $columns = "*", Query $query = null): array {
+    public function getAll(string $table, array|string $columns = "*", ?Query $query = null): array {
         $selection  = Strings::join($columns, ", ");
         $expression = "SELECT $selection FROM $table ";
         $params     = [];
@@ -108,7 +122,7 @@ class Database {
      * @param Query  $query
      * @return mixed
      */
-    public function getValue(string $table, string $column, Query $query) {
+    public function getValue(string $table, string $column, Query $query): mixed {
         $request = $this->getAll($table, $column, $query->limit(1));
 
         if (isset($request[0][$column])) {
@@ -120,17 +134,17 @@ class Database {
     /**
      * Selects the given columns from a single table and returns the first row
      * @param string          $table
-     * @param string|string[] $columns
+     * @param string[]|string $columns
      * @param Query           $query
-     * @return array
+     * @return array{}[]
      */
-    public function getRow(string $table, $columns, Query $query): array {
+    public function getRow(string $table, array|string $columns, Query $query): array {
         $request = $this->getAll($table, $columns, $query->limit(1));
 
         if (isset($request[0])) {
             return $request[0];
         }
-        return "";
+        return [];
     }
 
     /**
@@ -201,26 +215,27 @@ class Database {
 
     /**
      * Replaces or Inserts the given content into the given table
-     * @param string $table
-     * @param array  $fields
-     * @param string $method Optional.
+     * @param string    $table
+     * @param array{}[] $fields
+     * @param string    $method Optional.
      * @return integer The Inserted ID or -1
      */
     public function insert(string $table, array $fields, string $method = "INSERT"): int {
         $bindParams  = [];
-        $expression  = "$method INTO `$table` ";
+        $expression  = "$method INTO `{dbPrefix}$table` ";
         $expression .= $this->buildInsertHeader($fields);
         $expression .= $this->buildTableData($fields, $bindParams, true);
         $statement   = $this->processQuery($expression, $bindParams);
-
-        return $statement->affected_rows > 0 ? $statement->insert_id : -1;
+        $result      = $statement->affected_rows > 0 ? $statement->insert_id : -1;
+        $statement->close();
+        return $result;
     }
 
     /**
      * Replaces or Inserts multiple rows
-     * @param string $table
-     * @param array  $fields
-     * @param string $method Optional.
+     * @param string  $table
+     * @param array{} $fields
+     * @param string  $method Optional.
      * @return boolean
      */
     public function batch(string $table, array $fields, string $method = "REPLACE"): bool {
@@ -243,20 +258,19 @@ class Database {
 
     /**
      * Updates the content of the database based on the query and given fields
-     * @param string $table
-     * @param array  $fields
-     * @param Query  $query
+     * @param string    $table
+     * @param array{}[] $fields
+     * @param Query     $query
      * @return boolean
      */
     public function update(string $table, array $fields, Query $query): bool {
         $bindParams  = [];
-        $expression  = "UPDATE `$table` SET ";
+        $expression  = "UPDATE `{dbPrefix}$table` SET ";
         $expression .= $this->buildTableData($fields, $bindParams, false);
         $expression .= " " . $query->get();
         $bindParams  = array_merge($bindParams, $query->params);
         $statement   = $this->processQuery($expression, $bindParams);
-
-        return $statement->affected_rows > 0;
+        return $this->closeQuery($statement);
     }
 
     /**
@@ -323,19 +337,20 @@ class Database {
 
     /**
      * Process a mysqli query
-     * @param string $expression
-     * @param array  $bindParams Optional.
-     * @return mixed
+     * @param string  $expression
+     * @param mixed[] $bindParams Optional.
+     * @return mysqli_stmt
      */
-    private function processQuery(string $expression, array $bindParams = []) {
-        $query     = Strings::replace($expression, "\n", "");
-        $statement = $this->mysqli->prepare($expression);
+    private function processQuery(string $expression, array $bindParams = []): mysqli_stmt {
+        $query      = Strings::replace(trim($expression), "\n", "");
+        $statement  = $this->mysqli->prepare($expression);
 
         if (!$statement) {
             trigger_error("Problem preparing query: {$this->mysqli->error} ($query)", E_USER_ERROR);
+            return null;
         }
 
-        if (is_array($bindParams) && !empty($bindParams)) {
+        if (Arrays::isArray($bindParams) && !empty($bindParams)) {
             $params = [ "" ]; // Create the empty 0 index
             foreach ($bindParams as $value) {
                 $params[0] .= $this->determineType($value);
@@ -347,9 +362,51 @@ class Database {
         $statement->execute();
         if ($statement->error) {
             trigger_error("Problem executing query: {$statement->error} {$this->mysqli->error} ($query)", E_USER_ERROR);
+            $statement->close();
+            return null;
         }
 
         return $statement;
+    }
+
+    /**
+     * Takes care of prepared statements' bind_result method, when the number of variables to pass is unknown.
+     * @param mysqli_stmt $statement
+     * @return boolean
+     */
+    private function closeQuery(mysqli_stmt $statement): bool {
+        $result = $statement->affected_rows > 0;
+        $statement->close();
+        return $result;
+    }
+
+    /**
+     * Replaces any parameter placeholders in a query with the value of that
+     * parameter. Useful for debugging. Assumes anonymous parameters from
+     * $params are are in the same order as specified in $query
+     * @param string $expression
+     * @param Query  $query
+     * @return string
+     */
+    public function interpolateQuery(string $expression, Query $query): string {
+        $expression = Strings::replace(trim($expression), "\n", "");
+        $params     = $query->params;
+        $keys       = [];
+        $values     = [];
+
+        foreach ($params as $key => $value) {
+            if (is_string($key)) {
+                $keys[] = '/:' . $key . '/';
+            } else {
+                $keys[] = '/[?]/';
+            }
+            if (is_string($value)) {
+                $values[] = "'$value'";
+            } else {
+                $values[] = $value;
+            }
+        }
+        return preg_replace($keys, $values, $expression, 1);
     }
 
     /**
@@ -357,7 +414,7 @@ class Database {
      * @param mixed $item Input to determine the type.
      * @return string The parameter type.
      */
-    private function determineType($item): string {
+    private function determineType(mixed $item): string {
         switch (gettype($item)) {
         case "NULL":
         case "string":
@@ -391,10 +448,10 @@ class Database {
 
     /**
      * Takes care of prepared statements' bind_result method, when the number of variables to pass is unknown.
-     * @param mixed $statement Equal to the prepared statement object.
-     * @return array The results of the SQL fetch.
+     * @param mysqli_stmt $statement
+     * @return array{}[]
      */
-    private function dynamicBindResults($statement): array {
+    private function dynamicBindResults(mysqli_stmt $statement): array {
         $parameters = [];
         $results    = [];
         $meta       = $statement->result_metadata();
@@ -412,10 +469,12 @@ class Database {
         }
         call_user_func_array([ $statement, "bind_result" ], $parameters);
 
+        $statement->store_result();
         while ($statement->fetch()) {
             $x = [];
             foreach ($row as $key => $val) {
-                $x[$key] = ctype_digit($val) && strrpos($val, "0", -strlen($val)) === false ? (int)$val : $val;
+                $string  = (string)$val;
+                $x[$key] = ctype_digit($string) && strrpos($string, "0", -strlen($string)) === false ? (int)$val : $val;
             }
             array_push($results, $x);
         }
@@ -426,7 +485,7 @@ class Database {
 
     /**
      * Builds the query for inserting or updating
-     * @param array $fields
+     * @param array{}[] $fields
      * @return string
      */
     private function buildInsertHeader(array $fields): string {
@@ -435,9 +494,9 @@ class Database {
 
     /**
      * Process the table data for building the query for inserting or updating
-     * @param array   $fields
-     * @param array   $bindParams
-     * @param boolean $isInsert
+     * @param array{}[] $fields
+     * @param mixed[]   $bindParams
+     * @param boolean   $isInsert
      * @return string
      */
     private function buildTableData(array $fields, array &$bindParams, bool $isInsert): string {
@@ -451,7 +510,7 @@ class Database {
                 $result .= "`$column` = ";
             }
 
-            if (!is_array($value)) {
+            if (!Arrays::isArray($value)) {
                 $result .= "?, ";
                 $bindParams[] = $value;
             } else {
@@ -496,10 +555,10 @@ class Database {
 
     /**
      * Returns an array with all the tables
-     * @param string[] $filter Optional.
+     * @param string[]|null $filter Optional.
      * @return string[]
      */
-    public function getTables(array $filter = null): array {
+    public function getTables(?array $filter = null): array {
         $request = $this->query("SHOW TABLES FROM `$this->database`");
         $result  = [];
 
@@ -526,7 +585,7 @@ class Database {
     /**
      * Returns the Table Primary Keys
      * @param string $table
-     * @return array
+     * @return string[]
      */
     public function getPrimaryKeys(string $table): array {
         $request = $this->query("SHOW KEYS FROM `$table`");
@@ -541,9 +600,30 @@ class Database {
     }
 
     /**
+     * Returns the Table Primary Key with Auto Increment
+     * @param string $table
+     * @return string
+     */
+    public function getAutoIncrement(string $table): string {
+        $request = $this->query("SELECT *
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME = '$table'
+                AND DATA_TYPE = 'int'
+                AND COLUMN_DEFAULT IS NULL
+                AND IS_NULLABLE = 'NO'
+                AND EXTRA like '%auto_increment%'
+            LIMIT 1
+        ");
+        if (!empty($request[0])) {
+            return $request[0]["COLUMN_NAME"];
+        }
+        return "";
+    }
+
+    /**
      * Returns the Table Keys
      * @param string $table
-     * @return array
+     * @return string[]
      */
     public function getTableKeys(string $table): array {
         return $this->query("SHOW INDEXES IN `$table`");
@@ -552,7 +632,7 @@ class Database {
     /**
      * Returns the Table Fields
      * @param string $table
-     * @return array
+     * @return string[]
      */
     public function getTableFields(string $table): array {
         return $this->query("SHOW FIELDS FROM `$table`");
@@ -562,14 +642,14 @@ class Database {
 
     /**
      * Creates a Table
-     * @param string $table
-     * @param array  $fields
-     * @param array  $primary
-     * @param array  $keys
+     * @param string   $tableName
+     * @param mixed[]  $fields
+     * @param string[] $primary
+     * @param string[] $keys
      * @return string
      */
-    public function createTable(string $table, array $fields, array $primary, array $keys): string {
-        $sql = "CREATE TABLE $table (\n";
+    public function createTable(string $tableName, array $fields, array $primary, array $keys): string {
+        $sql = "CREATE TABLE $tableName (\n";
 
         foreach ($fields as $key => $type) {
             $sql .= "  `$key` " . $type . ",\n";
@@ -586,25 +666,25 @@ class Database {
 
     /**
      * Deletes a Table
-     * @param string $table
+     * @param string $tableName
      * @return string
      */
-    public function deleteTable(string $table): string {
-        $sql = "DROP TABLE `$table`";
+    public function deleteTable(string $tableName): string {
+        $sql = "DROP TABLE `$tableName`";
         $this->query($sql);
         return $sql;
     }
 
     /**
      * Renames a Column from the Table
-     * @param string $table
+     * @param string $tableName
      * @param string $column
      * @param string $type
      * @param string $afterColumn Optional.
      * @return string
      */
-    public function addColumn(string $table, string $column, string $type, string $afterColumn = null): string {
-        $sql  = "ALTER TABLE `$table` ADD COLUMN `$column` $type ";
+    public function addColumn(string $tableName, string $column, string $type, string $afterColumn = ""): string {
+        $sql  = "ALTER TABLE `$tableName` ADD COLUMN `$column` $type ";
         $sql .= !empty($afterColumn) ? "AFTER `$afterColumn`" : "FIRST";
         $this->query($sql);
         return $sql;
@@ -612,40 +692,40 @@ class Database {
 
     /**
      * Renames a Column from the Table
-     * @param string $table
+     * @param string $tableName
      * @param string $oldColumn
      * @param string $newColumn
      * @param string $type
      * @return string
      */
-    public function renameColumn(string $table, string $oldColumn, string $newColumn, string $type): string {
-        $sql = "ALTER TABLE `$table` CHANGE `$oldColumn` `$newColumn` $type";
+    public function renameColumn(string $tableName, string $oldColumn, string $newColumn, string $type): string {
+        $sql = "ALTER TABLE `$tableName` CHANGE `$oldColumn` `$newColumn` $type";
         $this->query($sql);
         return $sql;
     }
 
     /**
      * Updates a Column from the Table
-     * @param string $table
+     * @param string $tableName
      * @param string $column
      * @param string $type
      * @return string
      */
-    public function updateColumn(string $table, string $column, string $type): string {
-        $sql = "ALTER TABLE `$table` MODIFY COLUMN `$column` $type";
+    public function updateColumn(string $tableName, string $column, string $type): string {
+        $sql = "ALTER TABLE `$tableName` MODIFY COLUMN `$column` $type";
         $this->query($sql);
         return $sql;
     }
 
     /**
      * Deletes a Column from the Table
-     * @param string  $table
+     * @param string  $tableName
      * @param string  $column
-     * @param boolean $execute Optional.
+     * @param boolean $execute   Optional.
      * @return string
      */
-    public function deleteColumn(string $table, string $column, bool $execute = true): string {
-        $sql = "ALTER TABLE `$table` DROP COLUMN `$column`";
+    public function deleteColumn(string $tableName, string $column, bool $execute = true): string {
+        $sql = "ALTER TABLE `$tableName` DROP COLUMN `$column`";
         if ($execute) {
             $this->query($sql);
         }
@@ -654,25 +734,25 @@ class Database {
 
     /**
      * Updates the Primary Keys on the Table
-     * @param string $table
-     * @param array  $primary
+     * @param string   $tableName
+     * @param string[] $primary
      * @return string
      */
-    public function updatePrimary(string $table, array $primary): string {
-        $sql  = "ALTER TABLE `$table` DROP PRIMARY KEY \n";
-        $sql .= "ALTER TABLE `$table` ADD PRIMARY KEY (" . Strings::join($primary, ", ") . ")";
+    public function updatePrimary(string $tableName, array $primary): string {
+        $sql  = "ALTER TABLE `$tableName` DROP PRIMARY KEY \n";
+        $sql .= "ALTER TABLE `$tableName` ADD PRIMARY KEY (" . Strings::join($primary, ", ") . ")";
         $this->query($sql);
         return $sql;
     }
 
     /**
      * Creates an Index on the Table
-     * @param string $table
+     * @param string $tableName
      * @param string $key
      * @return string
      */
-    public function createIndex(string $table, string $key): string {
-        $sql = "CREATE INDEX $key ON $table($key)";
+    public function createIndex(string $tableName, string $key): string {
+        $sql = "CREATE INDEX $key ON $tableName($key)";
         $this->query($sql);
         return $sql;
     }
@@ -681,11 +761,11 @@ class Database {
 
     /**
      * Dumps the entire database
-     * @param string[] $filter Optional.
-     * @param mixed    $fp     Optional.
-     * @return void
+     * @param string[]   $filter Optional.
+     * @param mixed|null $fp     Optional.
+     * @return boolean
      */
-    public function dump(array $filter = null, $fp = null): void {
+    public function dump(array $filter = [], mixed $fp = null): bool {
         $crlf = "\r\n";
 
         // SQL Dump Header
@@ -737,20 +817,22 @@ class Database {
             }
         }
         $this->write($fp, $crlf . "# Done" . $crlf);
+        return true;
     }
 
     /**
      * Writes the content in a file or prints them in the screen
      * @param mixed  $fp
      * @param string $content
-     * @return void
+     * @return boolean
      */
-    private function write($fp, string $content): void {
+    private function write(mixed $fp, string $content): bool {
         if (!empty($fp)) {
             fwrite($fp, $content);
         } else {
             print($content);
         }
+        return true;
     }
 
     /**
@@ -819,13 +901,12 @@ class Database {
             $result .= "," . $crlf . "  $keyname (" . Strings::join($columns, ", ") . ")";
         }
 
-        // Now just get the comment and type... (MyISAM, etc.)
+        // Now just get the comment and type...
         $request = $this->query("
             SHOW TABLE STATUS
             LIKE '" . strtr($tableName, [ '_' => '\\_', '%' => '\\%' ]) . "'
         ");
 
-        // Probably MyISAM.... and it might have a comment.
         $result .= $crlf . ") ENGINE=" . (isset($request[0]["Type"]) ? $request[0]["Type"] : $request[0]["Engine"]);
         $result .= $request[0]["Comment"] != "" ? " COMMENT='" . $request[0]["Comment"] . "'" : "";
 

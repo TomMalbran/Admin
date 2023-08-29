@@ -6,8 +6,10 @@ namespace Admin\IO;
  */
 class Url {
 
-    private $uri    = "";
-    private $params = [];
+    private string $uri = "";
+
+    /** @var array{} */
+    private array $params = [];
 
 
     /**
@@ -22,11 +24,11 @@ class Url {
 
     /**
      * Sets a new param
-     * @param string         $key
-     * @param string|integer $value
+     * @param string $key
+     * @param mixed  $value
      * @return Url
      */
-    public function set(string $key, $value): Url {
+    public function set(string $key, mixed $value): Url {
         $this->params[$key] = (string)$value;
         return $this;
     }
@@ -57,7 +59,7 @@ class Url {
 
     /**
      * Returns the params as an Object
-     * @return array
+     * @return array{}
      */
     public function toArray(): array {
         return $this->params;

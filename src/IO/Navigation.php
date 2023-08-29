@@ -10,22 +10,29 @@ use Admin\IO\Url;
  */
 class Navigation {
 
-    private $request;
-    private $errors;
+    private Request $request;
+    private Errors  $errors;
 
-    private $list       = [];
-    private $total      = 0;
-    private $page       = 0;
-    private $from       = 0;
-    private $to         = 0;
+    private int   $amount     = 0;
+    private int   $total      = 0;
+    private int   $page       = 0;
+    private int   $from       = 0;
+    private int   $to         = 0;
+    private int   $totalPages = 0;
+    private int   $fromTime   = 0;
+    private int   $toTime     = 0;
 
-    private $pages      = [];
-    private $totalPages = 0;
+    /** @var mixed[] */
+    private array $list       = [];
 
-    private $filters    = [];
-    private $extras     = [];
-    private $fromTime   = 0;
-    private $toTime     = 0;
+    /** @var mixed[] */
+    private array $pages      = [];
+
+    /** @var array{} */
+    private array $filters    = [];
+
+    /** @var array{} */
+    private array $extras     = [];
 
 
     /**
@@ -84,9 +91,9 @@ class Navigation {
      * @param boolean $useDefaults Optional.
      * @param integer $months      Optional.
      * @param boolean $inBetween   Optional.
-     * @return void
+     * @return Navigation
      */
-    public function setDates(bool $useDefaults = false, int $months = 0, bool $inBetween = false): void {
+    public function setDates(bool $useDefaults = false, int $months = 0, bool $inBetween = false): Navigation {
         // From and to Date
         if ($this->request->has("from") && $this->request->has("to")) {
             if (!$this->request->isValidDate("from") || !$this->request->isValidDate("to")) {
@@ -127,6 +134,7 @@ class Navigation {
                 $this->toTime   = mktime(23, 59, 59, date("n"), date("j"), date("Y"));
             }
         }
+        return $this;
     }
 
 
@@ -146,17 +154,17 @@ class Navigation {
      * @param mixed  $filterValue
      * @return string
      */
-    public function getFilter(string $filterKey, $filterValue): string {
+    public function getFilter(string $filterKey, mixed $filterValue): string {
         return $this->getQuery()->set($filterKey, $filterValue)->toString();
     }
 
     /**
      * Sets the Navigation List and Total and creates the Pagination
-     * @param array   $list
+     * @param mixed[] $list
      * @param integer $total
-     * @return void
+     * @return Navigation
      */
-    public function setData(array $list, int $total): void {
+    public function setData(array $list, int $total): Navigation {
         $this->list       = $list;
         $this->total      = $total;
         $this->totalPages = ceil($total / $this->amount);
@@ -178,11 +186,12 @@ class Navigation {
                 ];
             }
         }
+        return $this;
     }
 
     /**
      * Creates a Response for the Admin
-     * @return array
+     * @return mixed[]
      */
     public function create(): array {
         $search   = !empty($this->filters["search"]) ? $this->filters["search"] : "";

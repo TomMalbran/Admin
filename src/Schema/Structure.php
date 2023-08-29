@@ -11,27 +11,33 @@ use Admin\Utils\Strings;
  */
 class Structure {
 
-    public $table         = "";
-    public $idKey         = "";
-    public $idName        = "";
-    public $name          = "";
+    public string $table       = "";
+    public string $idKey       = "";
+    public string $idName      = "";
+    public string $name        = "";
 
-    public $fields        = [];
-    public $joins         = [];
-    public $counts        = [];
+    /** @var Field[] */
+    public array $fields       = [];
 
-    public $hasStatus     = false;
-    public $hasFemStatus  = false;
-    public $hasPosition   = false;
-    public $hasTimestamps = false;
-    public $hasUsers      = false;
-    public $canCreate     = false;
-    public $canDelete     = false;
+    /** @var Join[] */
+    public array $joins        = [];
+
+    /** @var Count[] */
+    public array $counts       = [];
+
+    public bool $hasStatus     = false;
+    public bool $hasFemStatus  = false;
+    public bool $hasPosition   = false;
+    public bool $hasTimestamps = false;
+    public bool $hasUsers      = false;
+    public bool $canCreate     = false;
+    public bool $canEdit       = false;
+    public bool $canDelete     = false;
 
 
     /**
      * Creates a new Structure instance
-     * @param array $data
+     * @param array{} $data
      */
     public function __construct(array $data) {
         $this->table         = $data["table"];
@@ -164,10 +170,10 @@ class Structure {
 
     /**
      * Returns the Order Field
-     * @param string $field Optional.
+     * @param string|null $field Optional.
      * @return string
      */
-    public function getOrder(string $field = null): string {
+    public function getOrder(?string $field = null): string {
         if (!empty($field)) {
             return $field;
         }

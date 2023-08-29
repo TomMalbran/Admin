@@ -25,7 +25,7 @@ class Home {
 
     /**
      * Returns the Action Items
-     * @return array
+     * @return mixed[]
      */
     private static function getActions(): array {
         $items    = Admin::loadData(Admin::HomeData);

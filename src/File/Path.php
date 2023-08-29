@@ -19,20 +19,23 @@ class Path {
     const Thumb  = "thumb";
     const Temp   = "temp";
 
-    private static $loaded   = false;
-    private static $basePath = "";
-    private static $relPath  = "";
-    private static $paths    = [];
+    private static bool   $loaded   = false;
+    private static string $basePath = "";
+    private static string $relPath  = "";
+
+    /** @var mixed[] */
+    private static array  $paths    = [];
 
 
     /**
      * Loads the Path Data
-     * @return void
+     * @return boolean
      */
-    private static function load(): void {
+    private static function load(): bool {
         if (self::$loaded) {
-            return;
+            return false;
         }
+
         self::$loaded   = true;
         self::$basePath = Admin::getFilesPath();
         self::$relPath  = Admin::getFilesRelPath();
@@ -47,13 +50,14 @@ class Path {
         if (Admin::hasSlides()) {
             self::$paths[] = "banners";
         }
+        return true;
     }
 
     /**
      * Returns a list with the Base Media Directories
      * @return string[]
      */
-    public static function getBaseDirs() {
+    public static function getBaseDirs(): array {
         return [
             self::Source,
             self::Large,
@@ -65,7 +69,7 @@ class Path {
 
     /**
      * Returns and loads the Directories
-     * @return array
+     * @return mixed[]
      */
     public static function getDirectories(): array {
         self::load();
@@ -109,7 +113,7 @@ class Path {
     }
 
     /**
-     * Returns treu if rhe path exists
+     * Returns true if rhe path exists
      * @param string ...$pathParts
      * @return boolean
      */
@@ -150,9 +154,9 @@ class Path {
 
     /**
      * Ensures that the Paths are created
-     * @return void
+     * @return boolean
      */
-    public static function ensurePaths() {
+    public static function ensurePaths(): bool {
         $baseDirs    = self::getBaseDirs();
         $directories = self::getDirectories();
         $basePath    = self::getPath();
@@ -179,5 +183,6 @@ class Path {
         } else {
             print("<br>No <i>paths</i> added<br>");
         }
+        return true;
     }
 }

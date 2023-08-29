@@ -12,10 +12,10 @@ use Admin\Schema\Model;
  */
 class View {
 
-    private $path;
-    private $url;
-    private $mainMenu;
-    private $subMenu;
+    private string $path;
+    private string $url;
+    private string $mainMenu;
+    private string $subMenu;
 
 
     /**
@@ -56,19 +56,19 @@ class View {
 
     /**
      * Generates a View Response
-     * @param string  $template
-     * @param Request $request
-     * @param array   $result   Optional.
-     * @param Model   $model    Optional.
-     * @param Errors  $errors   Optional.
+     * @param string      $template
+     * @param Request     $request
+     * @param array{}     $result   Optional.
+     * @param Model|null  $model    Optional.
+     * @param Errors|null $errors   Optional.
      * @return Response
      */
     public function create(
         string  $template,
         Request $request,
         array   $result = [],
-        Model   $model = null,
-        Errors  $errors = null
+        ?Model  $model = null,
+        ?Errors $errors = null
     ): Response {
         if ($model != null && $model->isEmpty()) {
             return Response::redirect($this->url, $request, "exists");
@@ -86,7 +86,7 @@ class View {
      * Creates a Navigation
      * @param string     $template
      * @param Navigation $navigation
-     * @param array      $data       Optional.
+     * @param array{}    $data       Optional.
      * @return Response
      */
     public function navigation(string $template, Navigation $navigation, array $data = []): Response {

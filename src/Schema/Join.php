@@ -9,25 +9,29 @@ use Admin\Utils\Arrays;
  */
 class Join {
 
-    public $key       = "";
-    public $table     = "";
-    public $asTable   = "";
-    public $onTable   = "";
-    public $leftKey   = "";
-    public $rightKey  = "";
-    public $and       = "";
+    public string $key       = "";
+    public string $table     = "";
+    public string $asTable   = "";
+    public string $onTable   = "";
+    public string $leftKey   = "";
+    public string $rightKey  = "";
+    public string $and       = "";
 
-    public $fields    = [];
-    public $merges    = [];
+    public bool   $hasPrefix = false;
+    public string $prefix    = "";
 
-    public $hasPrefix = false;
-    public $prefix    = "";
+    /** @var Field[] */
+    public array  $fields    = [];
+
+    /** @var object[] */
+    public array  $merges    = [];
+
 
 
     /**
      * Creates a new Join instance
-     * @param string $key
-     * @param array  $data
+     * @param string  $key
+     * @param array{} $data
      */
     public function __construct(string $key, array $data) {
         $this->key       = $key;
@@ -72,8 +76,8 @@ class Join {
 
     /**
      * Returns the Values for the given Field
-     * @param array $data
-     * @return array
+     * @param array{} $data
+     * @return array{}
      */
     public function toValues(array $data): array {
         $result = [];

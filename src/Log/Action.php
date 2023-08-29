@@ -9,18 +9,21 @@ use Admin\Utils\Arrays;
  */
 class Action {
 
-    private static $loaded = false;
-    private static $data   = [];
+    private static bool $loaded = false;
+
+    /** @var array{} */
+    private static array $data = [];
 
 
     /**
      * Loads the Actions Data
-     * @return void
+     * @return boolean
      */
-    private static function load(): void {
+    private static function load(): bool {
         if (self::$loaded) {
-            return;
+            return false;
         }
+
         $adminData    = Admin::loadData(Admin::ActionData, "admin");
         $internalData = Admin::loadData(Admin::ActionData, "internal");
         $sections     = Admin::getSections();
@@ -36,6 +39,7 @@ class Action {
                 ];
             }
         }
+        return true;
     }
 
 

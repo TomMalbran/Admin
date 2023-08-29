@@ -27,9 +27,9 @@ class Media {
      * @param string $oldName
      * @param string $newPath Optional.
      * @param string $newName Optional.
-     * @return void
+     * @return boolean
      */
-    private static function update(string $oldPath, string $oldName, string $newPath = "", string $newName = ""): void {
+    private static function update(string $oldPath, string $oldName, string $newPath = "", string $newName = ""): bool {
         $db         = Factory::getDatabase();
         $schemas    = Admin::loadData(Admin::SchemaData, "admin");
 
@@ -47,6 +47,7 @@ class Media {
 
         $query = Query::create("value", "=", $oldRelPath);
         $db->update("settings", [ "value" => $newRelPath ], $query);
+        return true;
     }
 
 
@@ -287,7 +288,7 @@ class Media {
      * @param Request $request
      * @return Response
      */
-    public static function move(Request $request) {
+    public static function move(Request $request): Response {
         $error = "";
         if (!$request->has("name")) {
             $error = "moveOldPath";

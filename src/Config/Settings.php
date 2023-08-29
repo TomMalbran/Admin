@@ -5,11 +5,11 @@ use Admin\Admin;
 use Admin\Config\SettingType;
 use Admin\Schema\Factory;
 use Admin\Schema\Schema;
-use Admin\Schema\Database;
 use Admin\Schema\Query;
 use Admin\File\Path;
 use Admin\File\FileType;
 use Admin\Utils\Arrays;
+use Admin\Utils\CSV;
 use Admin\Utils\JSON;
 use Admin\Utils\Numbers;
 use Admin\Utils\Strings;
@@ -35,7 +35,7 @@ class Settings {
      * @param string $variable
      * @return mixed|null
      */
-    public static function get(string $section, string $variable) {
+    public static function get(string $section, string $variable): mixed {
         $query = Query::create("section", "=", $section);
         $query->add("variable", "=", $variable);
         $model = self::schema()->getOne($query);
@@ -64,9 +64,9 @@ class Settings {
     /**
      * Returns the Settings
      * @param string $section Optional.
-     * @return array
+     * @return mixed[]
      */
-    private static function getSettings(string $section = null): array {
+    private static function getSettings(string $section = ""): array {
         $query = Query::createIf("section", "=", $section);
         return self::schema()->getAll($query);
     }
@@ -74,9 +74,9 @@ class Settings {
     /**
      * Returns all the Settings
      * @param string $section Optional.
-     * @return array
+     * @return mixed[]
      */
-    public static function getAll(string $section = null): array {
+    public static function getAll(string $section = ""): array {
         $request = self::getSettings($section);
         $result  = [];
 
@@ -87,7 +87,7 @@ class Settings {
 
             $value = $row["value"];
             if ($row["type"] == SettingType::JSON) {
-                $value = JSON::toCSV($row["value"]);
+                $value = CSV::encode($row["value"]);
             }
             $result[$row["section"]][$row["variable"]] = $value;
         }
@@ -101,9 +101,9 @@ class Settings {
     /**
      * Returns all the Settings Parsed
      * @param string $section Optional.
-     * @return array
+     * @return mixed[]
      */
-    public static function getAllParsed(string $section = null): array {
+    public static function getAllParsed(string $section = ""): array {
         $request = self::getSettings($section);
         $result  = [];
 
@@ -122,7 +122,7 @@ class Settings {
                     $result[$section]["{$variable}Large"] = Path::getUrl(Path::Large,  $value);
                 } elseif (!empty($value) && FileType::isVideo($value)) {
                     $result[$section]["{$variable}Url"]   = Path::getUrl(Path::Source, $value);
-                } elseif (!Numbers::isNumber($value)) {
+                } elseif (!Numbers::isValid($value)) {
                     $result[$section]["{$variable}Html"] = Strings::toHtml($value);
                 }
             } else {
@@ -139,9 +139,9 @@ class Settings {
     /**
      * Returns all the Settings as a flat array
      * @param string $section Optional.
-     * @return array
+     * @return mixed[]
      */
-    public static function getAllFlat(string $section = null): array {
+    public static function getAllFlat(string $section = ""): array {
         $request = self::getAll($section);
         if (!empty($section)) {
             return $request;
@@ -163,22 +163,22 @@ class Settings {
      * @param string $section
      * @param string $variable
      * @param mixed  $value
-     * @return void
+     * @return boolean
      */
-    public static function set(string $section, string $variable, $value): void {
+    public static function set(string $section, string $variable, mixed $value): bool {
         $query = Query::create("section", "=", $section);
         $query->add("variable", "=", $variable);
-        self::schema()->edit($query, [
+        return self::schema()->edit($query, [
             "value" => $value,
         ]);
     }
 
     /**
      * Saves the given Settings if those are already on the DB
-     * @param array $data
-     * @return void
+     * @param array{} $data
+     * @return boolean
      */
-    public static function save(array $data): void {
+    public static function save(array $data): bool {
         $request = self::getSettings();
         $batch   = [];
 
@@ -201,30 +201,32 @@ class Settings {
 
         if (!empty($batch)) {
             self::schema()->batch($batch);
+            return true;
         }
+        return false;
     }
 
     /**
-     * Saves the given Settings of the gien Section if those are already on the DB
-     * @param string $section
-     * @param array  $data
-     * @return void
+     * Saves the given Settings of the given Section if those are already on the DB
+     * @param string  $section
+     * @param array{} $data
+     * @return boolean
      */
-    public static function saveSection(string $section, array $data): void {
+    public static function saveSection(string $section, array $data): bool {
         $fields = [];
         foreach ($data as $key => $value) {
             $fields["$section-$key"] = $value;
         }
-        self::save($fields);
+        return self::save($fields);
     }
 
 
 
     /**
      * Migrates the Settings
-     * @return void
+     * @return boolean
      */
-    public static function migrate(): void {
+    public static function migrate(): bool {
         $db           = Factory::getDatabase();
         $adminData    = Admin::loadData(Admin::SettingsData, "admin");
         $internalData = Admin::loadData(Admin::SettingsData, "internal");
@@ -295,5 +297,6 @@ class Settings {
         if (empty($adds) && empty($deletes)) {
             print("<br>No <i>settings</i> added or deleted<br>");
         }
+        return true;
     }
 }

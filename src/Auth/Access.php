@@ -17,14 +17,20 @@ class Access {
 
     /**
      * All the valid levels
+     * @var array{}
      */
-    public static $Values = [
+    public static array $Values = [
         self::General => "General",
         self::Editor  => "Editor",
         self::Admin   => "Admin",
         self::API     => "API",
     ];
-    public static $Names = [
+
+    /**
+     * All the valid names
+     * @var array{}
+     */
+    public static array $Names = [
         self::Editor => "Editor",
         self::Admin  => "Administrador",
     ];
@@ -36,14 +42,14 @@ class Access {
      * @param mixed $value
      * @return boolean
      */
-    public static function isValid($value): bool {
+    public static function isValid(mixed $value): bool {
         return is_numeric($value) && in_array($value, array_keys(self::$Names));
     }
 
     /**
      * Creates a select for the templates
      * @param integer $selectedID Optional.
-     * @return array
+     * @return mixed[]
      */
     public static function getSelect(int $selectedID = 0): array {
         return Arrays::createSelectFromMap(self::$Names, $selectedID);
@@ -54,7 +60,7 @@ class Access {
     /**
      * Returns the Access Value
      * @param string $accessValue
-     * @return string
+     * @return integer
      */
     public static function getID(string $accessValue): int {
         foreach (self::$Values as $id => $value) {

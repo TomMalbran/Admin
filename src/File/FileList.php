@@ -9,7 +9,8 @@ use Admin\File\FileType;
  */
 class FileList {
 
-    private $list = [];
+    /** @var mixed[] */
+    private array $list = [];
 
 
     /**
@@ -19,9 +20,9 @@ class FileList {
      * @param boolean $isDir
      * @param string  $source
      * @param string  $thumb
-     * @return void
+     * @return FileList
      */
-    public function add(string $name, string $path, bool $isDir, string $source, string $thumb): void {
+    public function add(string $name, string $path, bool $isDir, string $source, string $thumb): FileList {
         $isImage   = !$isDir && FileType::isImage($name);
         $imgWidth  = 0;
         $imgHeight = 0;
@@ -44,14 +45,15 @@ class FileList {
             "width"         => $imgWidth,
             "height"        => $imgHeight,
         ];
+        return $this;
     }
 
     /**
      * Adds the Go Back element
      * @param string $path
-     * @return void
+     * @return FileList
      */
-    public function addBack(string $path): void {
+    public function addBack(string $path): FileList {
         $dir = dirname($path);
         $this->list[] = [
             "name"      => "...",
@@ -61,21 +63,22 @@ class FileList {
             "isFile"    => true,
             "icon"      => "back",
         ];
+        return $this;
     }
 
 
 
     /**
      * Returns the List
-     * @return array
+     * @return mixed[]
      */
     public function get(): array {
         return $this->list;
     }
 
     /**
-     * Sorts and restuns the List
-     * @return array
+     * Sorts and returns the List
+     * @return mixed[]
      */
     public function getSorted(): array {
         usort($this->list, function ($a, $b) {

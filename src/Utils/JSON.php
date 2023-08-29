@@ -14,7 +14,7 @@ class JSON {
 
     /**
      * Returns true if the given value is a JSON object
-     * @param string|array $value
+     * @param array|string $value
      * @return boolean
      */
     public static function isValid($value): bool {
@@ -35,16 +35,16 @@ class JSON {
         if (self::isValid($value)) {
             return $value;
         }
-        return json_encode($value, $asPretty ? JSON_PRETTY_PRINT : null);
+        return json_encode($value, $asPretty ? JSON_PRETTY_PRINT : 0);
     }
 
     /**
      * Decodes a String if it is not already decoded
      * @param array|string $value
      * @param boolean      $asArray Optional.
-     * @return object|array
+     * @return mixed
      */
-    public static function decode($value, bool $asArray = false) {
+    public static function decode($value, bool $asArray = false): mixed {
         if (!self::isValid($value)) {
             return $value;
         }
@@ -52,16 +52,6 @@ class JSON {
     }
 
 
-
-    /**
-     * Converts an encoded JSON into a Coma Separated Value
-     * @param string $value
-     * @return string
-     */
-    public static function toCSV(string $value): string {
-        $value = self::decode($value);
-        return Strings::join($value, ", ");
-    }
 
     /**
      * Converts a Coma Separated Value into an encoded JSON
@@ -107,11 +97,12 @@ class JSON {
     /**
      * Writes a JSON File
      * @param string          $path
-     * @param string|string[] $contents
-     * @return void
+     * @param string[]|string $contents
+     * @return boolean
      */
-    public static function writeFile(string $path, $contents): void {
-        $value = Arrays::toArray($contents);
-        file_put_contents($path, self::encode($value, true));
+    public static function writeFile(string $path, $contents): bool {
+        $value  = Arrays::toArray($contents);
+        $result = file_put_contents($path, self::encode($value, true));
+        return $result !== null;
     }
 }

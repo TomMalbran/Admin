@@ -35,7 +35,7 @@ class File {
 
 
     /**
-     * Uplods the given file to the given path
+     * Uploads the given file to the given path
      * @param string $path
      * @param string $fileName
      * @param string $tmpFile
@@ -53,10 +53,10 @@ class File {
      * Creates a file with the given content
      * @param string          $path
      * @param string          $fileName
-     * @param string|string[] $content
+     * @param string[]|string $content
      * @return string
      */
-    public static function create(string $path, string $fileName, $content): string {
+    public static function create(string $path, string $fileName, array|string $content): string {
         $path = self::getPath($path, $fileName);
         if (!empty($path)) {
             file_put_contents($path, Strings::join($content, "\n"));
@@ -204,10 +204,10 @@ class File {
     /**
      * Returns true if the file has the given extension
      * @param string          $name
-     * @param string|string[] $extensions
+     * @param string[]|string $extensions
      * @return boolean
      */
-    public static function hasExtension(string $name, $extensions): bool {
+    public static function hasExtension(string $name, array|string $extensions): bool {
         $extension = self::getExtension($name);
         $extension = Strings::toLowerCase($extension);
         return Arrays::contains($extensions, $extension);
@@ -279,7 +279,7 @@ class File {
      * @param string ...$pathParts
      * @return boolean
      */
-    public static function createDir(string ...$pathParts): string {
+    public static function createDir(string ...$pathParts): bool {
         $path = self::getPath(...$pathParts);
         if (!self::exists($path)) {
             mkdir($path, 0777, true);
@@ -348,18 +348,20 @@ class File {
     /**
      * Deletes all the content from a directory
      * @param string ...$pathParts
-     * @return void
+     * @return boolean
      */
-    public static function emptyDir(string ...$pathParts): void {
+    public static function emptyDir(string ...$pathParts): bool {
         $path = self::getPath(...$pathParts);
-        if (self::exists($path)) {
-            $files = scandir($path);
-            foreach ($files as $file) {
-                if ($file != "." && $file != "..") {
-                    self::deleteDir("$path/$file");
-                }
+        if (!self::exists($path)) {
+            return false;
+        }
+        $files = scandir($path);
+        foreach ($files as $file) {
+            if ($file != "." && $file != "..") {
+                self::deleteDir("$path/$file");
             }
         }
+        return true;
     }
 
 
@@ -367,10 +369,10 @@ class File {
     /**
      * Creates a new zip archive and adds the given files/directories
      * @param string          $name
-     * @param string|string[] $files
-     * @return ZipArchive
+     * @param string[]|string $files
+     * @return ZipArchive|null
      */
-    public static function createZip(string $name, $files): ZipArchive {
+    public static function createZip(string $name, array|string $files): ?ZipArchive {
         $zip   = new ZipArchive();
         $files = Arrays::toArray($files);
 
@@ -389,9 +391,9 @@ class File {
      * @param ZipArchive $zip
      * @param string     $src
      * @param string     $dst
-     * @return void
+     * @return ZipArchive
      */
-    private static function addDirToZip(ZipArchive $zip, string $src, string $dst): void {
+    private static function addDirToZip(ZipArchive $zip, string $src, string $dst): ZipArchive {
         if (is_dir($src)) {
             $zip->addEmptyDir($dst);
             $files = scandir($src);
@@ -403,19 +405,22 @@ class File {
         } elseif (file_exists($src)) {
             $zip->addFile($src, $dst);
         }
+        return $zip;
     }
 
     /**
      * Extracts the given zip to the given path
      * @param string $zipPath
      * @param string $extractPath
-     * @return void
+     * @return boolean
      */
-    public function extractZip(string $zipPath, string $extractPath): void {
+    public function extractZip(string $zipPath, string $extractPath): bool {
         $zip = new ZipArchive();
         if ($zip->open($zipPath)) {
             $zip->extractTo($extractPath);
             $zip->close();
+            return true;
         }
+        return false;
     }
 }

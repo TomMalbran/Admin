@@ -13,7 +13,6 @@ use Admin\Schema\Field;
 use Admin\Schema\Query;
 use Admin\Log\ActionLog;
 use Admin\Utils\Arrays;
-use Admin\Utils\Strings;
 use Admin\Provider\Mailer;
 
 /**
@@ -25,16 +24,16 @@ class Contact {
      * Returns the Contacts Data
      * @return mixed
      */
-    private static function getData() {
+    private static function getData(): mixed {
         return Admin::loadData(Admin::ContactData, "admin", false);
     }
 
     /**
      * Returns the Contacts Schema Fields
-     * @param array $fields
-     * @return array
+     * @param array{} $fields
+     * @return array{}
      */
-    public static function getFields(array $fields) {
+    public static function getFields(array $fields): array {
         $data = Contact::getData();
         foreach ($data->fields as $key => $field) {
             $fields[$key] = [
@@ -137,7 +136,9 @@ class Contact {
             return Response::errors($errors);
         }
 
-        self::schema()->create($request);
+        if (Admin::hasDatabase()) {
+            self::schema()->create($request);
+        }
         self::send($request);
         return Response::success("contact");
     }
@@ -147,7 +148,7 @@ class Contact {
      * @param Request $request
      * @return boolean
      */
-    private static function send(Request $request) {
+    private static function send(Request $request): bool {
         $data     = self::getData();
 
         $subject  = "Contacto en {{name}}";

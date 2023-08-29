@@ -11,11 +11,8 @@ use ReflectionClass;
  */
 class Enum {
 
-    /**
-     * Store existing constants in a static cache per object
-     * @var array
-     */
-    protected static $cache = [];
+    /** @var array{} Stores existing constants in a static cache per object */
+    protected static array $cache = [];
 
 
 
@@ -55,7 +52,7 @@ class Enum {
      * @param mixed $value
      * @return boolean
      */
-    public static function isValid($value): bool {
+    public static function isValid(mixed $value): bool {
         $cache = self::load();
         if ($cache->isConstant) {
             return Arrays::contains($cache->constants, $value);
@@ -68,7 +65,7 @@ class Enum {
      * @param mixed $value
      * @return mixed
      */
-    public static function getOne($value) {
+    public static function getOne(mixed $value): mixed {
         $cache = self::load();
         if ($cache->isConstant) {
             return $cache->constants[$value];
@@ -78,10 +75,10 @@ class Enum {
 
     /**
      * Creates a Select for the Enum
-     * @param mixed $selected Optional.
-     * @return array
+     * @param mixed|null $selected Optional.
+     * @return mixed[]
      */
-    public static function getSelect($selected = null): array {
+    public static function getSelect(mixed $selected = null): array {
         $cache = self::load();
         if ($cache->isConstant) {
             return Arrays::createSelectFromMap($cache->constants, $selected);
@@ -106,17 +103,30 @@ class Enum {
         $cache = self::load();
         $value = !empty($arguments[0]) ? $arguments[0] : null;
 
+
+        // For ALL
+        // Function "isXxxOrYyy": Check if the given value is equal to xxx or yyy
+        if (Strings::startsWith($function, "is") && Strings::contains($function, "Or")) {
+            $keys = Strings::stripStart($function, "is");
+            [ $keyX, $keyY ] = Strings::split($keys, "Or");
+            if (!empty($cache->constants[$keyX]) && !empty($cache->constants[$keyY])) {
+                return $value == $cache->constants[$keyX] || $value == $cache->constants[$keyY];
+            }
+            return false;
+        }
+
+        // Function "isXxx": Check if the given value is equal to xxx
+        if (Strings::startsWith($function, "is")) {
+            $key = Strings::stripStart($function, "is");
+            if (!empty($cache->constants[$key])) {
+                return $value == $cache->constants[$key];
+            }
+            return false;
+        }
+
+
         // For CONSTANT
         if ($cache->isConstant) {
-            // Function "isXxx": Check if the given value is equal to xxx
-            if (Strings::startsWith($function, "is")) {
-                $key = Strings::stripStart($function, "is");
-                if (!empty($cache->constants[$key])) {
-                    return $value == $cache->constants[$key];
-                }
-                return false;
-            }
-
             // Function "xxx": Return the value of xxx
             return self::getOne($function);
         }
@@ -124,8 +134,7 @@ class Enum {
 
         // For ARRAY
         if ($cache->isArray) {
-            // Function "getKey" or "getIndex"
-            // Return the index where the value is equalto the given one
+            // Function "getKey" or "getIndex": Return the index where the value is equal to the given one
             if ($function == "getKey" || $function == "getIndex") {
                 foreach ($cache->data as $index => $name) {
                     if (Strings::isEqual($name, $value)) {
@@ -135,19 +144,9 @@ class Enum {
                 return "";
             }
 
-            // Function "getName" or "getValue"
-            // Return the value of the data at the given index
+            // Function "getName" or "getValue": Return the value of the data at the given index
             if ($function == "getName" || $function == "getValue") {
                 return !empty($cache->data[$value]) ? $cache->data[$value] : "";
-            }
-
-            // Function "isXxx": Check if the data is equal to xxx
-            if (Strings::startsWith($function, "is")) {
-                $key = Strings::stripStart($function, "is");
-                if (!empty($cache->constants[$key])) {
-                    return $value == $cache->constants[$key];
-                }
-                return false;
             }
 
             // Function "inXxx(s)": Check if the data at the given index is equal to xxx
@@ -164,8 +163,7 @@ class Enum {
 
         // For MAP
         if ($cache->isMap) {
-            // Function "fromXxx"
-            // Return the index where the value is the name
+            // Function "fromXxx": Return the index where the value is the name
             if (Strings::startsWith($function, "from")) {
                 $key = Strings::stripStart($function, "from");
                 foreach ($cache->data as $index => $row) {
@@ -176,7 +174,7 @@ class Enum {
                 return 0;
             }
 
-            // Get the value at the given key depending on the function
+            // Function "getXxx": Get the value at the given key depending on the function
             $key = $function;
             if (Strings::startsWith($function, "get")) {
                 $key    = Strings::stripStart($function, "get", "");

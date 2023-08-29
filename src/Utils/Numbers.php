@@ -16,13 +16,111 @@ class Numbers {
     }
 
     /**
-     * Clamps the given number between the min and max
-     * @param integer $number
-     * @param integer $min
-     * @param integer $max
+     * Returns true if the given value is a number and greater and/or equal to cero
+     * @param mixed        $number
+     * @param integer|null $min    Optional.
+     * @param integer|null $max    Optional.
+     * @return boolean
+     */
+    public static function isValid(mixed $number, ?int $min = 1, ?int $max = null): bool {
+        if (!is_numeric($number)) {
+            return false;
+        }
+        if ($min != null && $number < $min) {
+            return false;
+        }
+        if ($max != null && $number > $max) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns < 0 if number is less than other; > 0 if number is greater than other, and 0 if they are equal
+     * @param mixed   $number
+     * @param mixed   $other
+     * @param boolean $orderAsc Optional.
+     * @return mixed
+     */
+    public static function compare(mixed $number, mixed $other, bool $orderAsc = true): mixed {
+        return ($number - $other) * ($orderAsc ? 1 : -1);
+    }
+
+    /**
+     * Rounds the given number to the given decimals
+     * @param float   $number
+     * @param integer $decimals
+     * @return float
+     */
+    public static function round(float $number, int $decimals): float {
+        if (is_numeric($number)) {
+            $padding = pow(10, $decimals);
+            return round($number * $padding) / $padding;
+        }
+        return 0;
+    }
+
+    /**
+     * Returns the given number as an integer using the given decimals
+     * @param float   $number
+     * @param integer $decimals
      * @return integer
      */
-    public function clamp(int $number, int $min, int $max) {
+    public static function toInt(float $number, int $decimals): int {
+        if (is_numeric($number)) {
+            $padding = pow(10, $decimals);
+            return (int)round($number * $padding);
+        }
+        return 0;
+    }
+
+    /**
+     * Returns the given number as a float using the given decimals
+     * @param integer $number
+     * @param integer $decimals
+     * @return float
+     */
+    public static function toFloat(int $number, int $decimals): float {
+        $padding = pow(10, $decimals);
+        return $number / $padding;
+    }
+
+    /**
+     * Returns a number using the right format
+     * @param float   $number
+     * @param integer $decimals
+     * @return string
+     */
+    public static function formatInt(float $number, int $decimals = 0): string {
+        $float = $decimals > 0 ? self::toFloat($number, $decimals) : $number;
+        return self::formatFloat($float, $decimals);
+    }
+
+    /**
+     * Returns a number using the right format
+     * @param float   $number
+     * @param integer $decimals
+     * @return string
+     */
+    public static function formatFloat(float $number, int $decimals): string {
+        $float = floatval($number);
+        if (!empty($float)) {
+            $decimals = $float < 1000 && !is_int($number) ? $decimals : 0;
+            return number_format($float, $decimals, ",", ".");
+        }
+        return "";
+    }
+
+
+
+    /**
+     * Clamps the given number between the min and max
+     * @param mixed $number
+     * @param mixed $min
+     * @param mixed $max
+     * @return mixed
+     */
+    public static function clamp(mixed $number, mixed $min, mixed $max): mixed {
         return max($min, min($max, $number));
     }
 
@@ -74,113 +172,60 @@ class Numbers {
     }
 
     /**
-     * Adds zeros to the start of the number
-     * @param mixed   $value
-     * @param integer $amount
-     * @return string
-     */
-    public static function zerosPad($value, int $amount) {
-        if (!empty($value)) {
-            return str_pad((string)$value, $amount, "0", STR_PAD_LEFT);
-        }
-        return $value;
-    }
-
-
-
-    /**
-     * Returns true if the given value is a number
-     * @param mixed $number
-     * @return boolean
-     */
-    public static function isNumber($number): bool {
-        return is_numeric($number);
-    }
-
-    /**
-     * Returns true if the given value is a number between the given min and max
-     * @param mixed   $number
-     * @param integer $min    Optional.
-     * @param integer $max    Optional.
-     * @return boolean
-     */
-    public static function isValid($number, int $min = 1, int $max = null): bool {
-        return is_numeric($number) && $number >= $min && ($max != null ? $number <= $max : true);
-    }
-
-    /**
-     * Rounds the given number to the given decimals
+     * Applies the Discount to the given Number
      * @param float   $number
-     * @param integer $decimals
+     * @param integer $percent
      * @return float
      */
-    public static function round(float $number, int $decimals): float {
-        if (is_numeric($number)) {
-            $padding = pow(10, $decimals);
-            return round($number * $padding) / $padding;
+    public static function applyDiscount(float $number, int $percent): float {
+        if (empty($percent)) {
+            return $number;
         }
-        return 0;
-    }
-
-    /**
-     * Returns the given number as an integer using the given decimals
-     * @param float   $number
-     * @param integer $decimals
-     * @return integer
-     */
-    public static function toInt(float $number, int $decimals): int {
-        if (is_numeric($number)) {
-            $padding = pow(10, $decimals);
-            return round($number * $padding);
-        }
-        return 0;
-    }
-
-    /**
-     * Returns the given number as a float using the given decimals
-     * @param integer $number
-     * @param integer $decimals
-     * @return float
-     */
-    public static function toFloat(int $number, int $decimals): float {
-        $padding = pow(10, $decimals);
-        return $number / $padding;
-    }
-
-    /**
-     * Returns a number using the right format
-     * @param float   $number
-     * @param integer $decimals
-     * @return string
-     */
-    public static function formatFloat(float $number, int $decimals): string {
-        $float = floatval($number);
-        if (!empty($float)) {
-            $decimals = $float < 1000 && !is_int($number) ? $decimals : 0;
-            return number_format($float, $decimals, ",", ".");
-        }
-        return "";
+        $discount = (100 - min(100, $percent)) / 100;
+        return $number * $discount;
     }
 
 
 
     /**
      * Returns true if the given price is valid
-     * @param mixed   $price
-     * @param integer $min   Optional.
-     * @param integer $max   Optional.
+     * @param mixed        $float
+     * @param integer|null $min      Optional.
+     * @param integer|null $max      Optional.
+     * @param integer|null $decimals Optional.
      * @return boolean
      */
-    public static function isValidPrice($price, int $min = 1, int $max = null): bool {
-        return self::isValid($price * 100, $min, $max);
+    public static function isValidFloat(mixed $float, ?int $min = 1, ?int $max = null, ?int $decimals = null): bool {
+        $mult = 1;
+        if ($decimals != null) {
+            $decimalCount = strlen($float) - strrpos($float, ".") - 1;
+            if (strrpos($float, ".") > 0 && $decimalCount > $decimals) {
+                return false;
+            }
+            $mult = pow(10, $decimals);
+        }
+        $multMin = $min !== null ? $min * $mult : $min;
+        $multMax = $max !== null ? $max * $mult : $max;
+        return self::isValid($float * $mult, $multMin, $multMax);
+    }
+
+    /**
+     * Returns true if the given price is valid
+     * @param mixed        $price
+     * @param integer|null $min   Optional.
+     * @param integer|null $max   Optional.
+     * @return boolean
+     */
+    public static function isValidPrice(mixed $price, ?int $min = 1, ?int $max = null): bool {
+        return self::isValidFloat($price, $min, $max, 2);
     }
 
     /**
      * Rounds the given price to 2 decimals
      * @param float $price
-     * @return integer
+     * @return float
      */
-    public static function roundCents(float $price): int {
+    public static function roundCents(float $price): float {
         return self::round($price, 2);
     }
 
@@ -231,41 +276,45 @@ class Numbers {
     public static function toPriceString(float $price): string {
         $millions = round($price / 1000000);
         if ($millions > 10) {
-            return "${$millions}m";
+            return "\${$millions}m";
         }
         $kilos = round($price / 1000);
         if ($kilos > 10) {
-            return "${$kilos}k";
+            return "\${$kilos}k";
         }
         $price = round($price);
-        return "${$price}";
+        return "\${$price}";
     }
 
     /**
-     * Returns the price with an html format
-     * @param integer $cents
-     * @param string  $currency  Optional.
-     * @param boolean $skipZeros Optional.
-     * @param string  $zeroStr   Optional.
+     * Returns the memory in MB or GB with the units
+     * @param integer $bytes
+     * @param boolean $inGigas Optional.
      * @return string
      */
-    public static function toPriceHTML(int $cents, string $currency = "", bool $skipZeros = false, string $zeroStr = ""): string {
-        if ($skipZeros && $cents === 0) {
-            return $zeroStr;
+    public static function toBytesString(int $bytes, bool $inGigas = false): string {
+        $megaBytes = $inGigas ? $bytes * 1024 : $bytes;
+        $teraBytes = floor($megaBytes / (1024 * 1024));
+        if ($teraBytes >= 1) {
+            return "$teraBytes TB";
         }
+        $gigaBytes = floor($megaBytes / 1024);
+        if ($inGigas || $gigaBytes >= 1) {
+            return "$gigaBytes GB";
+        }
+        return "$megaBytes MB";
+    }
 
-        $decimals    = 2;
-        $price       = self::fromCents($cents);
-        $isNegative  = $price < 0;
-        $positive    = abs($price);
-        $noCents     = number_format(floor($positive), 0, "", "");
-        $noCentsStr  = number_format(floor($positive), 0, ",", ".");
-        $padding     = pow(10, $decimals);
-        $negStr      = $isNegative ? "-" : "";
-        $currStr     = !empty($currency) ? "<span>$currency</span>" : "";
-        $cents       = round($positive * $padding - $noCents * $padding);
-        $centsStr    = str_pad($cents, $decimals, "0", STR_PAD_LEFT);
-
-        return "$currStr {$negStr}{$noCentsStr}<sup>$centsStr</sup>";
+    /**
+     * Adds zeros to the start of the number
+     * @param mixed   $value
+     * @param integer $amount
+     * @return string
+     */
+    public static function zerosPad(mixed $value, int $amount): string {
+        if (!empty($value)) {
+            return str_pad((string)$value, $amount, "0", STR_PAD_LEFT);
+        }
+        return $value;
     }
 }

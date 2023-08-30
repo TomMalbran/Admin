@@ -108,7 +108,7 @@ class Output {
             "hasSlides"       => Admin::hasSlides(),
             "hasPersonalize"  => Admin::hasPersonalize(),
             "hasContact"      => Admin::hasContact(),
-            "hasStyles"       => File::exists(Config::getPublicUrl("styles/main.css")),
+            "hasStyles"       => Admin::hasStyles(),
             "menuItems"       => $forBody ? self::getMenuItems() : [],
             "isMenuSel"       => function ($val) use ($response) {
                 return $val == $response->mainMenu ? "menu-item-selected" : "";

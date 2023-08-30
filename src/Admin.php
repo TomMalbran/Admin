@@ -113,6 +113,15 @@ class Admin {
         return self::dataExists(self::ContactData);
     }
 
+    /**
+     * Returns true if there are Custom Styles
+     * @return boolean
+     */
+    public static function hasStyles(): bool {
+        $path = File::getPath(self::$adminPath, Admin::AdminDir, Admin::PublicDir, "styles", "main.css");
+        return File::exists($path);
+    }
+
 
 
     /**

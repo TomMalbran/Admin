@@ -19,7 +19,7 @@ class User {
      * Creates and returns the View
      * @return View
      */
-    private static function getView(): View {
+    private static function view(): View {
         return new View("users", "users", "users");
     }
 
@@ -32,7 +32,7 @@ class User {
      */
     public static function getAll(Request $request): Response {
         $list = Credential::getAll();
-        return self::getView()->create("main", $request, [
+        return self::view()->create("main", $request, [
             "list"    => $list,
             "hasList" => !empty($list),
         ]);
@@ -46,7 +46,7 @@ class User {
      */
     public static function getOne(int $credentialID, Request $request): Response {
         $credential = Credential::getOne($credentialID);
-        return self::getView()->create("view", $request, [], $credential);
+        return self::view()->create("view", $request, [], $credential);
     }
 
     /**
@@ -55,7 +55,7 @@ class User {
      * @return Response
      */
     public static function create(Request $request): Response {
-        return self::getView()->create("edit", $request, [
+        return self::view()->create("edit", $request, [
             "levels"   => Access::getSelect(),
             "statuses" => Status::getSelect(),
         ]);
@@ -69,7 +69,7 @@ class User {
      */
     public static function edit(int $credentialID, Request $request): Response {
         $credential = Credential::getOne($credentialID);
-        return self::getView()->create("edit", $request, [
+        return self::view()->create("edit", $request, [
             "isEdit"   => true,
             "levels"   => Access::getSelect($credential->level),
             "statuses" => Status::getSelect($credential->status),
@@ -116,7 +116,7 @@ class User {
         }
 
         if ($errors->has()) {
-            return self::getView()->create("edit", $request, [
+            return self::view()->create("edit", $request, [
                 "isEdit"   => $isEdit,
                 "levels"   => Access::getSelect($request->getInt("level")),
                 "statuses" => Status::getSelect($request->getInt("status")),
@@ -130,7 +130,7 @@ class User {
             Credential::edit($credentialID, $request, $request->status, $request->level);
             ActionLog::add("User", "Edit", $credentialID);
         }
-        return self::getView()->edit($request, $isEdit, $credentialID);
+        return self::view()->edit($request, $isEdit, $credentialID);
     }
 
     /**
@@ -145,6 +145,6 @@ class User {
             ActionLog::add("User", "Delete", $credentialID);
             $success = true;
         }
-        return self::getView()->delete($request, $success, $credentialID);
+        return self::view()->delete($request, $success, $credentialID);
     }
 }

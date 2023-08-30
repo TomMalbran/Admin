@@ -42,7 +42,7 @@ class Personalize {
      * @param string $hash Optional.
      * @return View
      */
-    private static function getView(string $hash = ""): View {
+    private static function view(string $hash = ""): View {
         $url = "personalize" . (!empty($hash) ? "#$hash" : "");
         return new View("view", $url, "personalize");
     }
@@ -108,7 +108,7 @@ class Personalize {
     public static function getAll(Request $request): Response {
         $settings = Settings::getAllFlat();
         $options  = self::getOptions($settings);
-        return self::getView()->create("personalize", $request, $options);
+        return self::view()->create("personalize", $request, $options);
     }
 
     /**
@@ -152,11 +152,11 @@ class Personalize {
         }
         if ($errors->has()) {
             $options = self::getOptions($request->toArray(), $errors->getObject());
-            return self::getView($request->subsection)->create("personalize", $request, $options);
+            return self::view($request->subsection)->create("personalize", $request, $options);
         }
 
         Settings::save($request->toArray());
         ActionLog::add("Personalize", "Save");
-        return self::getView($request->subsection)->success($request, "save");
+        return self::view($request->subsection)->success($request, "save");
     }
 }

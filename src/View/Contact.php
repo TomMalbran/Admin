@@ -57,7 +57,7 @@ class Contact {
      * Creates and returns the View
      * @return View
      */
-    private static function getView(): View {
+    private static function view(): View {
         return new View("contacts", "contacts", "contacts");
     }
 
@@ -77,7 +77,7 @@ class Contact {
         $total = self::schema()->getTotal();
         $navigation->setData($list, $total);
 
-        return self::getView()->navigation("main", $navigation);
+        return self::view()->navigation("main", $navigation);
     }
 
     /**
@@ -97,7 +97,7 @@ class Contact {
                 "value" => $contact->get($key),
             ];
         }
-        return self::getView()->create("view", $request, [
+        return self::view()->create("view", $request, [
             "fields" => $fields,
         ], $contact);
     }
@@ -178,6 +178,6 @@ class Contact {
             ActionLog::add("Contact", "Delete", $contactID);
             $success = true;
         }
-        return self::getView()->delete($request, $success, $contactID);
+        return self::view()->delete($request, $success, $contactID);
     }
 }

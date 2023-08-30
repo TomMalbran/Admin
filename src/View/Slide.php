@@ -83,7 +83,7 @@ class Slide {
      * Creates and returns the View
      * @return View
      */
-    private static function getView(): View {
+    private static function view(): View {
         return new View("slides", "slides", "slides");
     }
 
@@ -113,7 +113,7 @@ class Slide {
             $lists[$slide["type"]]["hasList"] = true;
         }
 
-        return self::getView()->create("main", $request, [
+        return self::view()->create("main", $request, [
             "useTabs" => self::$useTabs,
             "tabs"    => $tabs,
             "lists"   => Arrays::getValues($lists),
@@ -150,7 +150,7 @@ class Slide {
     public static function getOne(int $slideID, Request $request): Response {
         self::load();
         $slide = self::schema()->getOne($slideID);
-        return self::getView()->create("view", $request, [], $slide);
+        return self::view()->create("view", $request, [], $slide);
     }
 
     /**
@@ -161,7 +161,7 @@ class Slide {
      */
     public static function create(string $type, Request $request): Response {
         self::load();
-        return self::getView()->create("edit", $request, [
+        return self::view()->create("edit", $request, [
             "type"     => $type,
             "useTabs"  => self::$useTabs,
             "statuses" => Status::getSelect(),
@@ -177,7 +177,7 @@ class Slide {
     public static function edit(int $slideID, Request $request): Response {
         self::load();
         $slide = self::schema()->getOne($slideID);
-        return self::getView()->create("edit", $request, [
+        return self::view()->create("edit", $request, [
             "isEdit"   => true,
             "type"     => $slide->type,
             "useTabs"  => self::$useTabs,
@@ -236,7 +236,7 @@ class Slide {
         }
 
         if ($errors->has()) {
-            return self::getView()->create("edit", $request, [
+            return self::view()->create("edit", $request, [
                 "isEdit"   => $isEdit,
                 "type"     => $type,
                 "useTabs"  => self::$useTabs,
@@ -252,7 +252,7 @@ class Slide {
             self::schema()->editWithOrder($slideID, $request, null, $query);
             ActionLog::add("Slide", "Edit", $slideID);
         }
-        return self::getView()->edit($request, $isEdit, $slideID);
+        return self::view()->edit($request, $isEdit, $slideID);
     }
 
     /**
@@ -271,6 +271,6 @@ class Slide {
             ActionLog::add("Slide", "Delete", $slideID);
             $success = true;
         }
-        return self::getView()->delete($request, $success, $slideID);
+        return self::view()->delete($request, $success, $slideID);
     }
 }

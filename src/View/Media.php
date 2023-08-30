@@ -57,7 +57,7 @@ class Media {
      * @param string $url Optional.
      * @return View
      */
-    private static function getView(string $url = "media"): View {
+    private static function view(string $url = "media"): View {
         return new View("media", $url, "media");
     }
 
@@ -97,7 +97,7 @@ class Media {
             $route = Strings::fromUrl($request->path);
             $url   = "media/$route";
         }
-        return self::getView($url)->redirect($request, $message, $result)->withUrl($query);
+        return self::view($url)->redirect($request, $message, $result)->withUrl($query);
     }
 
 
@@ -192,7 +192,7 @@ class Media {
             ]);
         }
 
-        return self::getView()->create("main", $request, [
+        return self::view()->create("main", $request, [
             "files"     => $result,
             "path"      => Strings::toUrl($path),
             "isSelect"  => $request->has("select"),
@@ -341,7 +341,7 @@ class Media {
      */
     public static function resize(Request $request): Response {
         $files = FileMedia::getAllToResize();
-        return self::getView()->create("resize", $request, [
+        return self::view()->create("resize", $request, [
             "files" => $files,
             "total" => count($files),
             "query" => self::getQuery($request)->toString(),

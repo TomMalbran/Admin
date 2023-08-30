@@ -24,7 +24,7 @@ class Session {
      * Creates and returns the View
      * @return View
      */
-    private static function getView(): View {
+    private static function view(): View {
         return new View("session", "session/view");
     }
 
@@ -47,7 +47,7 @@ class Session {
                 $result["bgAlt"]   = $image["location"];
             }
         }
-        return self::getView()->create($template, $request, $result, null, $errors);
+        return self::view()->create($template, $request, $result, null, $errors);
     }
 
 
@@ -213,7 +213,7 @@ class Session {
      */
     public static function view(Request $request): Response {
         $credential = Credential::getOne(Auth::getID());
-        return self::getView()->create("edit", $request, [], $credential);
+        return self::view()->create("edit", $request, [], $credential);
     }
 
     /**
@@ -239,10 +239,10 @@ class Session {
 
         if ($errors->has()) {
             $request->remove("password");
-            return self::getView()->create("edit", $request, [], null, $errors);
+            return self::view()->create("edit", $request, [], null, $errors);
         }
         Credential::edit(Auth::getID(), $request);
         ActionLog::add("Session", "Edit");
-        return self::getView()->success($request, "edit");
+        return self::view()->success($request, "edit");
     }
 }

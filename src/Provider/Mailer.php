@@ -50,7 +50,7 @@ class Mailer {
      * @param boolean $sendHtml   Optional.
      * @return boolean
      */
-    private static function send(string $to, string $subject, string $body, string $attachment = "", bool $sendHtml = true): bool {
+    public static function send(string $to, string $subject, string $body, string $attachment = "", bool $sendHtml = true): bool {
         if (self::$smtp->sendDisabled) {
             return false;
         }

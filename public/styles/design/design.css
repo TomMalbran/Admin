@@ -159,7 +159,7 @@ hr {
     position: relative;
     padding: 16px;
     border-radius: var(--border-radius);
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
     background-color: white;
 }
 .content-body h3,

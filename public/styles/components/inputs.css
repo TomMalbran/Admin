@@ -416,12 +416,12 @@ label input[type="radio"]:disabled + span {
     font-size: 18px;
     color: rgb(92, 92, 92);
 }
-    .search-box:before {
-        left: 7px;
-    }
-    .search-close:before {
-        right: 7px;
-    }
+.search-box:before {
+    left: 7px;
+}
+.search-close:before {
+    right: 7px;
+}
 
 .search-close {
     display: none;
@@ -474,8 +474,12 @@ label input[type="radio"]:disabled + span {
     position: absolute;
     cursor: pointer;
 }
-    .ui-datepicker-prev { left:  10px; }
-    .ui-datepicker-next { right: 10px; }
+.ui-datepicker-prev {
+    left:  10px;
+}
+.ui-datepicker-next {
+    right: 10px;
+}
 
 .ui-datepicker-title {
     text-align: center;
@@ -500,30 +504,30 @@ label input[type="radio"]:disabled + span {
     background-color: rgb(245, 245, 245);
     text-align: right;
 }
-    .ui-datepicker-calendar td:hover {
-        background-color: white;
-    }
+.ui-datepicker-calendar td:hover {
+    background-color: white;
+}
 
-    td.ui-datepicker-week-end {
-        background-color: rgb(235, 235, 235);
-    }
-    td.ui-datepicker-other-month {
-        background-color: rgb(225, 225, 225);
-    }
-    td.ui-datepicker-today {
-        background-color: rgb(117, 117, 117);
-    }
-    td.ui-datepicker-current-day {
-        border-color: rgb(96, 96, 96);
-    }
+td.ui-datepicker-week-end {
+    background-color: rgb(235, 235, 235);
+}
+td.ui-datepicker-other-month {
+    background-color: rgb(225, 225, 225);
+}
+td.ui-datepicker-today {
+    background-color: rgb(117, 117, 117);
+}
+td.ui-datepicker-current-day {
+    border-color: rgb(96, 96, 96);
+}
 
-    .ui-datepicker-calendar a {
-        color: rgb(106, 106, 106);
-        font-size: 12px;
-    }
-    td.ui-datepicker-today a {
-        color: rgb(240, 240, 240)
-    }
-    td.ui-datepicker-today:hover a {
-        color: rgb(106, 106, 106);
-    }
+.ui-datepicker-calendar a {
+    color: rgb(106, 106, 106);
+    font-size: 12px;
+}
+td.ui-datepicker-today a {
+    color: rgb(240, 240, 240)
+}
+td.ui-datepicker-today:hover a {
+    color: rgb(106, 106, 106);
+}

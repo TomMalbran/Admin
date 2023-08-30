@@ -1,6 +1,17 @@
 /**
  * The Snackbar
  */
+ @keyframes fade-in {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
 .snackbar {
     box-sizing: border-box;
     visibility: hidden;
@@ -17,18 +28,7 @@
 }
 .snackbar-show {
     visibility: visible;
-    animation: fadein 0.5s;
-}
-
-@keyframes fadein {
-    from {
-        bottom: 0;
-        opacity: 0;
-    }
-    to {
-        bottom: 30px;
-        opacity: 1;
-    }
+    animation: fade-in 0.5s;
 }
 
 @media screen and (max-width: 550px) {

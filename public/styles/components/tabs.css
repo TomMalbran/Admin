@@ -20,31 +20,31 @@
     box-shadow: inset -2px 0 var(--border-color);
     margin-right: 16px;
 }
-    .tabs-bar li {
-        display: block;
-        padding: 0 0 16px 0;
-        margin-right: 16px;
-        color: rgb(153, 153, 153);
-        font-size: 15px;
-        font-weight: 400;
-        cursor: pointer;
-        border-bottom: 2px solid transparent;
-        transition: all 0.3s;
-    }
-    .content-horizontal .tabs-bar li {
-        box-sizing: border-box;
-        min-height: 36px;
-        margin-right: 0;
-        padding: 8px 16px 8px 0;
-        border-right: 2px solid transparent;
-        border-bottom: none;
-    }
-    .tabs-bar li:not(.tab-selected):hover {
-        border-color: var(--title-color);
-        color: rgb(103, 103, 103);
-    }
-    .tabs-bar .tab-selected {
-        color: var(--primary-color);
+.tabs-bar li {
+    display: block;
+    padding: 0 0 16px 0;
+    margin-right: 16px;
+    color: rgb(153, 153, 153);
+    font-size: 15px;
+    font-weight: 400;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+.content-horizontal .tabs-bar li {
+    box-sizing: border-box;
+    min-height: 36px;
+    margin-right: 0;
+    padding: 8px 16px 8px 0;
+    border-right: 2px solid transparent;
+    border-bottom: none;
+}
+.tabs-bar li:not(.tab-selected):hover {
+    border-color: var(--title-color);
+    color: rgb(103, 103, 103);
+}
+.tabs-bar .tab-selected {
+    color: var(--primary-color);
 }
 
 

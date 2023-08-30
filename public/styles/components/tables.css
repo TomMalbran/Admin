@@ -42,6 +42,12 @@ tfoot tr:first-child th {
 .table-container thead th {
     border-bottom: 1px solid var(--border-color);
 }
+.table-container thead th:first-child {
+    border-top-left-radius: var(--border-radius);
+}
+.table-container thead th:last-child {
+    border-top-left-radius: var(--border-radius);
+}
 .table-container tfoot th {
     border-top: 1px solid var(--border-color);
 }
@@ -54,12 +60,12 @@ tfoot tr:first-child th {
     padding: 10px 0 10px 16px;
     background-color: white;
 }
-    .table-container td:last-child {
-        padding-right: 16px;
-    }
-    .table-container tr:not(:last-child) td {
-        border-bottom: 2px solid var(--border-color);
-    }
+.table-container td:last-child {
+    padding-right: 16px;
+}
+.table-container tr:not(:last-child) td {
+    border-bottom: 1px solid var(--border-color);
+}
 
 .table-actions td:last-child {
     box-sizing: border-box;
@@ -158,7 +164,7 @@ tfoot tr:first-child th {
     .table-list-secondary.table-list-secondary {
         color: rgb(120, 120, 120);
     }
-    .table-list-terciary.table-list-terciary {
+    .table-list-tertiary.table-list-tertiary {
         color: rgb(150, 150, 150);
     }
     .table-list-hide.table-list-hide {

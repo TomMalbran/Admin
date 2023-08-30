@@ -1,7 +1,7 @@
 :root {
     --primary-color     : #282644;
     --secondary-color   : #323055;
-    --terciary-color    : #3d3b68;
+    --tertiary-color    : #3d3b68;
 
     --drop-color        : rgba(9, 30, 66, 0.5);
     --border-color      : rgb(241, 241, 241);
@@ -18,7 +18,7 @@
     --yellow-color      : rgb(240, 150, 9);
     --green-color       : rgb(1, 163, 28);
 
-    --border-radius     : 4px;
+    --border-radius     : 8px;
     --sidebar-width     : 268px;
     --mainbar-width     : 48px;
     --subbar-width      : 220px;

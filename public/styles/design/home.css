@@ -28,7 +28,7 @@
     letter-spacing: .03rem;
 }
 .home-menu a:hover {
-    background: var(--terciary-color);
+    background: var(--tertiary-color);
     color: rgb(230, 230, 230);
 }
 

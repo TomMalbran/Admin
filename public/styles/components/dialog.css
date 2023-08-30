@@ -60,16 +60,16 @@
     border-radius: var(--border-radius);
     z-index: var(--z-dialog-cnt);
 }
-    .dialog-close .dialog {
-        animation: dialog-close 0.4s ease-out;
-    }
-    .dialog-confirm,
-    .dialog-prompt {
-        width: 400px;
-    }
-    .dialog-alert {
-        width: 650px;
-    }
+.dialog-close .dialog {
+    animation: dialog-close 0.4s ease-out;
+}
+.dialog-confirm,
+.dialog-prompt {
+    width: 400px;
+}
+.dialog-alert {
+    width: 650px;
+}
 
 .dialog > header {
     flex-shrink: 0;

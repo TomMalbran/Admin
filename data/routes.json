@@ -21,7 +21,7 @@
         "/session/remember"     : "General",
         "/session/code"         : "General",
         "/session/reset"        : "General",
-        "/session/view"         : "Editor",
+        "/session/profile"      : "Editor",
         "/session/edit"         : "Editor",
 
         "/home/getAll"          : "Editor",

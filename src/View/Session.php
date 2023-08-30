@@ -25,7 +25,7 @@ class Session {
      * @return View
      */
     private static function view(): View {
-        return new View("session", "session/view");
+        return new View("session", "session/profile");
     }
 
     /**
@@ -211,7 +211,7 @@ class Session {
      * @param Request $request
      * @return Response
      */
-    public static function view(Request $request): Response {
+    public static function profile(Request $request): Response {
         $credential = Credential::getOne(Auth::getID());
         return self::view()->create("edit", $request, [], $credential);
     }

@@ -222,7 +222,7 @@ class Database {
      */
     public function insert(string $table, array $fields, string $method = "INSERT"): int {
         $bindParams  = [];
-        $expression  = "$method INTO `{dbPrefix}$table` ";
+        $expression  = "$method INTO `$table` ";
         $expression .= $this->buildInsertHeader($fields);
         $expression .= $this->buildTableData($fields, $bindParams, true);
         $statement   = $this->processQuery($expression, $bindParams);
@@ -265,7 +265,7 @@ class Database {
      */
     public function update(string $table, array $fields, Query $query): bool {
         $bindParams  = [];
-        $expression  = "UPDATE `{dbPrefix}$table` SET ";
+        $expression  = "UPDATE `$table` SET ";
         $expression .= $this->buildTableData($fields, $bindParams, false);
         $expression .= " " . $query->get();
         $bindParams  = array_merge($bindParams, $query->params);

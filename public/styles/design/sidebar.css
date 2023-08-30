@@ -174,14 +174,16 @@ ol li:hover .sub-nav {
     padding: 0;
     position: absolute;
     top: 0;
-    left: var(--subbar-width);
+    left: calc(var(--subbar-width) - 8px);
+    padding: 8px;
+    border-radius: var(--border-radius);
     background-color: var(--secondary-color);
     z-index: 100000;
 }
 .sub-nav:after {
     content: "";
     position: absolute;
-    top: 17px;
+    top: 18px;
     left: -20px;
     border: 10px solid transparent;
     border-right: 10px solid var(--secondary-color);
@@ -192,6 +194,7 @@ ol li:hover .sub-nav {
 }
 .sub-nav a {
     color: var(--dark-gray);
+    margin-right: 0;
     padding: 8px 16px;
     font-size: 12px;
     font-weight: 200;
@@ -201,7 +204,7 @@ ol li:hover .sub-nav {
 .menu-item-selected + .sub-nav {
     display: block;
     position: static;
-    padding: 0 0 16px 0;
+    margin: 4px 16px 0 0;
 }
 .menu-item-selected + .sub-nav a {
     padding: 8px 16px 8px 40px;

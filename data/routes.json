@@ -5,13 +5,13 @@
         "Admin"   : "home"
     },
     "modules" : {
-        "/session"     : "\\Admin\\View\\Session",
-        "/home"        : "\\Admin\\View\\Home",
-        "/slides"      : "\\Admin\\View\\Slide",
-        "/personalize" : "\\Admin\\View\\Personalize",
-        "/contacts"    : "\\Admin\\View\\Contact",
-        "/media"       : "\\Admin\\View\\Media",
-        "/users"       : "\\Admin\\View\\User"
+        "/session"     : "Admin\\View\\Session",
+        "/home"        : "Admin\\View\\Home",
+        "/slides"      : "Admin\\View\\Slide",
+        "/personalize" : "Admin\\View\\Personalize",
+        "/contacts"    : "Admin\\View\\Contact",
+        "/media"       : "Admin\\View\\Media",
+        "/users"       : "Admin\\View\\User"
     },
     "routes" : {
         "/session/getAll"       : "General",

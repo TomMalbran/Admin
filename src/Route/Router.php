@@ -241,8 +241,12 @@ class Router {
      */
     public static function call(mixed $route, Request $request): Response {
         $route->params[] = $request;
-        if (Strings::startsWith($route->module, "\\")) {
+        if (Strings::startsWith($route->module, "Admin")) {
             return call_user_func_array("{$route->module}::{$route->method}", $route->params);
+        }
+
+        if (!Strings::endsWith($route->module, "Controller")) {
+            return call_user_func_array("App\\{$route->module}::{$route->method}", $route->params);
         }
 
         $instance = Container::bind(self::Namespace . $route->module);

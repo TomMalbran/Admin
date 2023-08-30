@@ -19,19 +19,18 @@ class Server {
     }
 
     /**
-     * Returns true if running on a Dev host
-     * @return boolean
+     * Updates the Localhost Url
+     * @param string $url
+     * @return string
      */
-    public static function isDevHost(): bool {
-        return Strings::startsWith($_SERVER["HTTP_HOST"], "dev.");
-    }
-
-    /**
-     * Returns true if running on a Stage host
-     * @return boolean
-     */
-    public static function isStageHost(): bool {
-        return Strings::startsWith($_SERVER["HTTP_HOST"], "stage.");
+    public static function updateLocalUrl(string $url): string {
+        if (Strings::contains($url, "localhost") && $_SERVER["REMOTE_ADDR"] === "127.0.0.1") {
+            return Strings::replace($url, "localhost", "127.0.0.1");
+        }
+        if (Strings::contains($url, "127.0.0.1") && $_SERVER["REMOTE_ADDR"] === "::1") {
+            return Strings::replace($url, "127.0.0.1", "localhost");
+        }
+        return $url;
     }
 
 

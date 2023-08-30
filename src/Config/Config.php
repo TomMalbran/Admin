@@ -34,20 +34,24 @@ class Config {
         $data    = self::loadENV($path, ".env");
         $replace = [];
 
-        if (File::exists($path, ".env.dev")) {
-            $config = self::loadENV($path, ".env.dev");
-            if (Server::isDevHost() || (!empty($config["URL"]) && Server::urlStartsWith($config["URL"]))) {
-                $replace = $config;
+        if (Server::isLocalHost()) {
+            $data["URL"] = Server::updateLocalUrl($data["URL"]);
+        } else {
+            if (File::exists($path, ".env.dev")) {
+                $config = self::loadENV($path, ".env.dev");
+                if (!empty($config["URL"]) && Server::urlStartsWith($config["URL"])) {
+                    $replace = $config;
+                }
             }
-        }
-        if (empty($replace) && File::exists($path, ".env.stage")) {
-            $config = self::loadENV($path, ".env.stage");
-            if (Server::isStageHost() || (!empty($config["URL"]) && Server::urlStartsWith($config["URL"]))) {
-                $replace = $config;
+            if (empty($replace) && File::exists($path, ".env.stage")) {
+                $config = self::loadENV($path, ".env.stage");
+                if (!empty($config["URL"]) && Server::urlStartsWith($config["URL"])) {
+                    $replace = $config;
+                }
             }
-        }
-        if (empty($replace) && !Server::isLocalHost() && File::exists($path, ".env.production")) {
-            $replace = self::loadENV($path, ".env.production");
+            if (empty($replace) && File::exists($path, ".env.production")) {
+                $replace = self::loadENV($path, ".env.production");
+            }
         }
 
         self::$loaded = true;

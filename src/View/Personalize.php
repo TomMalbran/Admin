@@ -8,6 +8,7 @@ use Admin\IO\Response;
 use Admin\IO\Errors;
 use Admin\Config\Settings;
 use Admin\Log\ActionLog;
+use Admin\Utils\Strings;
 
 /**
  * The Personalize View
@@ -31,9 +32,11 @@ class Personalize {
         }
 
         $data = Admin::loadData(Admin::PersonalizeData);
-        self::$loaded   = true;
-        self::$sections = $data["sections"];
-        self::$useTabs  = $data["useTabs"];
+        if (!empty($data)) {
+            self::$sections = $data["sections"];
+            self::$useTabs  = $data["useTabs"];
+        }
+        self::$loaded = true;
         return true;
     }
 
@@ -74,6 +77,7 @@ class Personalize {
                     "isVideo"    => $option["type"] == "video",
                     "value"      => !empty($settings[$key]) ? $settings[$key] : "",
                 ] + $option;
+
                 if (!empty($errors[$key])) {
                     $fields += $errors[$key];
                 }
@@ -158,5 +162,26 @@ class Personalize {
         Settings::save($request->toArray());
         ActionLog::add("Personalize", "Save");
         return self::view($request->subsection)->success($request, "save");
+    }
+
+
+
+    /**
+     * Returns the Personalize as Settings
+     * @return array{}
+     */
+    public static function getSettings(): array {
+        self::load();
+        $result = [];
+        foreach (self::$sections as $section) {
+            foreach ($section["options"] as $option) {
+                [ $section, $variable ] = Strings::split($option["key"], "-");
+                if (empty($result[$section])) {
+                    $result[$section] = [];
+                }
+                $result[$section][$variable] = !empty($option["default"]) ? $option["default"] : "";
+            }
+        }
+        return $result;
     }
 }

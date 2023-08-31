@@ -8,6 +8,7 @@ use Admin\Schema\Schema;
 use Admin\Schema\Query;
 use Admin\File\Path;
 use Admin\File\FileType;
+use Admin\View\Personalize;
 use Admin\Utils\Arrays;
 use Admin\Utils\CSV;
 use Admin\Utils\JSON;
@@ -231,6 +232,8 @@ class Settings {
         $adminData    = Admin::loadData(Admin::SettingsData, "admin");
         $internalData = Admin::loadData(Admin::SettingsData, "internal");
         $settings     = Arrays::extend($internalData, $adminData);
+        $personalize  = Personalize::getSettings();
+        $settings     = Arrays::extend($settings, $personalize);
         $request      = $db->getAll("settings");
 
         $variables    = [];

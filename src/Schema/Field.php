@@ -74,7 +74,7 @@ class Field {
         $this->dateType   = !empty($data["dateType"]) ? $data["dateType"]      : "middle";
         $this->date       = !empty($data["date"])     ? $data["date"]          : "";
         $this->hour       = !empty($data["hour"])     ? $data["hour"]          : "";
-        $this->default    = isset($data["default"])   ? $data["default"]       : "";
+        $this->default    = isset($data["default"])   ? $data["default"]       : null;
 
         $this->isPrimary  = !empty($data["isPrimary"]);
         $this->isKey      = !empty($data["isKey"]);
@@ -112,7 +112,8 @@ class Field {
      * @return string
      */
     public function getType(): string {
-        $result = "unknown";
+        $result  = "unknown";
+        $default = null;
 
         switch ($this->type) {
         case self::ID:
@@ -120,7 +121,8 @@ class Field {
             break;
         case self::Binary:
         case self::Boolean:
-            $result = "tinyint(1) unsigned NOT NULL";
+            $result  = "tinyint(1) unsigned NOT NULL";
+            $default = 0;
             break;
         case self::Number:
         case self::Float:
@@ -139,27 +141,34 @@ class Field {
             } elseif ($length > 10) {
                 $type = "bigint";
             }
-            $result = "$type($length)$sign NOT NULL";
+            $result  = "$type($length)$sign NOT NULL";
+            $default = 0;
             break;
         case self::String:
         case self::File:
         case self::Image:
-            $length = $this->length ?: 255;
-            $result = "varchar($length) NOT NULL";
+            $length  = $this->length ?: 255;
+            $result  = "varchar($length) NOT NULL";
+            $default = "";
             break;
         case self::JSON:
         case self::CSV:
         case self::Text:
-            $result = "text NOT NULL";
+            $result = "text NULL";
             break;
         case self::Status:
         case self::FemStatus:
-            $result = "tinyint(1) unsigned NOT NULL";
+            $result  = "tinyint(1) unsigned NOT NULL";
+            $default = 0;
             break;
         }
 
-        if ($result != "unknown" && $this->default !== null) {
-            $result .= " DEFAULT '{$this->default}'";
+        if ($result !== "unknown") {
+            if ($this->default !== null) {
+                $result .= " DEFAULT '{$this->default}'";
+            } elseif ($default !== null) {
+                $result .= " DEFAULT '{$default}'";
+            }
         }
         return $result;
     }

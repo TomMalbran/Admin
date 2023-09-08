@@ -6,7 +6,6 @@ use Admin\File\File;
 use Admin\Utils\Server;
 use Admin\Utils\Strings;
 
-use Dotenv\Dotenv;
 use stdClass;
 
 /**

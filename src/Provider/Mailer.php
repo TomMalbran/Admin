@@ -56,27 +56,27 @@ class Mailer {
         }
 
         $mail = new PHPMailer();
-
-        $mail->isSMTP();
         $mail->isHTML($sendHtml);
         $mail->clearAllRecipients();
         $mail->clearReplyTos();
 
-        $mail->Timeout     = 10;
-        $mail->Host        = self::$smtp->host;
-        $mail->Port        = self::$smtp->port;
-        $mail->SMTPSecure  = self::$smtp->secure;
-        $mail->SMTPAuth    = true;
-        $mail->SMTPAutoTLS = false;
+        if (!empty(self::$smtp->host)) {
+            $mail->isSMTP();
+            $mail->Host        = self::$smtp->host;
+            $mail->Port        = self::$smtp->port;
+            $mail->SMTPSecure  = self::$smtp->secure;
+            $mail->SMTPAuth    = true;
+            $mail->SMTPAutoTLS = false;
+            $mail->Username    = self::$smtp->email;
+            $mail->Password    = self::$smtp->password;
+        }
 
-        $mail->Username    = self::$smtp->email;
-        $mail->Password    = self::$smtp->password;
-
-        $mail->CharSet     = "UTF-8";
-        $mail->From        = self::$smtp->email;
-        $mail->FromName    = self::$name;
-        $mail->Subject     = $subject;
-        $mail->Body        = $body;
+        $mail->Timeout  = 10;
+        $mail->CharSet  = "UTF-8";
+        $mail->From     = self::$smtp->email;
+        $mail->FromName = self::$name;
+        $mail->Subject  = $subject;
+        $mail->Body     = $body;
 
         $mail->addAddress($to);
         if (!empty($attachment)) {

@@ -153,13 +153,13 @@ class Contact {
 
         $subject  = "Contacto en {{name}}";
         $message  = "<p>Han enviado un mensaje con los datos:</p>";
-        $message .= "<p>Nombre y Apellido: {$request->name}</p>";
-        $message .= "<p>Email: {$request->email}</p>";
+        $message .= "<p><b>Nombre y Apellido:</b> {$request->name}</p>";
+        $message .= "<p><b>Email:</b> {$request->email}</p>";
 
         foreach ($data->fields as $key => $field) {
             if ($request->has($key)) {
                 $value    = $request->toHtml($key);
-                $message .= "<p>{$field->name}: {$value}</p>";
+                $message .= "<p><b>{$field->name}:</b> {$value}</p>";
             }
         }
 

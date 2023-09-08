@@ -180,22 +180,24 @@ class Settings {
      * @return boolean
      */
     public static function save(array $data): bool {
-        $request = self::getSettings();
-        $batch   = [];
+        $settings = self::getSettings();
+        $batch    = [];
 
-        foreach ($request as $row) {
-            $variable = $row["section"] . "-" . $row["variable"];
+        foreach ($settings as $setting) {
+            $variable = $setting["section"] . "-" . $setting["variable"];
             if (isset($data[$variable])) {
                 $value = $data[$variable];
-                if ($row["type"] == SettingType::JSON) {
+                if ($setting["type"] == SettingType::JSON) {
                     $value = JSON::fromCSV($value);
                 }
+
                 $batch[] = [
-                    "section"      => $row["section"],
-                    "variable"     => $row["variable"],
-                    "value"        => $value,
-                    "type"         => $row["type"],
-                    "modifiedTime" => time(),
+                    "section"        => $setting["section"],
+                    "variable"       => $setting["variable"],
+                    "value"          => $value,
+                    "type"           => $setting["type"],
+                    "forPersonalize" => 0,
+                    "modifiedTime"   => time(),
                 ];
             }
         }
@@ -221,6 +223,43 @@ class Settings {
         return self::save($fields);
     }
 
+    /**
+     * Saves the given Settings if those are already on the DB
+     * @param array{} $settings
+     * @param array{} $data
+     * @return boolean
+     */
+    public static function savePersonalize(array $settings, array $data): bool {
+        $query = Query::create("forPersonalize", "=", 1);
+        self::schema()->remove($query);
+
+        $batch = [];
+        foreach ($settings as $key => $defaultValue) {
+            [ $section, $variable ] = Strings::split($key, "-");
+
+            $type  = SettingType::get($defaultValue);
+            $value = $data[$key] ?? $defaultValue;
+            if ($type == SettingType::JSON) {
+                $value = JSON::fromCSV($value);
+            }
+
+            $batch[] = [
+                "section"        => $section,
+                "variable"       => $variable,
+                "value"          => $value,
+                "type"           => $type,
+                "forPersonalize" => 1,
+                "modifiedTime"   => time(),
+            ];
+        }
+
+        if (!empty($batch)) {
+            self::schema()->batch($batch);
+            return true;
+        }
+        return false;
+    }
+
 
 
     /**
@@ -232,9 +271,8 @@ class Settings {
         $adminData    = Admin::loadData(Admin::SettingsData, "admin");
         $internalData = Admin::loadData(Admin::SettingsData, "internal");
         $settings     = Arrays::extend($internalData, $adminData);
-        $personalize  = Personalize::getSettings();
-        $settings     = Arrays::extend($settings, $personalize);
-        $request      = $db->getAll("settings");
+        $query        = Query::create("forPersonalize", "=", 0);
+        $request      = $db->getAll("settings", "*", $query);
 
         $variables    = [];
         $adds         = [];
@@ -254,10 +292,11 @@ class Settings {
                     $type        = SettingType::get($value);
                     $variables[] = "{$section}_{$variable}";
                     $fields      = [
-                        "section"  => $section,
-                        "variable" => $variable,
-                        "value"    => $type == SettingType::JSON ? JSON::encode($value) : $value,
-                        "type"     => $type,
+                        "section"        => $section,
+                        "variable"       => $variable,
+                        "value"          => $type == SettingType::JSON ? JSON::encode($value) : $value,
+                        "type"           => $type,
+                        "forPersonalize" => 0,
                     ];
                     $adds[]      = $fields;
                     $request[]   = $fields;

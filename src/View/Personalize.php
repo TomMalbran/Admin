@@ -51,7 +51,7 @@ class Personalize {
     }
 
     /**
-     * Returns the Option Items
+     * Returns the Personalize Options
      * @param array{} $settings
      * @param array{} $errors   Optional.
      * @return array{}
@@ -100,6 +100,22 @@ class Personalize {
             "tabs"    => $tabs,
             "options" => $options,
         ];
+    }
+
+    /**
+     * Saves the Personalize Options
+     * @param array{} $data
+     * @return boolean
+     */
+    private static function saveOptions(array $data): bool {
+        $settings = [];
+        foreach (self::$sections as $section) {
+            foreach ($section["options"] as $option) {
+                $settings[$option["key"]] = !empty($option["default"]) ? $option["default"] : "";
+            }
+        }
+
+        return Settings::savePersonalize($settings, $data);
     }
 
 
@@ -159,29 +175,8 @@ class Personalize {
             return self::view($request->subsection)->create("personalize", $request, $options);
         }
 
-        Settings::save($request->toArray());
+        self::saveOptions($request->toArray());
         ActionLog::add("Personalize", "Save");
         return self::view($request->subsection)->success($request, "save");
-    }
-
-
-
-    /**
-     * Returns the Personalize as Settings
-     * @return array{}
-     */
-    public static function getSettings(): array {
-        self::load();
-        $result = [];
-        foreach (self::$sections as $section) {
-            foreach ($section["options"] as $option) {
-                [ $section, $variable ] = Strings::split($option["key"], "-");
-                if (empty($result[$section])) {
-                    $result[$section] = [];
-                }
-                $result[$section][$variable] = !empty($option["default"]) ? $option["default"] : "";
-            }
-        }
-        return $result;
     }
 }

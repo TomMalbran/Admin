@@ -16,17 +16,13 @@ class Media {
      * @return integer[]
      */
     public static function getImageSize(string $dir): array {
-        switch ($dir) {
-        case Path::Thumb:
-            return [ 150, 150 ];
-        case Path::Small:
-            return [ 300, 300 ];
-        case Path::Medium:
-            return [ 700, 700 ];
-        case Path::Large:
-            return [ 1200, 1200 ];
-        }
-        return [];
+        return match ($dir) {
+            Path::Thumb  => [  150,  150 ],
+            Path::Small  => [  300,  300 ],
+            Path::Medium => [  700,  700 ],
+            Path::Large  => [ 1200, 1200 ],
+            default      => [],
+        };
     }
 
 

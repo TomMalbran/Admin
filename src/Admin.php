@@ -131,18 +131,12 @@ class Admin {
      * @return string
      */
     public static function getPath(string $dir = "", string $type = "admin"): string {
-        $path = "";
-        switch ($type) {
-        case "admin":
-            $path = File::getPath(self::$adminPath, self::AdminDir, $dir);
-            break;
-        case "site":
-            $path = File::getPath(self::$adminPath, $dir);
-            break;
-        case "internal":
-            $path = File::getPath(self::$internalPath, $dir);
-            break;
-        }
+        $path = match ($type) {
+            "admin"    => File::getPath(self::$adminPath, self::AdminDir, $dir),
+            "site"     => File::getPath(self::$adminPath, $dir),
+            "internal" => File::getPath(self::$internalPath, $dir),
+            default    => "",
+        };
         return File::removeLastSlash($path);
     }
 

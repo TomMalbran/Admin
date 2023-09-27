@@ -96,7 +96,8 @@ class Slide {
      */
     public static function getAll(Request $request): Response {
         self::load();
-        $slides = self::schema()->getAll();
+        $query  = Query::createOrderBy("position", true);
+        $slides = self::schema()->getAll($query);
         $tabs   = self::getTabs(self::$mainType);
         $lists  = [];
 

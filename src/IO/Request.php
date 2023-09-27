@@ -355,11 +355,10 @@ class Request implements ArrayAccess {
     /**
      * Returns true if the given Status is valid
      * @param string $key
-     * @param string $groupName Optional.
      * @return boolean
      */
-    public function isValidStatus(string $key, string $groupName = "general"): bool {
-        return Status::isValid($this->get($key), $groupName);
+    public function isValidStatus(string $key): bool {
+        return Status::isValid($this->get($key));
     }
 
 
@@ -652,9 +651,9 @@ class Request implements ArrayAccess {
      */
     public function hasExtension(string $key, array|string $extensions): bool {
         if ($this->hasFile($key)) {
-            return File::hasExtension($_FILES[$key]["name"], $extensions);
+            return File::hasExtension($this->files[$key]["name"], $extensions);
         }
-        return false;
+        return File::hasExtension($this->get($key), $extensions);
     }
 
     /**
@@ -664,7 +663,7 @@ class Request implements ArrayAccess {
      */
     public function isValidImage(string $key): bool {
         if ($this->hasFile($key)) {
-            return Image::isValidType($_FILES[$key]["tmp_name"]);
+            return Image::isValidType($this->files[$key]["tmp_name"]);
         }
         return FileType::isImage($this->get($key));
     }

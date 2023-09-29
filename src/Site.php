@@ -4,8 +4,6 @@ namespace Admin;
 use Admin\Admin;
 use Admin\Config\Config;
 use Admin\Config\Settings;
-use Admin\Auth\Auth;
-use Admin\IO\Response;
 use Admin\File\File;
 use Admin\File\Path;
 use Admin\Provider\Mustache;
@@ -32,7 +30,6 @@ class Site {
         }
 
         Admin::create();
-        Auth::setInternal();
         return true;
     }
 
@@ -65,30 +62,6 @@ class Site {
             return Settings::getAllParsed($section);
         }
         return Settings::get($section, $variable);
-    }
-
-    /**
-     * Returns just the data for the requested content
-     * @param string  $url
-     * @param array{} $params Optional.
-     * @return array{}
-     */
-    public static function getData(string $url, array $params = []): array {
-        $response = Admin::request($url, $params);
-        if (!empty($response) && !empty($response->data)) {
-            return $response->data;
-        }
-        return [];
-    }
-
-    /**
-     * Returns the requested content
-     * @param string  $url
-     * @param array{} $params Optional.
-     * @return Response
-     */
-    public static function request(string $url, array $params = []): Response {
-        return Admin::request($url, $params);
     }
 
     /**

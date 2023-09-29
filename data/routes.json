@@ -27,7 +27,6 @@
         "/home/getAll"          : "Editor",
 
         "/slides/getAll"        : "Editor",
-        "/slides/getActive/{0}" : "API",
         "/slides/getOne/{0}"    : "Editor",
         "/slides/create/{0}"    : "Editor",
         "/slides/edit/{0}"      : "Editor",
@@ -39,7 +38,6 @@
 
         "/contacts/getAll"      : "Editor",
         "/contacts/getOne/{0}"  : "Editor",
-        "/contacts/create"      : "API",
         "/contacts/delete/{0}"  : "Editor",
 
         "/media/getAll"         : "Editor",

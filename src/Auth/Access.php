@@ -11,7 +11,6 @@ class Access {
     const General = 0;
     const Editor  = 1;
     const Admin   = 2;
-    const API     = 10;
 
 
 
@@ -23,7 +22,6 @@ class Access {
         self::General => "General",
         self::Editor  => "Editor",
         self::Admin   => "Admin",
-        self::API     => "API",
     ];
 
     /**

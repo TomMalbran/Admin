@@ -56,15 +56,6 @@ class Auth {
         return true;
     }
 
-    /**
-     * Sets the auth as API
-     * @return boolean
-     */
-    public static function setInternal(): bool {
-        self::$accessLevel = Access::API;
-        return true;
-    }
-
 
 
     /**
@@ -260,7 +251,7 @@ class Auth {
      * @return boolean
      */
     public static function isLoggedIn(): bool {
-        return !empty(self::$credentialID) || self::$accessLevel == Access::API;
+        return !empty(self::$credentialID);
     }
 
     /**
@@ -295,14 +286,6 @@ class Auth {
         return self::$accessLevel == Access::Admin;
     }
 
-    /**
-     * Returns true if we are in API mode
-     * @return boolean
-     */
-    public static function isAPI(): bool {
-        return self::$accessLevel == Access::API;
-    }
-
 
 
     /**
@@ -313,9 +296,6 @@ class Auth {
     public static function grant(int $requested): bool {
         if ($requested != Access::General && !self::isLoggedIn()) {
             return false;
-        }
-        if (self::isAPI()) {
-            return $requested == Access::API;
         }
         return $requested == Access::General || self::$accessLevel >= $requested;
     }

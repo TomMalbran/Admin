@@ -124,9 +124,9 @@ class Slide {
     /**
      * Returns the Active Slides
      * @param string $type Optional.
-     * @return Response
+     * @return array{}
      */
-    public static function getActive(string $type = ""): Response {
+    public static function getActive(string $type = ""): array {
         self::load();
         $query = Query::create("status", "=", Status::Active);
         $query->add("type", "=", !empty($type) ? $type : self::$mainType);
@@ -134,12 +134,12 @@ class Slide {
         $list  = self::schema()->getAll($query);
         $total = count($list);
 
-        return Response::json([
+        return [
             "list"       => $list,
             "amount"     => $total,
             "totalWidth" => $total * 100,
             "slideWidth" => Numbers::divide(100, $total, 4),
-        ]);
+        ];
     }
 
     /**

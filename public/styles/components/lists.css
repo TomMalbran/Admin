@@ -6,21 +6,21 @@
     padding: 0 16px;
     list-style: none;
 }
-.ordered-list li {
+.ordered-list > li {
     margin-bottom: 16px;
 }
 
-.ordered-list dt,
-.ordered-list dl {
+.ordered-list > li dt,
+.ordered-list > li dl {
     color: var(--title-color);
 }
-.ordered-list dd {
+.ordered-list > li dd {
     margin: 0;
 }
-.ordered-list dt label {
+.ordered-list > li dt label {
     font-weight: bold;
 }
-.ordered-list dd p {
+.ordered-list > li dd p {
     margin-top: 0;
 }
 
@@ -36,6 +36,10 @@
 }
 
 
+
+/**
+ * Ordered List Sorted
+ */
 .ordered-list-sorted li {
     margin-bottom: 20px;
 }
@@ -60,12 +64,29 @@
     vertical-align: top;
 }
 
+.ordered-list-sorted li section {
+    flex-grow: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.ordered-list-sorted li section div {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+}
+.ordered-list-sorted li section b {
+    display: block;
+    opacity: 0.9;
+    color: var(--title-color);
+    margin-bottom: 4px;
+}
+
 
 
 /**
  * Ordered Lists with 2 columns
  */
-.ordered-two-cols li {
+.ordered-two-cols > li {
     display: flex;
     align-items: flex-start;
 }
@@ -149,6 +170,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
     grid-gap: 16px;
+    width: 100%;
 }
 .image-list li {
     display: flex;

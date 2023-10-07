@@ -37,6 +37,11 @@ a {
 .link-img img {
     display: block;
     width: 80px;
+    border-radius: var(--border-radius);
+}
+.link-dark img {
+    padding: 4px;
+    background-color: var(--light-gray);
 }
 
 .link-icon {

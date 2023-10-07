@@ -43,6 +43,9 @@ class FileType {
     public static array $pdfExts          = [ "pdf" ];
 
     /** @var string[] */
+    public static array $svgExts          = [ "svg" ];
+
+    /** @var string[] */
     public static array $zipExts          = [ "zip", "rar", "gz", "tar", "iso", "7zip" ];
 
 
@@ -162,6 +165,15 @@ class FileType {
      */
     public static function isPDF(string $file): bool {
         return File::hasExtension($file, self::$pdfExts);
+    }
+
+    /**
+     * Returns true if the given file is a SVG
+     * @param string $file
+     * @return boolean
+     */
+    public static function isSVG(string $file): bool {
+        return File::hasExtension($file, self::$svgExts);
     }
 
     /**

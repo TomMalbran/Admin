@@ -308,7 +308,6 @@ class Admin {
         Migration::migrate($canDelete);
         Settings::migrate();
         Path::ensurePaths();
-        Credential::seedOwner("Tomas", "Malbran", "tomas@raqdedicados.com", "Cel627570");
         return true;
     }
 }

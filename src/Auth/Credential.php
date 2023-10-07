@@ -310,35 +310,4 @@ class Credential {
         }
         return $result;
     }
-
-    /**
-     * Seeds the Owner
-     * @param string $firstName
-     * @param string $lastName
-     * @param string $email
-     * @param string $password
-     * @return boolean
-     */
-    public static function seedOwner(string $firstName, string $lastName, string $email, string $password): bool {
-        $query = Query::create("email", "=", $email);
-        if (!self::schema()->exists($query)) {
-            $hash = self::createHash($password);
-            self::schema()->create([
-                "firstName"    => $firstName,
-                "lastName"     => $lastName,
-                "email"        => $email,
-                "password"     => $hash["password"],
-                "salt"         => $hash["salt"],
-                "level"        => Access::Admin,
-                "status"       => Status::Active,
-                "lastLogin"    => time(),
-                "currentLogin" => time(),
-            ]);
-            print("<br>Owner <i>$firstName</i> created<br>");
-            return true;
-        }
-
-        print("<br>No <i>Owner</i> created<br>");
-        return false;
-    }
 }

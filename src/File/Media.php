@@ -80,7 +80,7 @@ class Media {
         foreach ($baseDirs as $baseDir) {
             $oldDir = Path::getPath($baseDir, $path, $oldName);
             $newDir = Path::getPath($baseDir, $path, $newName);
-            if (!File::move($oldDir, $newDir)) {
+            if (File::exists($oldDir) && !File::move($oldDir, $newDir)) {
                 return false;
             }
         }
@@ -99,7 +99,7 @@ class Media {
         foreach ($baseDirs as $baseDir) {
             $oldDir = Path::getPath($baseDir, $oldPath, $name);
             $newDir = Path::getPath($baseDir, $newPath, $name);
-            if (!File::move($oldDir, $newDir)) {
+            if (File::exists($oldDir) && !File::move($oldDir, $newDir)) {
                 return false;
             }
         }
@@ -116,7 +116,7 @@ class Media {
         $baseDirs = Path::getBaseDirs();
         foreach ($baseDirs as $baseDir) {
             $delPath = Path::getPath($baseDir, $path, $name);
-            if (!File::deleteDir($delPath)) {
+            if (File::exists($delPath) && !File::deleteDir($delPath)) {
                 return false;
             }
         }
@@ -132,7 +132,7 @@ class Media {
     public static function getAllToResize(): array {
         $baseDirs = Path::getBaseDirs();
         $basePath = Path::getPath(Path::Source);
-        $files    = File::getFilesInDir($basePath, true);
+        $files    = File::getFilesInDir($basePath);
         $result   = [];
 
         foreach ($files as $file) {

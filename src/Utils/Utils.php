@@ -73,6 +73,25 @@ class Utils {
     }
 
     /**
+     * Returns the Video Embed Url
+     * @param string $source
+     * @return string
+     */
+    public static function getVideoEmbed(string $source): string {
+        $youtubeEmbed = self::getYoutubeEmbed($source);
+        if (!empty($youtubeEmbed)) {
+            return $youtubeEmbed;
+        }
+
+        $vimeoEmbed = self::getVimeoEmbed($source);
+        if (!empty($vimeoEmbed)) {
+            return $vimeoEmbed;
+        }
+
+        return "";
+    }
+
+    /**
      * Returns the Youtube Embed Url
      * @param string  $source
      * @param boolean $autoplay Optional.
@@ -80,6 +99,10 @@ class Utils {
      * @return string
      */
     public static function getYoutubeEmbed(string $source, bool $autoplay = false, bool $loop = false): string {
+        if (empty($source)) {
+            return "";
+        }
+
         $videoID = "";
         $list    = "";
         if (Strings::startsWith($source, "https://youtu.be/")) {
@@ -111,6 +134,32 @@ class Utils {
         if ($loop) {
             $result .= "&loop=1";
         }
+        return $result;
+    }
+
+    /**
+     * Returns the Vimeo Embed Url
+     * @param string  $source
+     * @param boolean $showInfo Optional.
+     * @return string
+     */
+    public static function getVimeoEmbed(string $source, bool $showInfo = false): string {
+        if (empty($source)) {
+            return "";
+        }
+
+        $videoID = "";
+        if (Strings::startsWith($source, "https://vimeo.com/")) {
+            $videoID = Strings::replace($source, "https://vimeo.com/", "");
+        } elseif (Strings::startsWith($source, "https://www.vimeo.com/")) {
+            $videoID = Strings::replace("https://www.vimeo.com/", "");
+        }
+        if (empty($videoID)) {
+            return "";
+        }
+
+        $result  = "https://player.vimeo.com/video/{$videoID}";
+        $result .= $showInfo ? "?title=1&byline=1&portrait=1" : "?title=0&byline=0&portrait=0";
         return $result;
     }
 }

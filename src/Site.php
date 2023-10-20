@@ -4,6 +4,7 @@ namespace Admin;
 use Admin\Admin;
 use Admin\Config\Config;
 use Admin\Config\Settings;
+use Admin\IO\Request;
 use Admin\File\File;
 use Admin\File\Path;
 use Admin\Provider\Mustache;
@@ -46,6 +47,7 @@ class Site {
         return (object)[
             "url"     => $url,
             "params"  => $_REQUEST,
+            "request" => new Request(),
             "section" => !empty($slugParts[0]) ? $slugParts[0] : "inicio",
             "page"    => !empty($slugParts[1]) ? $slugParts[1] : "",
         ];

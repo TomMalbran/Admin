@@ -19,6 +19,7 @@ class Database {
     public string $username;
     public string $password;
     public string $database;
+    public string $charset;
 
 
     /**
@@ -28,6 +29,7 @@ class Database {
      *    username Database username
      *    password Database password
      *    database Database name
+     *    charset  Database charset
      * ].
      */
     public function __construct(mixed $config) {
@@ -35,6 +37,7 @@ class Database {
         $this->username = $config->username;
         $this->password = $config->password;
         $this->database = $config->database;
+        $this->charset  = !empty($config->charset) ? $config->charset : "";
 
         $this->connect();
     }
@@ -56,10 +59,13 @@ class Database {
      */
     public function connect(): bool {
         $this->mysqli = new mysqli($this->host, $this->username, $this->password, $this->database);
-        if (!$this->mysqli->connect_error) {
-            return true;
+        if ($this->mysqli->connect_error) {
+            trigger_error("Connect Error ({$this->mysqli->connect_errno}) {$this->mysqli->connect_error}", E_USER_ERROR);
+            return false;
         }
-        die("Connect Error ({$this->mysqli->connect_errno}) {$this->mysqli->connect_error}");
+        if (!empty($this->charset)) {
+            $this->mysqli->set_charset($this->charset);
+        }
         return false;
     }
 
@@ -339,9 +345,9 @@ class Database {
      * Process a mysqli query
      * @param string  $expression
      * @param mixed[] $bindParams Optional.
-     * @return mysqli_stmt
+     * @return mysqli_stmt|null
      */
-    private function processQuery(string $expression, array $bindParams = []): mysqli_stmt {
+    private function processQuery(string $expression, array $bindParams = []): ?mysqli_stmt {
         $query      = Strings::replace(trim($expression), "\n", "");
         $statement  = $this->mysqli->prepare($expression);
 
@@ -779,10 +785,6 @@ class Database {
 
         // Dump each table
         foreach ($tables as $table) {
-            if (function_exists("apache_reset_timeout")) {
-                apache_reset_timeout();
-            }
-
             $this->write(
                 $fp,
                 $crlf .

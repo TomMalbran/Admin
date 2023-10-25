@@ -110,10 +110,10 @@
             ajax.gotoTab($(e.target), true);
         })
 
-        // Accordeon
-        .on("click", ".accordeon-header", (e) => {
-            const $elem = $(e.target).closest(".accordeon");
-            ajax.setAccordeon($elem.attr("data-accordeon"), true);
+        // Accordion
+        .on("click", ".accordion-header", (e) => {
+            const $elem = $(e.target).closest(".accordion");
+            ajax.setAccordion($elem.attr("data-accordion"), true);
         })
 
         // Adds and Removes Rows

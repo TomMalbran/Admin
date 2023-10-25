@@ -14,7 +14,6 @@ class Ajax {
         this.$item     = null;
         this.curUrl    = null;
         this.curHref   = "";
-        this.curDialog = null;
         this.fieldID   = 0;
         this.scrollOld = $(document).scrollTop();
         this.scrollTo  = 0;
@@ -255,12 +254,12 @@ class Ajax {
     loadDialog(href, type, data) {
         this.showLoader();
         const result = this.fetch(href, null, data).then((response) => {
-            if (this.curDialog && this.curDialog.type === type) {
-                this.setContent(response, this.curDialog.$main);
+            const dialog = this.dialog.get();
+            if (dialog && dialog.type === type) {
+                this.setContent(response, dialog.$main);
                 this.initComponents();
             } else {
-                const onClose  = () => { this.curDialog = null; };
-                this.curDialog = this.dialog.create(type, null, response.content, false, onClose, onClose);
+                this.dialog.create(type, null, response.content, false);
                 this.initComponents();
             }
             this.hideLoader();
@@ -292,6 +291,7 @@ class Ajax {
         if (response.adminJWT) {
             this.setToken(response.adminJWT);
         }
+
         if (response.redirect) {
             const url = response.redirect || window.ADMIN_URL;
             if (response.reload) {
@@ -362,9 +362,9 @@ class Ajax {
      * @returns {Void}
      */
     closeDialog() {
-        if (this.curDialog) {
-            this.curDialog.close();
-            this.curDialog = null;
+        const dialog = this.dialog.get();
+        if (dialog) {
+            dialog.close();
         }
     }
 
@@ -524,7 +524,7 @@ class Ajax {
         const hash = window.location.hash;
         if (hash) {
             this.setTab(hash.substr(1), false);
-            this.setAccordeon(hash.substr(1), false);
+            this.setAccordion(hash.substr(1), false);
         } else {
             this.setTabSelector($(".tab-selected"));
         }
@@ -687,34 +687,34 @@ class Ajax {
     }
 
     /**
-     * Goes to the given Tab
+     * Sets the Accordion
      * @param {String}  name
      * @param {Boolean} animate
      * @returns {Void}
      */
-    setAccordeon(name, animate) {
-        const $current = $(".accordeon-show");
-        const current  = $(".accordeon-show").attr("data-accordeon");
-        const $new     = $(`.accordeon[data-accordeon="${name}"]`);
+    setAccordion(name, animate) {
+        const $current = $(".accordion-show");
+        const current  = $(".accordion-show").attr("data-accordion");
+        const $new     = $(`.accordion[data-accordion="${name}"]`);
 
         $(".subsection").val(name);
 
         if (animate) {
-            $current.find(".accordeon-body").slideUp(() => {
-                $current.removeClass("accordeon-show");
+            $current.find(".accordion-body").slideUp(() => {
+                $current.removeClass("accordion-show");
             });
             if (current !== name) {
-                $new.find(".accordeon-body").slideDown(() => {
-                    $new.addClass("accordeon-show");
+                $new.find(".accordion-body").slideDown(() => {
+                    $new.addClass("accordion-show");
                 });
                 history.pushState(null, null, `#${name}`);
             } else {
                 history.pushState(null, null, "#");
             }
         } else {
-            $current.removeClass("accordeon-show");
+            $current.removeClass("accordion-show");
             if (current !== name) {
-                $new.addClass("accordeon-show");
+                $new.addClass("accordion-show");
             }
         }
     }

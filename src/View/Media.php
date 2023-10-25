@@ -68,6 +68,7 @@ class Media {
      */
     private static function getQuery(Request $request): Url {
         $url = new Url();
+        $url->set("navigate", 1);
         if ($request->has("type")) {
             $url->set("type", $request->type);
         }
@@ -109,29 +110,30 @@ class Media {
      */
     public static function getAll(Request $request): Response {
         if ($request->has("path")) {
-            return self::getOne($request->path, $request, true);
+            return self::getOne($request->path, $request);
         }
-        return self::getOne("", $request, true);
+        return self::getOne("", $request);
     }
 
     /**
      * Returns the Media list view
      * @param string  $path
      * @param Request $request
-     * @param boolean $useSelected Optional.
      * @return Response
      */
-    public static function getOne(string $path, Request $request, bool $useSelected = false): Response {
+    public static function getOne(string $path, Request $request): Response {
         $path     = Strings::toUrl($path);
         $type     = $request->get("type", "file");
         $selected = "";
 
-        if ($request->has("selected") && $useSelected) {
+        if ($request->has("selected")) {
             $selected = $request->selected;
             $pos      = strrpos($request->selected, "/");
             if ($pos !== false) {
-                $path     = substr($request->selected, 0, $pos);
                 $selected = substr($request->selected, $pos + 1);
+                if (!$request->has("navigate")) {
+                    $path = substr($request->selected, 0, $pos);
+                }
             }
         }
 

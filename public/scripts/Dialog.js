@@ -34,49 +34,54 @@ class Dialog {
             <dialog>
         </div>`);
 
+        const $main  = $elem.find("main");
+        const dialog = {
+            type, $elem, $main,
+            isOpen : true,
+            find   : (query) => $elem.find(query),
+            html   : (val)   => $main.html(val),
+            submit : ()      => this.close(dialog, onOk),
+            cancel : ()      => this.close(dialog, onCancel),
+            close  : ()      => this.close(dialog),
+        };
+
         $(document.body).append($elem);
         $elem
             .on("click", ".dialog-ok", () => {
-                this.close($elem, onOk);
+                this.close(dialog, onOk);
             })
             .on("click", ".dialog-cancel", () => {
-                this.close($elem, onCancel);
+                this.close(dialog, onCancel);
             })
             .on("mousedown", (e) => {
                 const $main = $(e.target).closest(".dialog");
                 if (!$main.length) {
-                    this.close($elem, onCancel);
+                    this.close(dialog, onCancel);
                 }
             });
 
-        const $main  = $elem.find("main");
-        const result = {
-            type, $elem, $main,
-            find   : (query) => $elem.find(query),
-            html   : (val)   => $main.html(val),
-            submit : ()      => this.close($elem, onOk),
-            cancel : ()      => this.close($elem, onCancel),
-            close  : ()      => this.close($elem),
-        };
-        this.dialogs.push(result);
-        return result;
+        this.dialogs.push(dialog);
+        return dialog;
     }
 
     /**
      * Closes the Dialog
-     * @param {JQuery}    $dialog
+     * @param {Dialog}    dialog
      * @param {Function=} callback
      * @returns {Void}
      */
-    close($dialog, callback) {
-        $dialog.addClass("dialog-close").on("animationend webkitAnimationEnd", () => {
-            window.setTimeout(() => {
-                $dialog.remove();
-                this.dialogs.pop();
-                if (callback) {
-                    callback();
-                }
-            }, 100);
+    close(dialog, callback) {
+        dialog.$elem.addClass("dialog-close").off("animationend").on("animationend", () => {
+            if (dialog.isOpen) {
+                dialog.isOpen = false;
+                window.setTimeout(() => {
+                    dialog.$elem.remove();
+                    this.dialogs.pop();
+                    if (callback) {
+                        callback();
+                    }
+                }, 100);
+            }
         });
     }
 

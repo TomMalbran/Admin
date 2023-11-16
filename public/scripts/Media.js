@@ -8,7 +8,12 @@ class Media {
      * @param {Ajax} ajax
      */
     constructor(ajax) {
-        this.ajax = ajax;
+        this.ajax          = ajax;
+
+        this.uploadedFiles = 0;
+        this.uploadedSize  = 0;
+        this.totalFiles    = 0;
+        this.totalSize     = 0;
     }
 
     /**
@@ -16,11 +21,15 @@ class Media {
      * @returns {Void}
      */
     init() {
-        const $upload = $(".dropzone-upload");
-        this.$drop    = $(".dropzone-drop");
-        this.$file    = $(".dropzone-file");
-        this.$input   = $(".dropzone-input");
-        this.$filter  = $(".media-filter");
+        const $upload   = $(".dropzone-upload");
+        this.$drop      = $(".dropzone-drop");
+        this.$uploading = $(".dropzone-uploading");
+        this.$count     = $(".dropzone-count");
+        this.$total     = $(".dropzone-total");
+        this.$progress  = $(".dropzone-progress");
+        this.$status    = $(".dropzone-status");
+        this.$input     = $(".dropzone-input");
+        this.$filter    = $(".media-filter");
 
         if (this.$drop.length) {
             const drop = this.$drop[0];
@@ -146,9 +155,7 @@ class Media {
         }
 
         // Upload Each file
-        for (const file of files) {
-            this.uploadFile(file);
-        }
+        this.uploadFiles(files);
         this.endDrop();
     }
 
@@ -159,10 +166,47 @@ class Media {
      */
     handleSubmit(e) {
         e.preventDefault();
-        for (const file of e.target.files) {
+        this.uploadFiles(e.target.files);
+        this.endDrop();
+    }
+
+    /**
+     * Uploads the given Files
+     * @param {Array.<File>} files
+     * @returns {Void}
+     */
+    uploadFiles(files) {
+        const upload = [];
+        for (const file of files) {
+            const size = file.size / (1024 * 1024);
+            if (size <= 7) {
+                upload.push(file);
+                this.totalSize += file.size;
+            }
+        }
+
+        if (upload.length !== files.length) {
+            $(".result-bar").toggle(false);
+            const $result = $(".result-size");
+            if (!$result.is(":visible")) {
+                $result.toggle(true);
+                window.setTimeout(() => $result.fadeOut(), 10000);
+            }
+        }
+
+        if (!upload.length) {
+            return;
+        }
+
+        this.totalFiles += upload.length;
+        this.$uploading.toggle(true);
+        this.$count.text(this.uploadedFiles);
+        this.$total.text(this.totalFiles);
+        this.updateProgress(0);
+
+        for (const file of upload) {
             this.uploadFile(file);
         }
-        this.endDrop();
     }
 
     /**
@@ -171,43 +215,61 @@ class Media {
      * @returns {Void}
      */
     uploadFile(file) {
-        const $elem     = this.$file.clone().insertBefore(this.$file).toggle(true);
-        const href      = this.$input.data("href");
-        const path      = this.$input.data("path");
-        const $progress = $elem.find(".dropzone-progress");
-        const $status   = $elem.find(".dropzone-status");
-        $elem.find(".dropzone-name").text(file.name);
-
+        const href     = this.$input.data("href");
+        const path     = this.$input.data("path");
         const url      = new URL(href);
         const formData = new FormData();
+
         formData.append("ajax", "1");
         formData.append("path", path);
         formData.append("file", file);
         if (this.ajax.jwt) {
-            formData.append("jwt",  this.ajax.jwt);
+            formData.append("jwt", this.ajax.jwt);
         }
 
         const request = new XMLHttpRequest();
-        request.upload.addEventListener("progress", (e) => {
-            const percent = Math.round((e.loaded / e.total) * 100);
-            $progress.val(percent);
-            $status.html(percent + "%");
-        }, false);
-
-        request.addEventListener("load", () => {
-            if (request.status < 400 && request.responseText) {
-                const response = JSON.parse(request.responseText);
-                this.ajax.resolveResponse(response);
-            }
-            $elem.remove();
-        }, false);
-
-        // request.addEventListener("error", errorHandler, false);
-        // request.addEventListener("abort", abortHandler, false);
+        request.upload.addEventListener("progress", (e) => this.updateProgress(e.loaded), false);
+        request.addEventListener("load", () => this.uploadCompleted(request), false);
 
         // @ts-ignore
         request.open("POST", url);
         request.send(formData);
+    }
+
+    /**
+     * Updates the Progress bar
+     * @param {Number} amount
+     * @returns {Void}
+     */
+    updateProgress(amount) {
+        this.uploadedSize += amount;
+        const percent = Math.min(99, Math.round((this.uploadedSize  * 100) / this.totalSize));
+        this.$progress.val(percent);
+        this.$status.text(`${percent}%`);
+    }
+
+    /**
+     * Completes the Upload
+     * @param {XMLHttpRequest} request
+     * @returns {Void}
+     */
+    uploadCompleted(request) {
+        this.uploadedFiles += 1;
+        this.$count.text(this.uploadedFiles);
+        if (this.uploadedFiles !== this.totalFiles) {
+            return;
+        }
+
+        this.uploadedFiles = 0;
+        this.uploadedSize  = 0;
+        this.totalFiles    = 0;
+        this.totalSize     = 0;
+        this.$uploading.toggle(false);
+
+        if (request.status < 400 && request.responseText) {
+            const response = JSON.parse(request.responseText);
+            this.ajax.resolveResponse(response);
+        }
     }
 
 

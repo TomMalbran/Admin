@@ -8,7 +8,6 @@ use Admin\Schema\Schema;
 use Admin\Schema\Query;
 use Admin\File\Path;
 use Admin\File\FileType;
-use Admin\View\Personalize;
 use Admin\Utils\Arrays;
 use Admin\Utils\CSV;
 use Admin\Utils\JSON;
@@ -119,12 +118,13 @@ class Settings {
             if ($row["type"] == SettingType::General) {
                 $result[$section][$variable] = $value;
                 if (!empty($value) && FileType::isImage($value)) {
-                    $result[$section]["{$variable}Url"]   = Path::getUrl(Path::Source, $value);
-                    $result[$section]["{$variable}Large"] = Path::getUrl(Path::Large,  $value);
+                    $result[$section]["{$variable}Url"]    = Path::getUrl(Path::Source, $value);
+                    $result[$section]["{$variable}Medium"] = Path::getUrl(Path::Medium, $value);
+                    $result[$section]["{$variable}Large"]  = Path::getUrl(Path::Large,  $value);
                 } elseif (!empty($value) && FileType::isVideo($value)) {
-                    $result[$section]["{$variable}Url"]   = Path::getUrl(Path::Source, $value);
+                    $result[$section]["{$variable}Url"]    = Path::getUrl(Path::Source, $value);
                 } elseif (!Numbers::isValid($value)) {
-                    $result[$section]["{$variable}Html"] = Strings::toHtml($value);
+                    $result[$section]["{$variable}Html"]   = Strings::toHtml($value);
                 }
             } else {
                 $result[$section][$variable] = SettingType::parseValue($row);

@@ -13,6 +13,7 @@
     </div>
 </header>
 
+<p class="result-bar result-error result-size" style="display:none">El archivo es demasiado grande.</p>
 
 {{#createNameError}}<p class="result-bar result-error">Debe indicar el nombre del directorio.</p>{{/createNameError}}
 {{#createExistsError}}<p class="result-bar result-error">Ya existe un archivo/directorio con ese nombre.</p>{{/createExistsError}}
@@ -46,7 +47,7 @@
 {{#deleteSuccess}}<p class="result-bar result-success">El archivo/directorio se eliminó correctamente.</p>{{/deleteSuccess}}
 
 
-<secion class="dropzone">
+<section class="dropzone">
     <div class="dropzone-drop">
         Arrastra los archivos aquí para subirlos
     </div>
@@ -62,15 +63,15 @@
         data-path="{{path}}"
         multiple
     />
-</secion>
-
-<secion class="files">
-    <div class="dropzone-file" style="display:none">
-        <h3>Subiendo: <span class="dropzone-name"></span></h3>
+    <div class="dropzone-uploading" style="display:none">
+        <h3>
+            Subiendo:
+            <span class="dropzone-count"></span>/<span class="dropzone-total"></span>
+        </h3>
         <progress class="dropzone-progress" value="0" max="100" style="width:300px;"></progress>
         <p class="dropzone-status"></p>
     </div>
-</secion>
+</section>
 
 
 <section class="media-list">

@@ -20,7 +20,7 @@ class Media {
             Path::Thumb  => [  150,  150 ],
             Path::Small  => [  300,  300 ],
             Path::Medium => [  700,  700 ],
-            Path::Large  => [ 1200, 1200 ],
+            Path::Large  => [ 1500, 1500 ],
             default      => [],
         };
     }

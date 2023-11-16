@@ -6,23 +6,25 @@
 
 {{^total}}<p class="table-none">No hay imágenes para redimensionar.</p>{{/total}}
 {{#total}}
-    <section class="content-body">
-        <div class="resizer-container">
-            <h4><span class="resizer-count">0</span>/{{total}}</h4>
-            <progress class="resizer-progress dropzone-progress" value="0" max="{{total}}" style="width:300px;"></progress>
-            <a href="#" class="resizer-btn btn btn-primary">Redimensionar</a>
-        </div>
+<section class="resizer-container">
+    <h4><span class="resizer-count">0</span>/{{total}}</h4>
+    <progress class="resizer-progress dropzone-progress" value="0" max="{{total}}" style="width:300px;"></progress>
+    <a href="#" class="resizer-btn btn btn-primary">Redimensionar</a>
+</section>
 
-        <div class="resizer-result">
-            <h5 class="resizer-success">Se redimensionaron <span class="resizer-resized">0</span> imágenes</h5>
-            <h5 class="resizer-error">No se pudieron redimensionar <span class="resizer-failed">0</span> imágenes</h5>
-        </div>
+<section class="content-body">
+    <div class="resizer-result">
+        <h5 class="resizer-success">Se redimensionaron <span class="resizer-resized">0</span> imágenes</h5>
+        <h5 class="resizer-error">No se pudieron redimensionar <span class="resizer-failed">0</span> imágenes</h5>
+    </div>
 
-        <ul class="no-list resizer-files">
-            {{#files}}
-            <li data-path="{{path}}"><span class="icono-blank"></span> {{path}}</li>
-            {{/files}}
-        </ul>
-    </section>
+    <ul class="no-list resizer-files">
+        {{#files}}
+        <li data-path="{{path}}"><span class="icono-blank"></span> {{path}}</li>
+        {{/files}}
+    </ul>
+</section>
+
+<div class="pagination-empty"></div>
 {{/total}}
 {{>footer/main}}
